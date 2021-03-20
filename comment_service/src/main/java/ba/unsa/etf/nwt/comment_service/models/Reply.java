@@ -3,10 +3,14 @@ package ba.unsa.etf.nwt.comment_service.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.Data;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import javax.persistence.*;
 
 @Entity
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "reply")
@@ -16,14 +20,23 @@ public class Reply {
     @JsonIgnore
     private Long id;
 
-    //@ManyToOne(fetch = FetchType.EAGER, optional = false)
-    //@JoinColumn(name = "comment_id", nullable = false)
-    @ManyToOne(cascade = CascadeType.ALL)
+    @NotNull(message = "Comment cannot be null")
+    @ManyToOne(cascade = CascadeType.MERGE)
     private Comment comment;
 
+    @NotNull(message = "User id cannot be null")
     private Long userID;
 
+    @NotNull(message = "Content cannot be null")
+    @Size(min = 5, max = 50, message
+            = "Content must be between 5 and 50 characters")
     private String content;
+
+    public Reply(Comment comment, Long userID, String content) {
+        this.comment = comment;
+        this.userID = userID;
+        this.content = content;
+    }
 
     public Long getId() {
         return id;

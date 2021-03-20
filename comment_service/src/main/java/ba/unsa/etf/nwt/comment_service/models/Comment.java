@@ -2,12 +2,20 @@ package ba.unsa.etf.nwt.comment_service.models;
 
 import ba.unsa.etf.nwt.comment_service.models.sectionRoles.MainRole;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "comment")
 public class Comment {
     @Id
@@ -15,12 +23,20 @@ public class Comment {
     @JsonIgnore
     private Long id;
 
+    @NotNull(message = "UserID cannot be null")
     private Long userID;
 
+    @NotNull(message = "Title cannot be null")
+    @Size(min = 2, max = 50, message
+            = "Title must be between 2 and 50 characters")
     private String title;
 
+    @NotNull(message = "Content cannot be null")
+    @Size(min = 5, max = 50, message
+            = "Content must be between 5 and 50 characters")
     private String content;
 
+    @NotNull(message = "Content cannot be null")
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "section_roles",
             joinColumns = @JoinColumn(name = "comment_id"),

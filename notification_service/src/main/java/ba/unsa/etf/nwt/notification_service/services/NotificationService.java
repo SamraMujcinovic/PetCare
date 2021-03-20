@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @AllArgsConstructor
 @Service
@@ -20,4 +21,17 @@ public class NotificationService {
     public Notification addNotification(Notification notification) {
         return notificationRepository.save(notification);
     }
+
+    public Optional<Notification> findById(Long notificationId) {
+        return notificationRepository.findById(notificationId);
+    }
+
+    public boolean existsById(Long notificationId) {
+        return notificationRepository.existsById(notificationId);
+    }
+
+    public Optional<Notification> findByUserId(Long userId) {
+        return notificationRepository.findById(userId);
+    }
+
 }

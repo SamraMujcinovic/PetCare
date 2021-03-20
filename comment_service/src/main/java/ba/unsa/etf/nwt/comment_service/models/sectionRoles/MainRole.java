@@ -5,10 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @AllArgsConstructor
-@NoArgsConstructor
 @Table(name = "main_roles")
 public class MainRole {
     @Id
@@ -18,7 +18,15 @@ public class MainRole {
 
     @Enumerated(EnumType.STRING)
     @Column(length = 60)
+    @NotNull(message = "Role name cannot be null")
     private SectionRoleName name;
+
+    public MainRole() {
+    }
+
+    public MainRole(SectionRoleName sectionRoleName) {
+        this.name = sectionRoleName;
+    }
 
     public Long getId() {
         return id;
