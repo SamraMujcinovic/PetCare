@@ -7,6 +7,8 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
+
 @Component
 public class DatabaseSeeder {
     @Autowired
@@ -18,16 +20,18 @@ public class DatabaseSeeder {
     }
 
     private void seedDatabase() {
-        Notification n1 = createNotification("Novi zahtjev za dodavanje ljubimca", Long.valueOf(1), true);
-        Notification n2 = createNotification("Dodali ste novog ljubimca", Long.valueOf(2), false);
-        Notification n3 = createNotification("Vas ljubimac je usvojen", Long.valueOf(3), false);
+        Date date = new Date();
+        Notification n1 = createNotification("Novi zahtjev za dodavanje ljubimca", Long.valueOf(1), true, date);
+        Notification n2 = createNotification("Dodali ste novog ljubimca", Long.valueOf(2), false, date);
+        Notification n3 = createNotification("Vas ljubimac je usvojen", Long.valueOf(3), false, date);
     }
 
-    private Notification createNotification (String content, Long userID, Boolean read) {
+    private Notification createNotification (String content, Long userID, Boolean read, Date date) {
         Notification notification = new Notification();
         notification.setContent(content);
         notification.setUserID(userID);
         notification.setRead(read);
+        notification.setCreatedAt(date);
         notificationService.addNotification(notification);
         return notification;
     }
