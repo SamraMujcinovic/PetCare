@@ -1,29 +1,19 @@
-package ba.unsa.etf.nwt.user_service.models;
+package ba.unsa.etf.nwt.user_service.requests;
 
-import ba.unsa.etf.nwt.user_service.models.roles.Role;
+import ba.unsa.etf.nwt.user_service.models.Answer;
 
-import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.HashSet;
-import java.util.Set;
 
-@Entity
-@Table(name = "users")
-public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-
+public class RegistrationRequest {
     @NotBlank
-    @Size(max = 100)
-    @Column(columnDefinition = "text")
+    @Size(min = 2, max = 50)
     private String name;
 
     @NotBlank
-    @Size(max = 100)
-    @Column(columnDefinition = "text")
+    @Size(min = 3, max = 50)
     private String surname;
 
     @NotBlank
@@ -32,41 +22,23 @@ public class User {
     private String email;
 
     @NotBlank
-    @Size(max = 100)
+    @Size(min = 4, max = 40)
     private String username;
 
     @NotBlank
-    @Size(max = 100)
+    @Size(min = 6, max = 40)
     private String password;
 
-    @OneToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "answer_id", nullable = false)
+    @NotNull
     private Answer answer;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles = new HashSet<>();
-
-    public User(@NotBlank @Size(max = 100) String name, @NotBlank @Size(max = 100) String surname, @NotBlank @Size(max = 100) @Email(message = "Email should be valid") String email, @NotBlank @Size(max = 100) String username, @NotBlank @Size(max = 100) String password, Answer answer) {
+    public RegistrationRequest(@NotBlank @Size(min = 2, max = 40) String name, @NotBlank @Size(min = 3, max = 40) String surname, @NotBlank @Size(max = 100) @Email(message = "Email should be valid") String email, @NotBlank @Size(min = 4, max = 20) String username, @NotBlank @Size(min = 6, max = 20) String password, @NotNull Answer answer) {
         this.name = name;
         this.surname = surname;
         this.email = email;
         this.username = username;
         this.password = password;
         this.answer = answer;
-    }
-
-    public User() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -115,13 +87,5 @@ public class User {
 
     public void setAnswer(Answer answer) {
         this.answer = answer;
-    }
-
-    public Set<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
     }
 }

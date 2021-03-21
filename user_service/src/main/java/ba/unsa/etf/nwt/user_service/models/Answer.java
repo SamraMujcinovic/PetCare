@@ -1,6 +1,7 @@
 package ba.unsa.etf.nwt.user_service.models;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 @Entity
@@ -10,8 +11,9 @@ public class Answer {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @NotBlank(message = "Answer can't be blank")
     @Column(columnDefinition = "text")
-    @Size(min = 1, max = 200)
+    @Size(max = 100)
     private String text;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)

@@ -1,8 +1,11 @@
 package ba.unsa.etf.nwt.user_service.services;
 
 import ba.unsa.etf.nwt.user_service.models.roles.Role;
+import ba.unsa.etf.nwt.user_service.models.roles.RoleName;
 import ba.unsa.etf.nwt.user_service.repository.RoleRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class RoleService {
@@ -14,5 +17,9 @@ public class RoleService {
 
     public Role save(Role role){
         return roleRepository.save(role);
+    }
+
+    public Optional<Role> findByName(RoleName roleName){
+       return roleRepository.findByName(roleName);
     }
 }

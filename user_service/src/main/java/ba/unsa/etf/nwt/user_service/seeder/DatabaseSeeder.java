@@ -28,7 +28,7 @@ public class DatabaseSeeder {
     @Autowired
     private UserService userService;
 
-    //@EventListener
+    @EventListener
     public void seed(ContextRefreshedEvent event) {
         seedDatabase();
     }

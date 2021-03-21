@@ -38,7 +38,9 @@ public class AnswerController {
     //samo user, autorizacija
     @PostMapping("/questions/{questionId}/answer")
     public ResponseMessage createAnswer(@PathVariable Long questionId, @RequestBody Answer answer) {
-        if(answer.getText().length() < 1 || answer.getText().length() > 200) return new ResponseMessage(false, "Your answer must have between 1 and 200 characters!!", "BAD_REQUEST");
+        if(answer.getText().isEmpty()) return new ResponseMessage(false, "Answer can't be blank!!", "BAD_REQUEST");
+        if(answer.getText().length() > 100) return new ResponseMessage(false, "Answer can't have more than 200 characters!!", "BAD_REQUEST");
+
         try {
             questionService.findById(questionId).map(question -> {
                         answer.setQuestion(question);
@@ -49,6 +51,7 @@ public class AnswerController {
         catch (RuntimeException e){
             return new ResponseMessage(false, "There is no question with that ID!!", "NOT_FOUND");
         }
+
         return new ResponseMessage(true, "Answer added successfully!!", "OK");
     }
 }

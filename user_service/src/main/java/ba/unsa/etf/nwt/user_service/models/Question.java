@@ -12,9 +12,10 @@ public class Question {
     private Long id;
 
     @NotBlank(message = "Title can't be blank")
-    @Size(min = 2, max = 150)
+    @Size(max = 100)
     private String title;
 
+    @NotBlank(message = "Description can't be blank")
     @Column(columnDefinition = "text")
     private String description;
 
