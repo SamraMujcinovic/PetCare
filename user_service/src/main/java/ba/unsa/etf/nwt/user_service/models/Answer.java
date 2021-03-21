@@ -9,6 +9,7 @@ public class Answer {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Lob
     private String text;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)

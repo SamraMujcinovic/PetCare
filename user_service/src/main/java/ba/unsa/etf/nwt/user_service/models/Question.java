@@ -1,6 +1,8 @@
 package ba.unsa.etf.nwt.user_service.models;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name="questions")
@@ -9,8 +11,11 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @NotBlank(message = "Title can't be blank")
+    @Size(min = 2, max = 150)
     private String title;
 
+    @Lob
     private String description;
 
     public Long getId() {
