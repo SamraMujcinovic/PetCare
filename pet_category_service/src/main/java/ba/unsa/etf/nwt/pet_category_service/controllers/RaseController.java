@@ -1,6 +1,7 @@
 package ba.unsa.etf.nwt.pet_category_service.controllers;
 
 import ba.unsa.etf.nwt.pet_category_service.models.Rase;
+import ba.unsa.etf.nwt.pet_category_service.requests.RaseRequest;
 import ba.unsa.etf.nwt.pet_category_service.services.RaseService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,8 +23,8 @@ public class RaseController {
     }
 
     @PostMapping("/rase")
-    public Rase addRase(@RequestBody Rase rase){
-        return raseService.addRase(rase);
+    public Rase addRase(@RequestBody RaseRequest raseRequest){
+        return raseService.addRase(raseRequest);
     }
 
 

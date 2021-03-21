@@ -59,7 +59,7 @@ public class Seeder {
         Category c = new Category();
         c.setName(name);
         c.setDescription(description);
-        categoryService.addCategory(c);
+        categoryService.saveCategory(c);
         return c;
     }
 
@@ -68,7 +68,7 @@ public class Seeder {
         r.setName(name);
         r.setDescription(description);
         r.setCategory(category);
-        raseService.addRase(r);
+        raseService.saveRase(r);
         return r;
     }
 
@@ -81,6 +81,6 @@ public class Seeder {
         p.setAge(age);
         p.setAdopted(adopted);
         p.setRase(rase);
-        petService.save(p);
+        petService.savePet(p);
     }
 }

@@ -2,6 +2,7 @@ package ba.unsa.etf.nwt.pet_category_service.controllers;
 
 
 import ba.unsa.etf.nwt.pet_category_service.models.Pet;
+import ba.unsa.etf.nwt.pet_category_service.requests.PetRequest;
 import ba.unsa.etf.nwt.pet_category_service.services.PetService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,8 +21,8 @@ public class PetController {
     }
 
     @PostMapping("/pet")
-    public Pet addPet(@RequestBody Pet pet){
-        return petService.save(pet);
+    public Pet addPet(@RequestBody PetRequest petRequest){
+        return petService.addPet(petRequest);
     }
 
 

@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @AllArgsConstructor
 @Service
@@ -20,5 +21,9 @@ public class CategoryService {
 
     public Category addCategory(Category category) {
         return categoryRepository.save(category);
+    }
+
+    public void saveCategory(Category c) {
+        categoryRepository.save(c);
     }
 }
