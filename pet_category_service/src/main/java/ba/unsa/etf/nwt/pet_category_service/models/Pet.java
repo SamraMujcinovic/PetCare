@@ -24,7 +24,7 @@ public class Pet {
     private Long id;
 
     @NotEmpty(message = "Pet must have a name!")
-    @Size(max = 50, message = "Name must have less then 50 characters!")
+    @Size(min = 2, max = 50)
     private String name;
 
     @NotBlank(message = "You have to add a pets location!")

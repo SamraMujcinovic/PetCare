@@ -24,7 +24,7 @@ public class Category {
     private Long id;
 
     @NotBlank(message = "Category must have a name!")
-    @Size(max = 50, message = "Name must have less then 50 caracters!")
+    @Size(min = 2,max = 50)
     private String name;
 
 

@@ -4,16 +4,37 @@ import lombok.Data;
 
 @Data
 public class Response {
-
+    private Boolean success;
     private String message;
-    private Integer statusCode;
+    private String status;
 
-    public Response(String message) {
+    public Response(Boolean success, String message, String status) {
+        this.success = success;
+        this.message = message;
+        this.status = status;
+    }
+
+    public Boolean getSuccess() {
+        return success;
+    }
+
+    public void setSuccess(Boolean success) {
+        this.success = success;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
         this.message = message;
     }
 
-    public Response(String message, Integer statusCode) {
-        this.message = message;
-        this.statusCode = statusCode;
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
