@@ -25,13 +25,14 @@ public class Pet {
     //da li je image string?
     private String image;
 
-    private String descrtiption;
+    private String description;
 
     private int age;
 
     private boolean adopted;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "rase_id")
     private Rase rase;
 
     public Long getId() {
@@ -66,12 +67,12 @@ public class Pet {
         this.image = image;
     }
 
-    public String getDescrtiption() {
-        return descrtiption;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDescrtiption(String descrtiption) {
-        this.descrtiption = descrtiption;
+    public void setDescription(String descrtiption) {
+        this.description = descrtiption;
     }
 
     public int getAge() {
