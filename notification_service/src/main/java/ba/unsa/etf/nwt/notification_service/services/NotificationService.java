@@ -3,11 +3,10 @@ package ba.unsa.etf.nwt.notification_service.services;
 import ba.unsa.etf.nwt.notification_service.models.Notification;
 import ba.unsa.etf.nwt.notification_service.repository.NotificationRepository;
 import lombok.AllArgsConstructor;
-import org.apache.velocity.exception.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -22,6 +21,7 @@ public class NotificationService {
     }
 
     public Notification addNotification(Notification notification) {
+        notification.setCreatedAt(new Date());
         return notificationRepository.save(notification);
     }
 
@@ -33,36 +33,28 @@ public class NotificationService {
         return notificationRepository.existsById(notificationId);
     }
 
-    public Notification buildNotificationResponse(Notification notification){
-        return new Notification(notification.getId(),
-                notification.getContent(), notification.getUserID(), 
-                notification.getRead(), notification.getCreatedAt());
-    }
-    
     public List<Notification> getUserNotification(Long userID) {
         return notificationRepository
                 .findAll()
                 .stream()
-                .filter(n -> n.getUserID() == userID)
-                .map(n -> new Notification(n.getContent(), n.getRead(), n.getCreatedAt()))
+                .filter(n -> n.getUserID().equals(userID))
                 .collect(Collectors.toList());
     }
 
-    public Notification getOneUserNotification (Long notificationID, Long userID){
-        Notification notification = notificationRepository.findByIdAndUserID(notificationID, userID);
-        if(notification==null){
-            throw new ResourceNotFoundException("Wrong notificationId");
-        }
-        notification.setRead(true);
-        notificationRepository.save(notification);
-        return notification;
+    public Notification getOneUserNotification(Long notificationID, Long userID){
+        return notificationRepository
+                .findAll()
+                .stream()
+                .filter(n -> n.getUserID().equals(userID) && n.getId().equals(notificationID))
+                .collect(Collectors.toList()).get(0);
+
     }
 
-    public List<Notification> getUnreadUserNotification(Long userId) {
+    public List<Notification> getUnreadUserNotification(Long userID) {
         return notificationRepository
-                .findAllByUserIDAndRead(userId, false)
+                .findAll()
                 .stream()
-                //.map()
+                .filter(n -> n.getUserID().equals(userID) && n.getRead().equals(false))
                 .collect(Collectors.toList());
     }
 }

@@ -24,8 +24,8 @@ public class Notification {
     private Long id;
 
     @NotNull(message = "Content cannot be null")
-    @Size(min = 5, max = 50, message
-            = "Content must be between 5 and 50 characters")
+    @Size(min = 2, max = 150, message
+            = "Content must be between 2 and 150 characters")
     private String content;
 
     @NotNull(message = "UserID cannot be null")
@@ -35,7 +35,7 @@ public class Notification {
 
     @Temporal(TemporalType.TIMESTAMP)
     @JsonFormat(timezone="Europe/Sarajevo")
-    @Column(name = "created_at", nullable = false, updatable = false)
+    @Column(name = "created_at", nullable = true, updatable = false)
     @CreatedDate
     @JsonIgnore
     private Date createdAt;
