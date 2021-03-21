@@ -6,6 +6,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 @Entity
 @Data
@@ -18,6 +21,8 @@ public class Rase {
     @JsonIgnore
     private Long id;
 
+    @NotBlank(message = "Rase must have a name!")
+    @Size(max = 50, message = "Name must have less than 50 characters!")
     private String name;
 
     private String description;

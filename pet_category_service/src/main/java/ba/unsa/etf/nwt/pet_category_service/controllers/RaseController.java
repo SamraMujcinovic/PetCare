@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @AllArgsConstructor
@@ -23,7 +24,7 @@ public class RaseController {
     }
 
     @PostMapping("/rase")
-    public Rase addRase(@RequestBody RaseRequest raseRequest){
+    public Rase addRase(@Valid @RequestBody RaseRequest raseRequest){
         return raseService.addRase(raseRequest);
     }
 
