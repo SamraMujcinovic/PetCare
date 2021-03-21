@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @AllArgsConstructor
@@ -21,7 +22,7 @@ public class PetController {
     }
 
     @PostMapping("/pet")
-    public Pet addPet(@RequestBody PetRequest petRequest){
+    public Pet addPet(@Valid @RequestBody PetRequest petRequest){
         return petService.addPet(petRequest);
     }
 

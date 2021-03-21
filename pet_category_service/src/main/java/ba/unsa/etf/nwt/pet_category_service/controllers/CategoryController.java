@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +23,7 @@ public class CategoryController {
     }
 
     @PostMapping("/category")
-    public Category addCategory(@RequestBody Category category){
+    public Category addCategory(@Valid @RequestBody Category category){
         return categoryService.addCategory(category);
     }
 

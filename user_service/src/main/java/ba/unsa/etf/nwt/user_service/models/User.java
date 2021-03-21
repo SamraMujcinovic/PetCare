@@ -3,6 +3,9 @@ package ba.unsa.etf.nwt.user_service.models;
 import ba.unsa.etf.nwt.user_service.models.roles.Role;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -13,14 +16,27 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @NotBlank
+    @Size(max = 100)
+    @Column(columnDefinition = "text")
     private String name;
 
+    @NotBlank
+    @Size(max = 100)
+    @Column(columnDefinition = "text")
     private String surname;
 
+    @NotBlank
+    @Size(max = 100)
+    @Email(message = "Email should be valid")
     private String email;
 
+    @NotBlank
+    @Size(max = 100)
     private String username;
 
+    @NotBlank
+    @Size(max = 100)
     private String password;
 
     @OneToOne(fetch = FetchType.EAGER, optional = false)

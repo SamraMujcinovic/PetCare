@@ -1,11 +1,16 @@
 package ba.unsa.etf.nwt.pet_category_service.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 
 @Entity
 @Data
@@ -18,15 +23,20 @@ public class Pet {
     @JsonIgnore
     private Long id;
 
+    @NotEmpty(message = "Pet must have a name!")
+    @Size(max = 50, message = "Name must have less then 50 characters!")
     private String name;
 
+    @NotBlank(message = "You have to add a pets location!")
     private String location;
 
     //da li je image string?
+    @NotBlank(message = "Please add an image of pet!")
     private String image;
 
     private String description;
 
+    @Max(value = 100, message = "Pet cannot be older than 100 years!")
     private int age;
 
     private boolean adopted;

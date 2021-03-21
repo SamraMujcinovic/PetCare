@@ -2,11 +2,14 @@ package ba.unsa.etf.nwt.pet_category_service.models;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 @Entity
 @Data
@@ -20,7 +23,10 @@ public class Category {
     @JsonIgnore
     private Long id;
 
+    @NotBlank(message = "Category must have a name!")
+    @Size(max = 50, message = "Name must have less then 50 caracters!")
     private String name;
+
 
     private String description;
 

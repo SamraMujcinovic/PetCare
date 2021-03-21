@@ -14,6 +14,10 @@ public class AnswerService {
         this.answerRepository = answerRepository;
     }
 
+    public List<Answer> findAll() {
+        return answerRepository.findAll();
+    }
+
     public List<Answer> find(Long questionId) {
         return answerRepository.findByQuestionId(questionId);
     }
