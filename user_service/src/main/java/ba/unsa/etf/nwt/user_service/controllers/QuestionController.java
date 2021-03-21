@@ -24,12 +24,14 @@ public class QuestionController {
     }
 
     @PostMapping("/questions")
-    public ResponseEntity<?> createQuestion(@RequestBody Question question) {
-        if(question.getTitle().equals("") && question.getDescription().equals("")) return new ResponseEntity(new ResponseMessage(false, "Title and description can't be blank!!", "BAD_REQUEST"), HttpStatus.BAD_REQUEST);
-        if(question.getTitle().length() < 2 || question.getTitle().length() > 150) return new ResponseEntity(new ResponseMessage(false, "Title must be between 2 and 150 characters!!", "BAD_REQUEST"), HttpStatus.BAD_REQUEST);
-        //if(question.getTitle().equals("")) return new ResponseEntity(new ApiResponse(false, "Title can't be blank!!", "BAD_REQUEST"), HttpStatus.BAD_REQUEST);
-        if(question.getDescription().equals("")) return new ResponseEntity(new ResponseMessage(false, "Description can't be blank!!", "BAD_REQUEST"), HttpStatus.BAD_REQUEST);
+    public ResponseMessage createQuestion(@RequestBody Question question) {
+        if(question.getTitle().equals("") && question.getDescription().equals("")) return new ResponseMessage(false, "Title and description can't be blank!!", "BAD_REQUEST");
+
+        if(question.getTitle().length() < 2 || question.getTitle().length() > 150) return new ResponseMessage(false, "Title must be between 2 and 150 characters!!", "BAD_REQUEST");
+
+        if(question.getDescription().equals("")) return new ResponseMessage(false, "Description can't be blank!!", "BAD_REQUEST");
+
         questionService.save(question);
-        return new ResponseEntity(new ResponseMessage(true, "Question added successfully!!", "OK"), HttpStatus.OK);
+        return new ResponseMessage(true, "Question added successfully!!", "OK");
     }
 }

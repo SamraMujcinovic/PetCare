@@ -15,7 +15,7 @@ public class Question {
     @Size(min = 2, max = 150)
     private String title;
 
-    @Lob
+    @Column(columnDefinition = "text")
     private String description;
 
     public Long getId() {

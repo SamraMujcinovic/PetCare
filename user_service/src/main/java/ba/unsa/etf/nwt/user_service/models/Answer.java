@@ -1,6 +1,7 @@
 package ba.unsa.etf.nwt.user_service.models;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "answers")
@@ -9,7 +10,8 @@ public class Answer {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Lob
+    @Column(columnDefinition = "text")
+    @Size(min = 1, max = 200)
     private String text;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
