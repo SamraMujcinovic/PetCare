@@ -21,7 +21,8 @@ public class Reply {
     private Long id;
 
     @NotNull(message = "Comment cannot be null")
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "comment_id")
     private Comment comment;
 
     @NotNull(message = "User id cannot be null")

@@ -27,13 +27,13 @@ public class Comment {
     private Long userID;
 
     @NotNull(message = "Title cannot be null")
-    @Size(min = 2, max = 50, message
-            = "Title must be between 2 and 50 characters")
+    @Size(min = 2, max = 100, message
+            = "Title must be between 2 and 100 characters")
     private String title;
 
     @NotNull(message = "Content cannot be null")
-    @Size(min = 5, max = 50, message
-            = "Content must be between 5 and 50 characters")
+    @Size(min = 2, max = 100, message
+            = "Content must be between 2 and 100 characters")
     private String content;
 
     @NotNull(message = "Content cannot be null")

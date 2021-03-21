@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
@@ -22,4 +24,15 @@ public class CommentService {
         return commentRepository.save(comment);
     }
 
+    public List<Comment> getUserComments(Long userID) {
+        return commentRepository
+                .findAll()
+                .stream()
+                .filter(c -> c.getUserID().equals(userID))
+                .collect(Collectors.toList());
+    }
+
+    public Optional<Comment> findById(Long commentID) {
+        return commentRepository.findById(commentID);
+    }
 }

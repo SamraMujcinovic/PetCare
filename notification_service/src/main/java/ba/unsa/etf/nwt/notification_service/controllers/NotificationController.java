@@ -34,7 +34,7 @@ public class NotificationController {
 
         notificationService.addNotification(notification);
 
-        return new ResponseMessage(true, "Question added successfully!!", "OK");
+        return new ResponseMessage(true, "Notification added successfully!!", "OK");
     }
 
     @GetMapping("/notifications/user/{userID}")
