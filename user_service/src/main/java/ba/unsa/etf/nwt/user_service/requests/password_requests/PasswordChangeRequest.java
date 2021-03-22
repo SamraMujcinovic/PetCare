@@ -1,9 +1,18 @@
 package ba.unsa.etf.nwt.user_service.requests.password_requests;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 public class PasswordChangeRequest {
+    @NotBlank
+    @Size(max = 100)
+    @Email(message = "Email should be valid")
+    private String email;
+
+    @NotBlank
+    private String answer;
+
     @NotBlank
     @Size(min = 6, max = 40)
     private String oldPassword;
@@ -12,12 +21,26 @@ public class PasswordChangeRequest {
     @Size(min = 6, max = 40)
     private String newPassword;
 
-    @NotBlank
-    private String answer;
-
-    public PasswordChangeRequest(@NotBlank String oldPassword, @NotBlank String newPassword, @NotBlank String answer) {
+    public PasswordChangeRequest(@NotBlank @Size(max = 100) @Email(message = "Email should be valid") String email, @NotBlank String answer, @NotBlank @Size(min = 6, max = 40) String oldPassword, @NotBlank @Size(min = 6, max = 40) String newPassword) {
+        this.email = email;
+        this.answer = answer;
         this.oldPassword = oldPassword;
         this.newPassword = newPassword;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getAnswer() {
+        return answer;
+    }
+
+    public void setAnswer(String answer) {
         this.answer = answer;
     }
 
@@ -35,13 +58,5 @@ public class PasswordChangeRequest {
 
     public void setNewPassword(String newPassword) {
         this.newPassword = newPassword;
-    }
-
-    public String getAnswer() {
-        return answer;
-    }
-
-    public void setAnswer(String answer) {
-        this.answer = answer;
     }
 }

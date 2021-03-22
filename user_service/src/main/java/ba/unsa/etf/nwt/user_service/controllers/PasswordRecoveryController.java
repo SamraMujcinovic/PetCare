@@ -39,7 +39,7 @@ public class PasswordRecoveryController {
                     "OK", user.getAnswer().getQuestion());
         }
         catch (RuntimeException e){
-            return new QuestionResponse(false, e.getMessage(), "ERROR", new Question());
+            return new QuestionResponse(false, e.getMessage(), "NOT_FOUND", new Question());
         }
     }
 
@@ -68,10 +68,10 @@ public class PasswordRecoveryController {
                         "OK");
             }
 
-            return new ResponseMessage(false, "Wrong answer!!", "ERROR");
+            return new ResponseMessage(false, "Wrong answer!!", "NOT_FOUND");
         }
         catch (RuntimeException e){
-            return new ResponseMessage(false, e.getMessage(), "ERROR");
+            return new ResponseMessage(false, e.getMessage(), "NOT_FOUND");
         }
     }
 
@@ -109,10 +109,10 @@ public class PasswordRecoveryController {
                         "OK");
             }
 
-            return new ResponseMessage(false, "Wrong answer!!", "ERROR");
+            return new ResponseMessage(false, "Wrong answer!!", "NOT_FOUND");
         }
         catch (RuntimeException e){
-            return new ResponseMessage(false, e.getMessage(), "ERROR");
+            return new ResponseMessage(false, e.getMessage(), "NOT_FOUND");
         }
     }
 }

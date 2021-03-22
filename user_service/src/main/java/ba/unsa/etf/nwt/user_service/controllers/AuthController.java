@@ -124,7 +124,7 @@ public class AuthController {
                 return new ResponseMessage(true, "Login successfull", "OK");
             }
 
-            return new ResponseMessage(false, "Login not successfull, wrong password", "NOT OK");
+            return new ResponseMessage(false, "Login not successfull, wrong password", "NOT_FOUND");
         }
         catch (RuntimeException e){
             try {
@@ -135,10 +135,10 @@ public class AuthController {
                     return new ResponseMessage(true, "Login successfull", "OK");
                 }
 
-                return new ResponseMessage(false, "Login not successfull, wrong password", "NOT OK");
+                return new ResponseMessage(false, "Login not successfull, wrong password", "NOT_FOUND");
             }
             catch (RuntimeException e2){
-                return new ResponseMessage(false, "Login not successfull, " + e2.getMessage() , "NOT OK");
+                return new ResponseMessage(false, "Login not successfull, " + e2.getMessage() , "NOT_FOUND");
             }
         }
     }
