@@ -41,15 +41,6 @@ public class NotificationService {
                 .collect(Collectors.toList());
     }
 
-    public Notification getOneUserNotification(Long notificationID, Long userID){
-        return notificationRepository
-                .findAll()
-                .stream()
-                .filter(n -> n.getUserID().equals(userID) && n.getId().equals(notificationID))
-                .collect(Collectors.toList()).get(0);
-
-    }
-
     public List<Notification> getUnreadUserNotification(Long userID) {
         return notificationRepository
                 .findAll()

@@ -24,27 +24,24 @@ public class NotificationController {
 
     @PostMapping("/notifications")
     public ResponseMessage addNotifications(@RequestBody Notification notification) {
-        if(notification.getContent().equals("") && notification.getUserID().equals(null)) return new ResponseMessage(false, "Content and user ID can't be blank!!", "BAD_REQUEST");
+        if(notification.getContent().isEmpty() ) return new ResponseMessage(false, "Content can't be blank!!", "BAD_REQUEST");
 
         if(notification.getContent().length() < 2 || notification.getContent().length() > 150) return new ResponseMessage(false, "Content must be between 2 and 150 characters!!", "BAD_REQUEST");
 
-        if(notification.getContent().equals("")) return new ResponseMessage(false, "Content can't be blank!!", "BAD_REQUEST");
+        try {
+            notificationService.addNotification(notification);
+            return new ResponseMessage(true, "Notification added successfully!!", "OK");
 
-        if(notification.getUserID().equals(null)) return new ResponseMessage(false, "User ID can't be blank!!", "BAD_REQUEST");
+        }
+        catch (RuntimeException e){
+            return new ResponseMessage(false, "Notification isn't added!!", "NOT_FOUND");
+        }
 
-        notificationService.addNotification(notification);
-
-        return new ResponseMessage(true, "Notification added successfully!!", "OK");
     }
 
     @GetMapping("/notifications/user/{userID}")
     public List<Notification> getAllUserNotifications(@PathVariable Long userID){
         return notificationService.getUserNotification(userID);
-    }
-
-    @GetMapping("/notifications/user/{userID}/notification/{notificationID}")
-    public Notification getOneNotificationForUser(@PathVariable Long notificationID, @PathVariable Long userID){
-        return notificationService.getOneUserNotification(notificationID, userID);
     }
 
     @GetMapping("/notifications/notification/{notificationID}")

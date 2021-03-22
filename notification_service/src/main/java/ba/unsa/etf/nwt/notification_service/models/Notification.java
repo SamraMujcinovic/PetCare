@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import org.springframework.data.annotation.CreatedDate;
@@ -23,6 +25,7 @@ public class Notification {
     @JsonIgnore
     private Long id;
 
+    @NotBlank
     @NotNull(message = "Content cannot be null")
     @Size(min = 2, max = 150, message
             = "Content must be between 2 and 150 characters")
@@ -31,7 +34,7 @@ public class Notification {
     @NotNull(message = "UserID cannot be null")
     private Long userID;
 
-    private Boolean read;
+    private Boolean read = false;
 
     @Temporal(TemporalType.TIMESTAMP)
     @JsonFormat(timezone="Europe/Sarajevo")
