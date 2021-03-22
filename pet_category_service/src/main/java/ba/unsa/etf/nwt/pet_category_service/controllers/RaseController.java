@@ -30,8 +30,10 @@ public class RaseController {
     public ResponseEntity<?> addRase( @RequestBody RaseRequest raseRequest){
         if(raseRequest.getName().equals("")) return new ResponseEntity(new Response(false, "Rase name can't be blank!", "BAD_REQUEST"), HttpStatus.BAD_REQUEST);
         if(raseRequest.getName().length()<2 || raseRequest.getName().length()>50) return new ResponseEntity(new Response(false, "Rase name must be between 2 and 50 characters!", "BAD_REQUEST"), HttpStatus.BAD_REQUEST);
-        raseService.addRase(raseRequest);
-        return new ResponseEntity(new Response(true, "Rase added successfully!", "OK"), HttpStatus.OK);
+
+        Response response = raseService.addRase(raseRequest);
+        if(response.getSuccess()) return new ResponseEntity(new Response(true, "Rase added successfully!", "OK"), HttpStatus.OK);
+        return new ResponseEntity(new Response(response), HttpStatus.NOT_FOUND);
     }
 
 

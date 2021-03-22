@@ -14,6 +14,12 @@ public class Response {
         this.status = status;
     }
 
+    public Response(Response r){
+        this.success = r.success;
+        this.message = r.message;
+        this.status = r.status;
+    }
+
     public Boolean getSuccess() {
         return success;
     }

@@ -4,21 +4,30 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.*;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class PetRequest {
 
+
+    @NotEmpty(message = "Pet must have a name!")
+    @Size(min = 2, max = 50)
     private String name;
 
+    @NotBlank(message = "You have to add a pets location!")
     private String location;
 
     //da li je image string?
+    @NotBlank(message = "Please add an image of pet!")
     private String image;
 
     private String description;
 
-    private int age;
+    @NotNull(message = "Add age for pet!")
+    @Max(value = 100, message = "Pet cannot be older than 100 years!")
+    private Integer age;
 
     private boolean adopted;
 
@@ -28,7 +37,7 @@ public class PetRequest {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(@NotNull String name) {
         this.name = name;
     }
 
@@ -56,11 +65,11 @@ public class PetRequest {
         this.description = description;
     }
 
-    public int getAge() {
+    public Integer getAge() {
         return age;
     }
 
-    public void setAge(int age) {
+    public void setAge(@NotNull Integer age) {
         this.age = age;
     }
 

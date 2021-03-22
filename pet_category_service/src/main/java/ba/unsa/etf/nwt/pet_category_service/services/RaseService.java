@@ -6,6 +6,7 @@ import ba.unsa.etf.nwt.pet_category_service.models.Rase;
 import ba.unsa.etf.nwt.pet_category_service.repository.CategoryRepository;
 import ba.unsa.etf.nwt.pet_category_service.repository.RaseRepository;
 import ba.unsa.etf.nwt.pet_category_service.requests.RaseRequest;
+import ba.unsa.etf.nwt.pet_category_service.responses.Response;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,13 +24,20 @@ public class RaseService {
         return raseRepository.findAll();
     }
 
-    public Rase addRase(RaseRequest raseRequest) {
+    public Response addRase(RaseRequest raseRequest) {
         Rase rase = new Rase();
         rase.setName(raseRequest.getName());
         rase.setDescription(raseRequest.getDescription());
-        Category category = getCategoryById(raseRequest.getCategory_id());
-        rase.setCategory(category);
-        return raseRepository.save(rase);
+        try{
+            Category category = getCategoryById(raseRequest.getCategory_id());
+            rase.setCategory(category);
+            raseRepository.save(rase);
+        }catch (ResourceNotFoundException e){
+            return new Response(false, "There is no category with that ID!!", "NOT_FOUND");
+        }
+
+        return new Response(true, "Category successfully added!!", "OK");
+
     }
 
     public Rase saveRase(Rase rase){

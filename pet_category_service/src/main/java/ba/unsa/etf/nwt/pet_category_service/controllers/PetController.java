@@ -31,9 +31,9 @@ public class PetController {
         if(petRequest.getImage().equals("")) return new ResponseEntity(new Response(false, "Add an image of a pet!", "BAD_REQUEST"), HttpStatus.BAD_REQUEST);
         if(petRequest.getAge() > 100) return new ResponseEntity(new Response(false, "Pet can't be older than 100 years!", "BAD_REQUEST"), HttpStatus.BAD_REQUEST);
 
-        petService.addPet(petRequest);
-        return new ResponseEntity(new Response(true, "Pet added successfully!", "OK"), HttpStatus.OK);
-
+        Response response = petService.addPet(petRequest);
+        if(response.getSuccess()) return new ResponseEntity(new Response(response), HttpStatus.OK);
+        return new ResponseEntity(new Response(response), HttpStatus.NOT_FOUND);
     }
 
 

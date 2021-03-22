@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 @Data
@@ -15,6 +16,7 @@ public class RaseRequest {
     private String name;
     private String description;
 
+    @NotNull
     private Long category_id;
 
     public String getName() {

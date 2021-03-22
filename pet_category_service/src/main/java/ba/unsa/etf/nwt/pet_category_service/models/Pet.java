@@ -1,16 +1,12 @@
 package ba.unsa.etf.nwt.pet_category_service.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
 @Entity
 @Data
@@ -36,8 +32,9 @@ public class Pet {
 
     private String description;
 
+    @NotNull(message = "Add age for pet!")
     @Max(value = 100, message = "Pet cannot be older than 100 years!")
-    private int age;
+    private Integer age;
 
     private boolean adopted;
 
@@ -85,11 +82,11 @@ public class Pet {
         this.description = descrtiption;
     }
 
-    public int getAge() {
+    public Integer getAge() {
         return age;
     }
 
-    public void setAge(int age) {
+    public void setAge(@NotNull Integer age) {
         this.age = age;
     }
 

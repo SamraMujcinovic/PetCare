@@ -7,6 +7,7 @@ import ba.unsa.etf.nwt.pet_category_service.models.Rase;
 import ba.unsa.etf.nwt.pet_category_service.repository.PetRepository;
 import ba.unsa.etf.nwt.pet_category_service.repository.RaseRepository;
 import ba.unsa.etf.nwt.pet_category_service.requests.PetRequest;
+import ba.unsa.etf.nwt.pet_category_service.responses.Response;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +25,7 @@ public class PetService {
         return petRepository.findAll();
     }
 
-    public Pet addPet(PetRequest petRequest) {
+    public Response addPet(PetRequest petRequest) {
         Pet pet = new Pet();
         pet.setName(petRequest.getName());
         pet.setLocation(petRequest.getLocation());
@@ -32,9 +33,15 @@ public class PetService {
         pet.setAge(petRequest.getAge());
         pet.setAdopted(petRequest.isAdopted());
         pet.setDescription(petRequest.getDescription());
-        Rase r = getRaseById(petRequest.getRase_id());
-        pet.setRase(r);
-        return petRepository.save(pet);
+        try{
+            Rase r = getRaseById(petRequest.getRase_id());
+            pet.setRase(r);
+            petRepository.save(pet);
+        }
+        catch (ResourceNotFoundException e){
+            return new Response(false, "There is no rase with that ID!!", "NOT_FOUND");
+        }
+        return new Response(true, "Pet successfully added!!", "OK");
     }
 
     public void savePet(Pet p) {
