@@ -78,11 +78,6 @@ public class UserController {
                     "BAD_REQUEST");
         }
 
-        if(userService.existsByUsername(userProfileRequest.getUsername())) {
-            return new ResponseMessage(false, "This username is already taken!!",
-                    "BAD_REQUEST");
-        }
-
         try {
             User user = userService.findByEmail(userProfileRequest.getEmail())
                     .orElseThrow(() -> new RuntimeException("User not found"));
