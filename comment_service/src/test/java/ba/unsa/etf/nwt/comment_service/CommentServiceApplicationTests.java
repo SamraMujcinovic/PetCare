@@ -7,7 +7,7 @@ import ba.unsa.etf.nwt.comment_service.models.sectionRoles.SectionRoleName;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -19,7 +19,7 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SpringBootTest
+@ActiveProfiles("test")
 class CommentServiceApplicationTests {
 
     private static ValidatorFactory validatorFactory;
@@ -71,13 +71,11 @@ class CommentServiceApplicationTests {
     public void TitleShort() {
         Comment comment = new Comment();
         MainRole r2 = new MainRole(SectionRoleName.ROLE_CATEGORY);
-        Set<MainRole> role2 = new HashSet<>();
-        role2.add(r2);
 
         comment.setUserID(1L);
         comment.setTitle("Q");
         comment.setContent( "Favorite animal?");
-        comment.setRoles(role2);
+        comment.setRoles(r2);
 
         Set<ConstraintViolation<Comment>> violations = validator.validate(comment);
         assertFalse(violations.isEmpty());
@@ -87,26 +85,11 @@ class CommentServiceApplicationTests {
     public void ContentShort() {
         Comment comment = new Comment();
         MainRole r2 = new MainRole(SectionRoleName.ROLE_CATEGORY);
-        Set<MainRole> role2 = new HashSet<>();
-        role2.add(r2);
 
         comment.setUserID(1L);
         comment.setTitle("Question 13");
-        comment.setContent( "Fav");
-        comment.setRoles(role2);
-
-        Set<ConstraintViolation<Comment>> violations = validator.validate(comment);
-        assertFalse(violations.isEmpty());
-    }
-
-    @Test
-    public void CommentWithNoRole() {
-        Comment comment = new Comment();
-        MainRole r2 = new MainRole(SectionRoleName.ROLE_CATEGORY);
-
-        comment.setUserID(1L);
-        comment.setTitle("Question 13");
-        comment.setContent( "Fav");
+        comment.setContent( "O");
+        comment.setRoles(r2);
 
         Set<ConstraintViolation<Comment>> violations = validator.validate(comment);
         assertFalse(violations.isEmpty());
@@ -116,13 +99,11 @@ class CommentServiceApplicationTests {
     public void CorrectComment() {
         Comment comment = new Comment();
         MainRole r2 = new MainRole(SectionRoleName.ROLE_CATEGORY);
-        Set<MainRole> role2 = new HashSet<>();
-        role2.add(r2);
 
         comment.setUserID(1L);
         comment.setTitle("Question 13");
         comment.setContent( "Favorite animal?");
-        comment.setRoles(role2);
+        comment.setRoles(r2);
 
         Set<ConstraintViolation<Comment>> violations = validator.validate(comment);
         assertTrue(violations.isEmpty());
@@ -155,14 +136,12 @@ class CommentServiceApplicationTests {
     public void ShortContent() {
         Comment comment = new Comment();
         MainRole r2 = new MainRole(SectionRoleName.ROLE_CATEGORY);
-        Set<MainRole> role2 = new HashSet<>();
-        role2.add(r2);
 
         comment.setUserID(1L);
         comment.setTitle("Question 13");
         comment.setContent( "Favorite animal?");
-        comment.setRoles(role2);
-        Reply reply = new Reply(comment, Long.valueOf(1), "No");
+        comment.setRoles(r2);
+        Reply reply = new Reply(comment, Long.valueOf(1), "C");
 
         Set<ConstraintViolation<Reply>> violations = validator.validate(reply);
         assertFalse(violations.isEmpty());
@@ -172,13 +151,11 @@ class CommentServiceApplicationTests {
     public void CorrectReply() {
         Comment comment = new Comment();
         MainRole r2 = new MainRole(SectionRoleName.ROLE_CATEGORY);
-        Set<MainRole> role2 = new HashSet<>();
-        role2.add(r2);
 
         comment.setUserID(1L);
         comment.setTitle("Question 13");
         comment.setContent( "Favorite animal?");
-        comment.setRoles(role2);
+        comment.setRoles(r2);
         Reply reply = new Reply(comment, Long.valueOf(1), "Amazing");
 
         Set<ConstraintViolation<Reply>> violations = validator.validate(reply);

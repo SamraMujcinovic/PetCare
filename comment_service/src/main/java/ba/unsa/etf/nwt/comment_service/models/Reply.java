@@ -21,16 +21,16 @@ public class Reply {
     private Long id;
 
     @NotNull(message = "Comment cannot be null")
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "comment_id")
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "comment_id", nullable = false)
     private Comment comment;
 
     @NotNull(message = "User id cannot be null")
     private Long userID;
 
     @NotNull(message = "Content cannot be null")
-    @Size(min = 5, max = 50, message
-            = "Content must be between 5 and 50 characters")
+    @Size(min = 2, max = 1000, message
+            = "Content must be between 2 and 1000 characters")
     private String content;
 
     public Reply(Comment comment, Long userID, String content) {

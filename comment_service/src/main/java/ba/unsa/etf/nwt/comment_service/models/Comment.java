@@ -28,20 +28,25 @@ public class Comment {
 
     @NotNull(message = "Title cannot be null")
     @Size(min = 2, max = 100, message
-            = "Title must be between 2 and 100 characters")
+            = "Title must be between 2 and 1000 characters")
     private String title;
 
     @NotNull(message = "Content cannot be null")
     @Size(min = 2, max = 100, message
-            = "Content must be between 2 and 100 characters")
+            = "Content must be between 2 and 1000 characters")
     private String content;
 
-    @NotNull(message = "Content cannot be null")
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "section_roles",
-            joinColumns = @JoinColumn(name = "comment_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<MainRole> roles = new HashSet<>();
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "main_role_id", nullable = false)
+    private MainRole mainRole;
+
+    public Comment(Comment comment) {
+        this.mainRole = comment.mainRole;
+        this.content = comment.content;
+        this.userID = comment.userID;
+        this.id = comment.id;
+        this.title = comment.title;
+    }
 
     public Long getId() {
         return id;
@@ -75,11 +80,11 @@ public class Comment {
         this.content = content;
     }
 
-    public Set<MainRole> getRoles() {
-        return roles;
+    public MainRole getRoles() {
+        return mainRole;
     }
 
-    public void setRoles(Set<MainRole> roles) {
-        this.roles = roles;
+    public void setRoles(MainRole role) {
+        this.mainRole = role;
     }
 }

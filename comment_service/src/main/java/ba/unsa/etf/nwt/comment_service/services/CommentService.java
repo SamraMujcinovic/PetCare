@@ -32,7 +32,11 @@ public class CommentService {
                 .collect(Collectors.toList());
     }
 
-    public Optional<Comment> findById(Long commentID) {
-        return commentRepository.findById(commentID);
+    public Comment getOneComment(Long commentID) {
+        return commentRepository
+                .findAll()
+                .stream()
+                .filter(c -> c.getId().equals(commentID))
+                .collect(Collectors.toList()).get(0);
     }
 }

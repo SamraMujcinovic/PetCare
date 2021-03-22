@@ -35,17 +35,20 @@ public class DatabaseSeeder {
     private void seedDatabase() {
         MainRole r1 = createRole(SectionRoleName.ROLE_CATEGORY);
         MainRole r2 = createRole(SectionRoleName.ROLE_PET);
-        Set<MainRole> role1 = new HashSet<>();
-        role1.add(r1);
-        Set<MainRole> role2 = new HashSet<>();
-        role2.add(r2);
 
-        Comment c1 = createComment( Long.valueOf(1), "Question", "What kind of dog do you want?", role2);
+        Comment c1 = createComment( Long.valueOf(1), "Question", "What kind of dog do you want?", r2);
         Reply rp1 = createReply(Long.valueOf(2), c1, "Sweet and relaxed, friendly towards everyone.");
-        Reply rp2 = createReply(Long.valueOf(1), c1, "This cute, sweet and slightly shy little girl might just be the right dog for you!");
+        Reply rp2 = createReply(Long.valueOf(3), c1, "Amazing!");
+
     }
 
-    private Comment createComment(Long UserID, String title, String content, Set<MainRole> role) {
+    private MainRole createRole(SectionRoleName sectionRoleName) {
+        MainRole r = new MainRole(sectionRoleName);
+        mainRoleService.addRole(r);
+        return r;
+    }
+
+    private Comment createComment(Long UserID, String title, String content, MainRole role) {
         Comment comment = new Comment();
         comment.setUserID(UserID);
         comment.setTitle(title);
@@ -62,12 +65,6 @@ public class DatabaseSeeder {
         reply.setContent(content);
         replyService.addReply(reply);
         return reply;
-    }
-
-    private MainRole createRole(SectionRoleName sectionRoleName) {
-        MainRole r = new MainRole(sectionRoleName);
-        mainRoleService.addRole(r);
-        return r;
     }
 
 }

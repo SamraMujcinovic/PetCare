@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @AllArgsConstructor
-@Table(name = "main_roles")
+@Table(name = "main_role")
 public class MainRole {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
