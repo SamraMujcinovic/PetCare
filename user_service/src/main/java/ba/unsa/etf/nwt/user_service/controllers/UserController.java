@@ -17,12 +17,13 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    //admin
     @GetMapping("/users")
     public List<User> getUsers() {
         return userService.findAll();
     }
 
-    //autenfikacija, admin user
+    //admin
     @GetMapping("/users/{username}")
     public UserProfileResponse getUserProfile(@PathVariable(value = "username") String username) {
         try {
@@ -45,4 +46,13 @@ public class UserController {
     public AvailabilityResponse checkEmailAvailability(@RequestParam(value = "email") String email) {
         return new AvailabilityResponse(!userService.existsByEmail(email));
     }
+
+    //user!!
+    @GetMapping("/user/me")
+    public void getCurrentUser(){
+
+    }
+    /*public UserProfileResponse getCurrentUser(@CurrentUser UserPrincipal currentUser) {
+       return new UserProfileResponse(currentUser.getName(), currentUser.getSurname(), currentUser.getUsername(), currentUser.getEmail());
+    }*/
 }

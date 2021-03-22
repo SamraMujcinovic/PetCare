@@ -14,9 +14,7 @@ import ba.unsa.etf.nwt.user_service.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.Collections;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/auth/")
@@ -38,41 +36,30 @@ public class AuthController {
     @PostMapping("/register/{questionId}")
     public ResponseMessage registration(@PathVariable Long questionId, @RequestBody RegistrationRequest registrationRequest) {
 
-        if(registrationRequest.getName().isEmpty()){
-            return new ResponseMessage(false, "Name can't be blank!!",
+        if(registrationRequest.getName().length() < 2 || registrationRequest.getName().length() > 50){
+            return new ResponseMessage(false,
+                    "Name not valid (at least 2 characters)!!",
                     "BAD_REQUEST");
         }
 
-        if(registrationRequest.getSurname().isEmpty()){
-            return new ResponseMessage(false, "Surname can't be blank!!",
+        if(registrationRequest.getSurname().length() < 2 || registrationRequest.getSurname().length() > 50){
+            return new ResponseMessage(false, "Surname not valid (at least 2 characters)!!",
                     "BAD_REQUEST");
         }
 
-        if(registrationRequest.getUsername().isEmpty()){
-            return new ResponseMessage(false, "Username can't be blank!!",
-                    "BAD_REQUEST");
-        }
-
-        if(registrationRequest.getPassword().isEmpty()){
-            return new ResponseMessage(false, "Password can't be blank!!",
-                    "BAD_REQUEST");
-        }
-
-        if(registrationRequest.getEmail().isEmpty()){
-            return new ResponseMessage(false, "Email can't be blank!!",
-                    "BAD_REQUEST");
-        }
-
-        /*if(registrationRequest.getName().isEmpty() || registrationRequest.getSurname().isEmpty() ||
-                registrationRequest.getUsername().isEmpty() || registrationRequest.getPassword().isEmpty() ||
-                registrationRequest.getEmail().isEmpty()){
-            return new ResponseMessage(false, "Please fill in all fields!!",
-                    "BAD_REQUEST");
-        }*/
-
-        if(!registrationRequest.getEmail().contains("@")) {
+        if(registrationRequest.getEmail().isEmpty() || !registrationRequest.getEmail().contains("@") || registrationRequest.getEmail().length() > 100){
             return new ResponseMessage(false, "Email is not valid!!",
-                "BAD_REQUEST");
+                    "BAD_REQUEST");
+        }
+
+        if(registrationRequest.getUsername().length() < 4 || registrationRequest.getUsername().length() > 40){
+            return new ResponseMessage(false, "Username not valid (at least 4 characters)!!",
+                    "BAD_REQUEST");
+        }
+
+        if(registrationRequest.getPassword().length() < 6 || registrationRequest.getPassword().length() > 40){
+            return new ResponseMessage(false, "Password not valid (at least 6 characters)!!",
+                    "BAD_REQUEST");
         }
 
         if(userService.existsByUsername(registrationRequest.getUsername())) {
@@ -119,20 +106,15 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseMessage login(@RequestBody LoginRequest loginRequest) {
 
-        if(loginRequest.getUsernameOrEmail().isEmpty()){
-            return new ResponseMessage(false, "Username/email can't be blank!!",
+        if(loginRequest.getUsernameOrEmail().isEmpty() || loginRequest.getUsernameOrEmail().length() > 100){
+            return new ResponseMessage(false, "Username/email not valid!!",
                     "BAD_REQUEST");
         }
 
-        if(loginRequest.getPassword().isEmpty()){
-            return new ResponseMessage(false, "Password can't be blank!!",
+        if(loginRequest.getPassword().length() < 6 || loginRequest.getPassword().length() > 40){
+            return new ResponseMessage(false, "Password not valid (at least 6 characters)!!",
                     "BAD_REQUEST");
         }
-
-        /*if(loginRequest.getUsernameOrEmail().isEmpty() || loginRequest.getPassword().isEmpty()){
-            return new ResponseMessage(false, "Please fill in all fields!!",
-                    "BAD_REQUEST");
-        }*/
 
         try {
             User user = userService.findByUsername(loginRequest.getUsernameOrEmail())

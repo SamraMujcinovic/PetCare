@@ -21,6 +21,7 @@ public class QuestionController {
         return questionService.findAll();
     }
 
+    //admin
     @PostMapping("/questions")
     public ResponseMessage createQuestion(@RequestBody Question question) {
         if(question.getTitle().isEmpty() && question.getDescription().isEmpty()) return new ResponseMessage(false, "Title and description can't be blank!!", "BAD_REQUEST");

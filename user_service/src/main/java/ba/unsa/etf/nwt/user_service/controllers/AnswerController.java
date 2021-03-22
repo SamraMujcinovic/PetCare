@@ -5,8 +5,6 @@ import ba.unsa.etf.nwt.user_service.responses.ResponseMessage;
 import ba.unsa.etf.nwt.user_service.services.AnswerService;
 import ba.unsa.etf.nwt.user_service.services.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,22 +22,25 @@ public class AnswerController {
         this.questionService = questionService;
     }
 
+    //admin
     @GetMapping("/answers")
     public List<Answer> getAnswers() {
         return answerService.findAll();
     }
 
-    //samo user, autorizacija
+    //user
     @GetMapping("/questions/{questionId}/answers")
     public List<Answer> getAnswersByQuestionId(@PathVariable Long questionId) {
         return answerService.find(questionId);
     }
 
-    //samo user, autorizacija
+    //user
     @PostMapping("/questions/{questionId}/answer")
     public ResponseMessage createAnswer(@PathVariable Long questionId, @RequestBody Answer answer) {
-        if(answer.getText().isEmpty()) return new ResponseMessage(false, "Answer can't be blank!!", "BAD_REQUEST");
-        if(answer.getText().length() > 100) return new ResponseMessage(false, "Answer can't have more than 200 characters!!", "BAD_REQUEST");
+        if(answer.getText().isEmpty() || answer.getText().length() > 100) {
+            return new ResponseMessage(false, "Answer not valid!!",
+                    "BAD_REQUEST");
+        }
 
         try {
             questionService.findById(questionId).map(question -> {
