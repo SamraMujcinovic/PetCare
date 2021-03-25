@@ -24,18 +24,16 @@ public class NotificationController {
 
     @PostMapping("/notifications")
     public ResponseMessage addNotifications(@RequestBody Notification notification) {
-        if(notification.getContent().isEmpty() ) return new ResponseMessage(false, "Content can't be blank!!", "BAD_REQUEST");
 
-        if(notification.getContent().length() < 2 || notification.getContent().length() > 150) return new ResponseMessage(false, "Content must be between 2 and 150 characters!!", "BAD_REQUEST");
+        Integer value = notificationService.addNotification(notification);
 
-        try {
-            notificationService.addNotification(notification);
-            return new ResponseMessage(true, "Notification added successfully!!", "OK");
+        if(value == 1) return new ResponseMessage(false, "Content can't be blank!!", "BAD_REQUEST");
 
-        }
-        catch (RuntimeException e){
-            return new ResponseMessage(false, "Notification isn't added!!", "NOT_FOUND");
-        }
+        if(value == 2) return new ResponseMessage(false, "Content must be between 2 and 150 characters!!", "BAD_REQUEST");
+
+        if(value == 13) return new ResponseMessage(true, "Notification added successfully!!", "OK");
+
+        return new ResponseMessage(false, "Notification isn't added!!", "NOT_FOUND");
 
     }
 
@@ -44,13 +42,21 @@ public class NotificationController {
         return notificationService.getUserNotification(userID);
     }
 
-    @GetMapping("/notifications/notification/{notificationID}")
-    public Optional<Notification> getOneNotification(@PathVariable Long notificationID){
+    @GetMapping("/notifications/{notificationID}")
+    public Notification getOneNotification(@PathVariable Long notificationID){
         return notificationService.findById(notificationID);
     }
 
-    @GetMapping("/notifications/user/unread/{userID}")
+    @GetMapping("/notifications/unread/user/{userID}")
     public List<Notification> getUnreadUserNotification(@PathVariable Long userID){
         return notificationService.getUnreadUserNotification(userID);
+    }
+
+    @DeleteMapping("/notifications/{notificationID}")
+    public ResponseMessage deleteNotification(@PathVariable Long notificationID){
+        if (notificationService.deleteNotification(notificationID))
+            return new ResponseMessage(true, "Notification deleted successfully!!", "OK");
+        return new ResponseMessage(false, "Notification isn't deleted!!", "NOT_FOUND");
+
     }
 }

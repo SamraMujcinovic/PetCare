@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ActiveProfiles("test")
-class NotificationServiceApplicationTests {
+class ValidationNotificationServiceTests {
     private static ValidatorFactory validatorFactory;
     private static Validator validator;
 

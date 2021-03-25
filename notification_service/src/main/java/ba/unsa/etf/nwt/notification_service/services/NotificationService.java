@@ -20,17 +20,29 @@ public class NotificationService {
         return notificationRepository.findAll();
     }
 
-    public Notification addNotification(Notification notification) {
+    public Integer addNotification(Notification notification) {
+        if(notification.getContent().isEmpty()) return 1;
+        if(notification.getContent().length() < 2 || notification.getContent().length() > 150) return 2;
+
         notification.setCreatedAt(new Date());
-        return notificationRepository.save(notification);
+        try {
+            notificationRepository.save(notification);
+            return 13;
+        }
+        catch (Exception e) {
+            return 3;
+        }
     }
 
-    public Optional<Notification> findById(Long notificationId) {
-        return notificationRepository.findById(notificationId);
-    }
-
-    public boolean existsById(Long notificationId) {
-        return notificationRepository.existsById(notificationId);
+    public Notification findById(Long notificationID) {
+        Notification notification = notificationRepository
+                .findAll()
+                .stream()
+                .filter(n -> n.getId().equals(notificationID))
+                .collect(Collectors.toList()).get(0);
+        notification.setRead(true);
+        notificationRepository.save(notification);
+        return notification;
     }
 
     public List<Notification> getUserNotification(Long userID) {
@@ -48,4 +60,21 @@ public class NotificationService {
                 .filter(n -> n.getUserID().equals(userID) && n.getRead().equals(false))
                 .collect(Collectors.toList());
     }
+
+    public Boolean deleteNotification(Long notificationID) {
+        try {
+            Notification notification = notificationRepository
+                    .findAll()
+                    .stream()
+                    .filter(n -> n.getId().equals(notificationID))
+                    .collect(Collectors.toList()).get(0);
+            notificationRepository.delete(notification);
+            if (notificationRepository.findById(notificationID) != null) return true;
+            return false;
+        } catch (Exception e) {
+            return false;
+        }
+
+    }
+
 }
