@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -30,6 +32,7 @@ public class Pet {
     @NotBlank(message = "Please add an image of pet!")
     private String image;
 
+    @Lob
     private String description;
 
     @NotNull(message = "Add age for pet!")
@@ -40,6 +43,7 @@ public class Pet {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "rase_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Rase rase;
 
     public Long getId() {

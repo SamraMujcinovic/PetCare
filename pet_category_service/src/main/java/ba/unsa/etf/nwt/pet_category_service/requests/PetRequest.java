@@ -69,7 +69,7 @@ public class PetRequest {
         return age;
     }
 
-    public void setAge(@NotNull Integer age) {
+    public void setAge( Integer age) {
         this.age = age;
     }
 

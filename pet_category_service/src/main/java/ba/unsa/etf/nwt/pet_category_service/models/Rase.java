@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import javax.validation.Valid;
@@ -25,10 +27,13 @@ public class Rase {
     @Size(min = 2, max = 50)
     private String name;
 
+    @NotBlank(message = "Rase must have a description!")
+    @Lob
     private String description;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Category category;
 
     public Long getId() {

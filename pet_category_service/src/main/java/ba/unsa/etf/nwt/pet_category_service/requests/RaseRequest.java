@@ -14,6 +14,7 @@ import javax.validation.constraints.NotNull;
 public class RaseRequest {
 
     private String name;
+
     private String description;
 
     @NotNull

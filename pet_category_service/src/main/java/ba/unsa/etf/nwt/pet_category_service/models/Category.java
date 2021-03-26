@@ -28,6 +28,8 @@ public class Category {
     private String name;
 
 
+    @NotBlank(message = "Category must have a description!")
+    @Lob
     private String description;
 
     public Long getId() {
