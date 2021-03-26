@@ -2,6 +2,7 @@ package ba.unsa.etf.nwt.notification_service.services;
 
 import ba.unsa.etf.nwt.notification_service.models.Notification;
 import ba.unsa.etf.nwt.notification_service.repository.NotificationRepository;
+import ba.unsa.etf.nwt.notification_service.responses.ResponseMessage;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,17 +21,19 @@ public class NotificationService {
         return notificationRepository.findAll();
     }
 
-    public Integer addNotification(Notification notification) {
-        if(notification.getContent().isEmpty()) return 1;
-        if(notification.getContent().length() < 2 || notification.getContent().length() > 150) return 2;
+    public ResponseMessage addNotification(Notification notification) {
+        if(notification.getContent().isEmpty()) return new ResponseMessage(false, "Content can't be blank!!", "BAD_REQUEST");
+
+        if(notification.getContent().length() < 2 || notification.getContent().length() > 150) return new ResponseMessage(false, "Content must be between 2 and 150 characters!!", "BAD_REQUEST");
 
         notification.setCreatedAt(new Date());
         try {
             notificationRepository.save(notification);
-            return 13;
+
+            return new ResponseMessage(true, "Notification added successfully!!", "OK");
         }
         catch (Exception e) {
-            return 3;
+            return new ResponseMessage(false, "Notification isn't added!!", "NOT_FOUND");
         }
     }
 
@@ -61,7 +64,7 @@ public class NotificationService {
                 .collect(Collectors.toList());
     }
 
-    public Boolean deleteNotification(Long notificationID) {
+    public ResponseMessage deleteNotification(Long notificationID) {
         try {
             Notification notification = notificationRepository
                     .findAll()
@@ -69,10 +72,10 @@ public class NotificationService {
                     .filter(n -> n.getId().equals(notificationID))
                     .collect(Collectors.toList()).get(0);
             notificationRepository.delete(notification);
-            if (notificationRepository.findById(notificationID) != null) return true;
-            return false;
+            if (notificationRepository.findById(notificationID) != null) return new ResponseMessage(true, "Notification deleted successfully!!", "OK");
+            return new ResponseMessage(false, "Notification isn't deleted!!", "NOT_FOUND");
         } catch (Exception e) {
-            return false;
+            return new ResponseMessage(false, "Notification isn't deleted!!", "NOT_FOUND");
         }
 
     }
