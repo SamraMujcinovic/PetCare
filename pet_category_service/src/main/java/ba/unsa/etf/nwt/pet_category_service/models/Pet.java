@@ -32,7 +32,7 @@ public class Pet {
     @NotBlank(message = "Please add an image of pet!")
     private String image;
 
-    @Lob
+    @Column(columnDefinition = "text")
     private String description;
 
     @NotNull(message = "Add age for pet!")

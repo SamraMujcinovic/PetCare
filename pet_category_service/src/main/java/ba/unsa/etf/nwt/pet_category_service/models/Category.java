@@ -29,7 +29,7 @@ public class Category {
 
 
     @NotBlank(message = "Category must have a description!")
-    @Lob
+    @Column(columnDefinition = "text")
     private String description;
 
     public Long getId() {

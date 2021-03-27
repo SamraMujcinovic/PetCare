@@ -24,9 +24,19 @@ public class RaseController {
         return raseService.getRases();
     }
 
+    @GetMapping("/rases/inCategory")
+    public List<Rase> getRasesInCategory(@RequestParam Long id){
+        return raseService.getRasesInCategory(id);
+    }
+
     @GetMapping("/rase")
     public RaseResponse getRase(@RequestParam Long id){
         return raseService.getRase(id);
+    }
+
+    @GetMapping("/rase/byName")
+    public RaseResponse getRaseByName(String name){
+        return raseService.getRaseByName(name);
     }
 
     @PostMapping("/rase")

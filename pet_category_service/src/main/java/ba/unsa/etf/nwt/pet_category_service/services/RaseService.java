@@ -6,6 +6,7 @@ import ba.unsa.etf.nwt.pet_category_service.models.Rase;
 import ba.unsa.etf.nwt.pet_category_service.repository.CategoryRepository;
 import ba.unsa.etf.nwt.pet_category_service.repository.RaseRepository;
 import ba.unsa.etf.nwt.pet_category_service.requests.RaseRequest;
+import ba.unsa.etf.nwt.pet_category_service.responses.CategoryResponse;
 import ba.unsa.etf.nwt.pet_category_service.responses.RaseResponse;
 import ba.unsa.etf.nwt.pet_category_service.responses.Response;
 import lombok.AllArgsConstructor;
@@ -31,6 +32,8 @@ public class RaseService {
     public ResponseEntity<Response> addRase(RaseRequest raseRequest) {
         if(raseRequest.getName().equals("")) return new ResponseEntity(new Response(false, "Rase name can't be blank!", "BAD_REQUEST"), HttpStatus.BAD_REQUEST);
         if(raseRequest.getName().length()<2 || raseRequest.getName().length()>50) return new ResponseEntity(new Response(false, "Rase name must be between 2 and 50 characters!", "BAD_REQUEST"), HttpStatus.BAD_REQUEST);
+        Rase r = findRaseByName(raseRequest.getName());
+        if(r != null) return new ResponseEntity(new Response(false, "Rase with that name already exists!", "BAD REQUEST"), HttpStatus.BAD_REQUEST);
 
         Rase rase = new Rase();
         rase.setName(raseRequest.getName());
@@ -40,10 +43,10 @@ public class RaseService {
             rase.setCategory(category);
             raseRepository.save(rase);
         }catch (ResourceNotFoundException e){
-            return new ResponseEntity(new Response(false, "There is no category with that ID!!", "NOT_FOUND"), HttpStatus.NOT_FOUND);
+            return new ResponseEntity(new Response(false, "There is no rase with that ID!!", "NOT_FOUND"), HttpStatus.NOT_FOUND);
         }
 
-        return new ResponseEntity(new Response(true, "Category successfully added!!", "OK"), HttpStatus.OK);
+        return new ResponseEntity(new Response(true, "Rase successfully added!!", "OK"), HttpStatus.OK);
 
     }
 
@@ -79,5 +82,30 @@ public class RaseService {
         }catch (ResourceNotFoundException e){
             return  new Response(false, "Rase with that ID not found!", "NOT FOUND");
         }
+    }
+
+    public Rase findRaseByName(String name) {
+        return raseRepository
+                .findByName(name)
+                .orElseThrow(() -> new ResourceNotFoundException("No rase with name " + name));
+    }
+
+    public RaseResponse getRaseByName(String name) {
+        if(name == null) return new RaseResponse(null, "Add a name for search!", "BAD_REQUEST", false);
+        try {
+            Rase r = findRaseByName(name);
+            return new RaseResponse(r, "Rase found!", "OK", true);
+
+        }catch (ResourceNotFoundException e){
+            return new RaseResponse(null, "Rase with that name not found!", "NOT FOUND", false);
+
+        }
+    }
+
+    public List<Rase> getRasesInCategory(Long id) {
+
+        //trebalo bi provjeriti da li kategorija postoji u bazi
+        //ali mozda i ne treba jer ce korisnik kliknuti na tu kategoriju znaci da ako je ponudjena onda i postoji u bazi
+        return raseRepository.findByCategory_Id(id);
     }
 }

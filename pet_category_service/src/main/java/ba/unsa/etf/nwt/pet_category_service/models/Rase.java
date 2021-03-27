@@ -28,7 +28,7 @@ public class Rase {
     private String name;
 
     @NotBlank(message = "Rase must have a description!")
-    @Lob
+    @Column(columnDefinition = "text")
     private String description;
 
     @ManyToOne(fetch = FetchType.EAGER)

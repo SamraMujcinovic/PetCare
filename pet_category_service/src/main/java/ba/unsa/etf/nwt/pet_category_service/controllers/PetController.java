@@ -29,6 +29,16 @@ public class PetController {
         return petService.getPet(id);
     }
 
+    @GetMapping("/pets/inRase")
+    public List<Pet> getPetsInRase(@RequestParam Long id){
+        return petService.getPetsInRase(id);
+    }
+
+    @GetMapping("/pet/byName")
+    public PetResponse getPetByName(@RequestParam String name){
+        return petService.getPetByName(name);
+    }
+
     @PostMapping("/pet")
     public ResponseEntity<?> addPet( @RequestBody PetRequest petRequest){
         return petService.addPet(petRequest);

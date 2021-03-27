@@ -29,6 +29,10 @@ public class CategoryService {
         if(category.getName().equals("")) return new ResponseEntity(new Response(false, "Category name can't be blank!", "BAD_REQUEST"), HttpStatus.BAD_REQUEST);
         if(category.getName().length()<2 || category.getName().length()>50) return new ResponseEntity(new Response(false, "Category name must be between 2 and 50 characters!", "BAD_REQUEST"), HttpStatus.BAD_REQUEST);
 
+        Category c = findCategoryByName(category.getName());
+        if(c != null){
+            return new ResponseEntity(new Response(false, "Category with that name already exists!", "BAD REQUEST"), HttpStatus.BAD_REQUEST);
+        }
         categoryRepository.save(category);
         return new ResponseEntity(new Response(true, "Category added successfully!", "OK"), HttpStatus.OK);
 
@@ -56,6 +60,7 @@ public class CategoryService {
                 .orElseThrow(() -> new ResourceNotFoundException("No category with ID " + id));
     }
 
+
     public Response deleteCategory(Long id) {
         try {
             Category c = getCategoryById(id);
@@ -64,5 +69,46 @@ public class CategoryService {
         }catch (ResourceNotFoundException e){
             return new Response(false, "Category with that ID not found!", "NOT FOUND");
         }
+    }
+
+    public Category findCategoryByName(String name) {
+        return categoryRepository
+                .findByName(name)
+                .orElseThrow(() -> new ResourceNotFoundException("No category with name " + name));
+    }
+
+    public CategoryResponse getCategoryByName(String name) {
+        if(name == null) return new CategoryResponse(null, "Add a name for search!", "BAD_REQUEST", false);
+        try {
+            Category c = findCategoryByName(name);
+            return new CategoryResponse(c, "Category found!", "OK", true);
+
+        }catch (ResourceNotFoundException e){
+            return new CategoryResponse(null, "Category with that name not found!", "NOT FOUND", false);
+
+        }
+    }
+
+    public CategoryResponse updateCategory(Category category) {
+        if(category.getName().equals("")) return new CategoryResponse(null, "Category name can't be blank!", "BAD_REQUEST", false);
+        if(category.getName().length()<2 || category.getName().length()>50) return new CategoryResponse(null, "Category name must be between 2 and 50 characters!", "BAD_REQUEST", false);
+        Category c = new Category();
+
+        try {
+             c = findCategoryByName(category.getName());
+            if (c != null) {
+                return new CategoryResponse(null, "Category with that name already exists!", "BAD REQUEST", false);
+            }
+        }catch (ResourceNotFoundException e){
+            try{
+                 c = categoryRepository.findById(category.getId()).orElseThrow(() -> new ResourceNotFoundException("No category with id " + category.getId()));;
+                c.setName(category.getName());
+                c.setDescription(category.getDescription());
+            }catch (ResourceNotFoundException ee){
+                return new CategoryResponse(null, "Category with that ID not found!", "NOT FOUND", false);
+            }
+        }
+        return new CategoryResponse(c, "Category successfully updated!", "OK", true);
+
     }
 }

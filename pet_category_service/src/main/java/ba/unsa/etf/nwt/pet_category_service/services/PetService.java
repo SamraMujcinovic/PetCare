@@ -8,6 +8,7 @@ import ba.unsa.etf.nwt.pet_category_service.repository.PetRepository;
 import ba.unsa.etf.nwt.pet_category_service.repository.RaseRepository;
 import ba.unsa.etf.nwt.pet_category_service.requests.PetRequest;
 import ba.unsa.etf.nwt.pet_category_service.responses.PetResponse;
+import ba.unsa.etf.nwt.pet_category_service.responses.RaseResponse;
 import ba.unsa.etf.nwt.pet_category_service.responses.Response;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -91,5 +92,27 @@ public class PetService {
         }catch (ResourceNotFoundException e){
             return new Response(false, "Pet with that ID not found", "NOT FOUND");
         }
+    }
+
+    public Pet findPetByName(String name) {
+        return petRepository
+                .findByName(name)
+                .orElseThrow(() -> new ResourceNotFoundException("No rase with name " + name));
+    }
+
+    public PetResponse getPetByName(String name) {
+        if(name == null) return new PetResponse(null, "Add a name for search!", "BAD_REQUEST", false);
+        try {
+            Pet p = findPetByName(name);
+            return new PetResponse(p, "Pet found!", "OK", true);
+
+        }catch (ResourceNotFoundException e){
+            return new PetResponse(null, "Pet with that name not found!", "NOT FOUND", false);
+
+        }
+    }
+
+    public List<Pet> getPetsInRase(Long id) {
+        return petRepository.findByRase_Id(id);
     }
 }

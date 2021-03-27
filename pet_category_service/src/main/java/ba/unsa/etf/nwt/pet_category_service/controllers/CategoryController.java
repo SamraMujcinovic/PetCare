@@ -32,6 +32,11 @@ public class CategoryController {
         return categoryService.getCategory(id);
     }
 
+    @GetMapping("/category/byName")
+    public CategoryResponse getCategoryByName(@RequestParam String name){
+        return categoryService.getCategoryByName(name);
+    }
+
     @PostMapping("/category")
     public ResponseEntity<?> addCategory( @RequestBody Category category){
 
@@ -41,6 +46,11 @@ public class CategoryController {
     @DeleteMapping("/category")
     public Response deleteCategory(@RequestParam Long id){
         return categoryService.deleteCategory(id);
+    }
+
+    @PutMapping("/category/update")
+    public CategoryResponse updateCategory(@RequestBody Category category){
+        return categoryService.updateCategory(category);
     }
 
 }
