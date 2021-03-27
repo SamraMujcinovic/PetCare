@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Data;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -21,8 +24,9 @@ public class Reply {
     private Long id;
 
     @NotNull(message = "Comment cannot be null")
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @ManyToOne( fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "comment_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Comment comment;
 
     @NotNull(message = "User id cannot be null")

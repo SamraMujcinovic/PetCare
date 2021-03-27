@@ -16,7 +16,6 @@ import java.util.Optional;
 @RestController
 public class CommentController {
     private final CommentService commentService;
-    private final MainRoleService mainRoleService;
 
     @GetMapping("/comment")
     public List<Comment> getComments() {
@@ -25,26 +24,7 @@ public class CommentController {
 
     @PostMapping("/comment/{mainRoleId}")
     public ResponseMessage addComment(@RequestBody Comment comment, @PathVariable Long mainRoleId) {
-
-        if(mainRoleId != 1L && mainRoleId != 2L) return new ResponseMessage(false, "Invalid role ID!!", "BAD_REQUEST");
-
-        if(comment.getTitle().equals("") && comment.getContent().equals("")) return new ResponseMessage(false, "Title and content can't be blank!!", "BAD_REQUEST");
-
-        if(comment.getTitle().length() < 2 || comment.getTitle().length() > 1000) return new ResponseMessage(false, "Title must be between 2 and 1000 characters!!", "BAD_REQUEST");
-
-        if(comment.getContent().length() < 2 || comment.getContent().length() > 1000) return new ResponseMessage(false, "Content must be between 2 and 1000 characters!!", "BAD_REQUEST");
-
-        try {
-            if(mainRoleId == 1L) {
-                comment.setRoles(mainRoleService.getRoleByName(SectionRoleName.ROLE_CATEGORY));
-            }
-            else comment.setRoles(mainRoleService.getRoleByName(SectionRoleName.ROLE_PET));
-            commentService.addComment(comment);
-            return new ResponseMessage(true, "Comment added successfully!!", "OK");
-        }
-        catch (RuntimeException e){
-            return new ResponseMessage(false, "Comment isn't added!!", "NOT_FOUND");
-        }
+            return commentService.addComment(comment, mainRoleId);
     }
 
     @GetMapping("/comment/{commentID}")
@@ -55,6 +35,16 @@ public class CommentController {
     @GetMapping("/comment/user/{userID}")
     public List<Comment> getUserComments(@PathVariable Long userID){
         return commentService.getUserComments(userID);
+    }
+
+    @PutMapping("/comment/{commentID}")
+    public ResponseMessage updateComment(@RequestBody Comment comment, @PathVariable Long commentID) {
+        return commentService.updateComment(comment, commentID);
+    }
+
+    @DeleteMapping("/comment/{commentID}")
+    public ResponseMessage deleteComment(@PathVariable Long commentID){
+        return commentService.deleteComment(commentID);
     }
 }
 

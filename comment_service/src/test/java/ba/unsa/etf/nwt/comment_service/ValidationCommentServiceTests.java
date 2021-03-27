@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ActiveProfiles("test")
-class CommentServiceApplicationTests {
+class ValidationCommentServiceTests {
 
     private static ValidatorFactory validatorFactory;
     private static Validator validator;

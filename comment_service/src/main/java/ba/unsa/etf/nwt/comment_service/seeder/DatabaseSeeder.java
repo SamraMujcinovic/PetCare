@@ -54,7 +54,7 @@ public class DatabaseSeeder {
         comment.setTitle(title);
         comment.setContent(content);
         comment.setRoles(role);
-        commentService.addComment(comment);
+        commentService.addComment(comment, role.getId());
         return comment;
     }
 
@@ -63,7 +63,7 @@ public class DatabaseSeeder {
         reply.setUserID(userID);
         reply.setComment(comment);
         reply.setContent(content);
-        replyService.addReply(reply);
+        replyService.addReply(reply, comment.getId());
         return reply;
     }
 

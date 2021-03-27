@@ -14,7 +14,6 @@ import java.util.List;
 @RestController
 public class ReplyController {
     private final ReplyService replyService;
-    private final CommentService commentService;
 
     @GetMapping("/reply")
     public List<Reply> getReplies() {
@@ -23,23 +22,21 @@ public class ReplyController {
 
     @PostMapping("/reply/{commentId}")
     public ResponseMessage addReply(@RequestBody Reply reply, @PathVariable Long commentId) {
-
-        if(reply.getContent().equals("")) return new ResponseMessage(false, "Content can't be blank!!", "BAD_REQUEST");
-
-        if(reply.getContent().length() < 2 || reply.getContent().length() > 1000) return new ResponseMessage(false, "Content must be between 2 and 1000 characters!!", "BAD_REQUEST");
-
-        try {
-            reply.setComment(new Comment(commentService.getOneComment(commentId)));
-            replyService.addReply(reply);
-            return new ResponseMessage(true, "Reply added successfully!!", "OK");
-        }
-        catch (RuntimeException e){
-            return new ResponseMessage(false, "Reply isn't added!!", "NOT_FOUND");
-        }
+          return replyService.addReply(reply, commentId);
     }
 
     @GetMapping("/reply/comment/{commentID}")
     public List<Reply> getOneNotification(@PathVariable Long commentID){
         return replyService.getAllReplyForComment(commentID);
+    }
+
+    @PutMapping("/reply/{replyID}")
+    public ResponseMessage updateReply(@RequestBody Comment reply, @PathVariable Long replyID) {
+        return replyService.updateReply(reply, replyID);
+    }
+
+    @DeleteMapping("/reply/{replyID}")
+    public ResponseMessage deleteReply(@PathVariable Long replyID){
+        return replyService.deleteReply(replyID);
     }
 }
