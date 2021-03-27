@@ -289,7 +289,7 @@ public class PasswordRecoveryTests {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(content().json("{\n" +
                         "  \"success\": false,\n" +
-                        "  \"message\": \"New password not valid (must have at least 6 characters)!!\",\n" +
+                        "  \"message\": \"New Password not valid (at least 6 characters)!!\",\n" +
                         "  \"status\": \"BAD_REQUEST\"\n" +
                         "}"));
     }

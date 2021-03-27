@@ -2,20 +2,24 @@ package ba.unsa.etf.nwt.user_service.controllers;
 
 import ba.unsa.etf.nwt.user_service.models.User;
 import ba.unsa.etf.nwt.user_service.requests.UserProfileRequest;
+import ba.unsa.etf.nwt.user_service.requests.UserRequest;
 import ba.unsa.etf.nwt.user_service.responses.AvailabilityResponse;
 import ba.unsa.etf.nwt.user_service.responses.ResponseMessage;
 import ba.unsa.etf.nwt.user_service.responses.UserProfileResponse;
 import ba.unsa.etf.nwt.user_service.services.UserService;
+import ba.unsa.etf.nwt.user_service.services.ValidationsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @RestController
 public class UserController {
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ValidationsService validationsService;
 
     //admin
     @GetMapping("/users")
@@ -56,26 +60,9 @@ public class UserController {
     //user
     @PostMapping("/user/update")
     public ResponseMessage updateUserProfile(@RequestBody UserProfileRequest userProfileRequest){
-
-        if(userProfileRequest.getName().length() < 2 || userProfileRequest.getName().length() > 50){
-            return new ResponseMessage(false,
-                    "Name not valid (at least 2 characters)!!",
-                    "BAD_REQUEST");
-        }
-
-        if(userProfileRequest.getSurname().length() < 2 || userProfileRequest.getSurname().length() > 50){
-            return new ResponseMessage(false, "Surname not valid (at least 2 characters)!!",
-                    "BAD_REQUEST");
-        }
-
-        if(userProfileRequest.getEmail().isEmpty() || !userProfileRequest.getEmail().contains("@") || userProfileRequest.getEmail().length() > 100){
-            return new ResponseMessage(false, "Email is not valid!!",
-                    "BAD_REQUEST");
-        }
-
-        if(userProfileRequest.getUsername().length() < 4 || userProfileRequest.getUsername().length() > 40){
-            return new ResponseMessage(false, "Username not valid (at least 4 characters)!!",
-                    "BAD_REQUEST");
+        ResponseMessage rm = validationsService.validateUserProfile(userProfileRequest);
+        if(!rm.getSuccess()){
+            return new ResponseMessage(false, rm.getMessage(), rm.getStatus());
         }
 
         try {
@@ -92,5 +79,10 @@ public class UserController {
             return new ResponseMessage(false, e.getMessage(),
                     "BAD_REQUEST");
         }
+    }
+
+    @DeleteMapping("/user/delete")
+    public ResponseMessage deleteUser(@RequestBody UserRequest userRequest){
+        return userService.deleteUser(userRequest);
     }
 }

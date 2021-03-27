@@ -7,10 +7,7 @@ import ba.unsa.etf.nwt.user_service.models.roles.RoleName;
 import ba.unsa.etf.nwt.user_service.requests.LoginRequest;
 import ba.unsa.etf.nwt.user_service.requests.RegistrationRequest;
 import ba.unsa.etf.nwt.user_service.responses.ResponseMessage;
-import ba.unsa.etf.nwt.user_service.services.AnswerService;
-import ba.unsa.etf.nwt.user_service.services.QuestionService;
-import ba.unsa.etf.nwt.user_service.services.RoleService;
-import ba.unsa.etf.nwt.user_service.services.UserService;
+import ba.unsa.etf.nwt.user_service.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,50 +28,17 @@ public class AuthController {
     @Autowired
     private AnswerService answerService;
 
+    @Autowired
+    private ValidationsService validationsService;
+
     //private final PasswordEncoder passwordEncoder;
 
     @PostMapping("/register/{questionId}")
     public ResponseMessage registration(@PathVariable Long questionId, @RequestBody RegistrationRequest registrationRequest) {
 
-        if(registrationRequest.getName().length() < 2 || registrationRequest.getName().length() > 50){
-            return new ResponseMessage(false,
-                    "Name not valid (at least 2 characters)!!",
-                    "BAD_REQUEST");
-        }
-
-        if(registrationRequest.getSurname().length() < 2 || registrationRequest.getSurname().length() > 50){
-            return new ResponseMessage(false, "Surname not valid (at least 2 characters)!!",
-                    "BAD_REQUEST");
-        }
-
-        if(registrationRequest.getEmail().isEmpty() || !registrationRequest.getEmail().contains("@") || registrationRequest.getEmail().length() > 100){
-            return new ResponseMessage(false, "Email is not valid!!",
-                    "BAD_REQUEST");
-        }
-
-        if(registrationRequest.getUsername().length() < 4 || registrationRequest.getUsername().length() > 40){
-            return new ResponseMessage(false, "Username not valid (at least 4 characters)!!",
-                    "BAD_REQUEST");
-        }
-
-        if(registrationRequest.getPassword().length() < 6 || registrationRequest.getPassword().length() > 40){
-            return new ResponseMessage(false, "Password not valid (at least 6 characters)!!",
-                    "BAD_REQUEST");
-        }
-
-        if(userService.existsByUsername(registrationRequest.getUsername())) {
-            return new ResponseMessage(false, "This username is already taken!!",
-                    "BAD_REQUEST");
-        }
-
-        if(userService.existsByEmail(registrationRequest.getEmail())) {
-            return new ResponseMessage(false, "Someone else is already using this email address!!",
-                    "BAD_REQUEST");
-        }
-
-        if(registrationRequest.getAnswer() == null || registrationRequest.getAnswer().getText().isEmpty()){
-            return new ResponseMessage(false, "Answer can't be blank!!",
-                    "BAD_REQUEST");
+        ResponseMessage rm = validationsService.validateRegistration(registrationRequest);
+        if(!rm.getSuccess()){
+            return new ResponseMessage(false, rm.getMessage(), rm.getStatus());
         }
 
         User user = new User(registrationRequest.getName(),registrationRequest.getSurname(),
@@ -106,14 +70,9 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseMessage login(@RequestBody LoginRequest loginRequest) {
 
-        if(loginRequest.getUsernameOrEmail().isEmpty() || loginRequest.getUsernameOrEmail().length() > 100){
-            return new ResponseMessage(false, "Username/email not valid!!",
-                    "BAD_REQUEST");
-        }
-
-        if(loginRequest.getPassword().length() < 6 || loginRequest.getPassword().length() > 40){
-            return new ResponseMessage(false, "Password not valid (at least 6 characters)!!",
-                    "BAD_REQUEST");
+        ResponseMessage rm = validationsService.validateLogin(loginRequest);
+        if(!rm.getSuccess()){
+            return new ResponseMessage(false, rm.getMessage(), rm.getStatus());
         }
 
         try {
