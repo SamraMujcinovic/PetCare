@@ -38,7 +38,7 @@ public class CategoryController {
     }
 
     @PostMapping("/category")
-    public ResponseEntity<?> addCategory( @RequestBody Category category){
+    public ResponseEntity<?> addCategory(@RequestBody Category category){
 
         return categoryService.addCategory(category);
     }
@@ -48,9 +48,9 @@ public class CategoryController {
         return categoryService.deleteCategory(id);
     }
 
-    @PutMapping("/category/update")
-    public CategoryResponse updateCategory(@RequestBody Category category){
-        return categoryService.updateCategory(category);
+    @PutMapping("/category/update/{id}")
+    public CategoryResponse updateCategory(@PathVariable Long id, @RequestBody Category category){
+        return categoryService.updateCategory(id, category);
     }
 
 }

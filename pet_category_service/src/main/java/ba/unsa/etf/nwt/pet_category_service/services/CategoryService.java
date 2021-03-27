@@ -82,33 +82,33 @@ public class CategoryService {
         try {
             Category c = findCategoryByName(name);
             return new CategoryResponse(c, "Category found!", "OK", true);
-
         }catch (ResourceNotFoundException e){
             return new CategoryResponse(null, "Category with that name not found!", "NOT FOUND", false);
 
         }
     }
 
-    public CategoryResponse updateCategory(Category category) {
-        if(category.getName().equals("")) return new CategoryResponse(null, "Category name can't be blank!", "BAD_REQUEST", false);
-        if(category.getName().length()<2 || category.getName().length()>50) return new CategoryResponse(null, "Category name must be between 2 and 50 characters!", "BAD_REQUEST", false);
-        Category c = new Category();
-
-        try {
-             c = findCategoryByName(category.getName());
-            if (c != null) {
-                return new CategoryResponse(null, "Category with that name already exists!", "BAD REQUEST", false);
-            }
-        }catch (ResourceNotFoundException e){
-            try{
-                 c = categoryRepository.findById(category.getId()).orElseThrow(() -> new ResourceNotFoundException("No category with id " + category.getId()));;
-                c.setName(category.getName());
-                c.setDescription(category.getDescription());
-            }catch (ResourceNotFoundException ee){
-                return new CategoryResponse(null, "Category with that ID not found!", "NOT FOUND", false);
+    public CategoryResponse updateCategory(Long id, Category newCategory) {
+        if(newCategory.getName().equals("")) return new CategoryResponse(null, "Category name can't be blank!", "BAD_REQUEST", false);
+        if(newCategory.getName().length()<2 || newCategory.getName().length()>50) return new CategoryResponse(null, "Category name must be between 2 and 50 characters!", "BAD_REQUEST", false);
+        Category c;
+        //ako kategorija sa novim postavljenim imenom vec postoji u bazi vracamo gresku
+        CategoryResponse cr1 = getCategoryByName(newCategory.getName());
+        //ako nije nadjena kategorija sa tim imenom
+        if(!cr1.getSuccess()) {
+            CategoryResponse cr2 = getCategory(id);
+            if(cr2.getSuccess()) {
+                c = cr2.getCategory();
+                c.setDescription(newCategory.getDescription());
+                c.setName(newCategory.getName());
+                categoryRepository.save(c);
+                return new CategoryResponse(c, "Category successfully updated!", "OK", true);
+            }else {
+                return cr2;
             }
         }
-        return new CategoryResponse(c, "Category successfully updated!", "OK", true);
+        //ako vec postoji kateogrija sa tim imenom vracamo response da postoji vec ta kategorija
+        return new CategoryResponse(null, "Category with that name already exists!", "BAD REQUEST", false);
 
     }
 }
