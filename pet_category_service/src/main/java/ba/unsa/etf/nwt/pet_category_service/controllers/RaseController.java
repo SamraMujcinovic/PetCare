@@ -49,4 +49,9 @@ public class RaseController {
         return raseService.deleteRase(id);
     }
 
+    @PutMapping("/rase/update/{id}")
+    public RaseResponse updateRase(@PathVariable Long id, @RequestBody RaseRequest raseRequest){
+        return raseService.updateRase(id, raseRequest);
+    }
+
 }

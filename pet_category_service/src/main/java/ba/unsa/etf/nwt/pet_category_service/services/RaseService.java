@@ -32,6 +32,8 @@ public class RaseService {
     public ResponseEntity<Response> addRase(RaseRequest raseRequest) {
         if(raseRequest.getName().equals("")) return new ResponseEntity(new Response(false, "Rase name can't be blank!", "BAD_REQUEST"), HttpStatus.BAD_REQUEST);
         if(raseRequest.getName().length()<2 || raseRequest.getName().length()>50) return new ResponseEntity(new Response(false, "Rase name must be between 2 and 50 characters!", "BAD_REQUEST"), HttpStatus.BAD_REQUEST);
+        if(raseRequest.getDescription().equals("")) return new ResponseEntity(new Response(false, "Rase name can't be blank!", "BAD_REQUEST"), HttpStatus.BAD_REQUEST);
+
         Rase r = findRaseByName(raseRequest.getName());
         if(r != null) return new ResponseEntity(new Response(false, "Rase with that name already exists!", "BAD REQUEST"), HttpStatus.BAD_REQUEST);
 
@@ -54,8 +56,6 @@ public class RaseService {
         return raseRepository.save(rase);
     }
 
-
-
     public RaseResponse getRase(Long id) {
         try{
             Rase r = getRaseById(id);
@@ -74,9 +74,6 @@ public class RaseService {
     public Response deleteRase(Long id) {
         try{
             Rase r = getRaseById(id);
-             //ako ne bude brisalo sve petove koji imaju ovu rasu
-            //moram dodati filtriranje petova i rasa
-            //i onda pozvati tu metodu i ona mi vrati sve one koji imaju tu rasu ili kategoriju i njih brisem iz baze
             raseRepository.deleteById(id);
             return new Response(true, "Rase successfully deleted", "OK");
         }catch (ResourceNotFoundException e){
@@ -107,5 +104,28 @@ public class RaseService {
         //trebalo bi provjeriti da li kategorija postoji u bazi
         //ali mozda i ne treba jer ce korisnik kliknuti na tu kategoriju znaci da ako je ponudjena onda i postoji u bazi
         return raseRepository.findByCategory_Id(id);
+    }
+
+    public RaseResponse updateRase(Long id, RaseRequest raseRequest) {
+        if(raseRequest.getName().equals("")) return new RaseResponse(null,  "Rase name can't be blank!", "BAD_REQUEST", false);
+        if(raseRequest.getName().length()<2 || raseRequest.getName().length()>50) return new RaseResponse(null, "Rase name must be between 2 and 50 characters!", "BAD_REQUEST", false);
+        if(raseRequest.getDescription().equals("")) return new RaseResponse(null,  "Rase description can't be blank!", "BAD_REQUEST", false);
+        RaseResponse rr1 = getRase(id);
+
+        RaseResponse rr = getRaseByName(raseRequest.getName());
+        if(!rr1.getSuccess()) return rr1;
+
+        if(rr.getSuccess()) return new RaseResponse(null, "Rase with that name already exists!", "BAD REQUEST", false);
+
+        CategoryResponse cr = categoryService.getCategory(raseRequest.getCategory_id());
+        if(!cr.getSuccess()) return new RaseResponse(null, "Category with given ID not found", "NOT FOUND", false);
+
+        Rase r = rr1.getRase();
+        r.setName(raseRequest.getName());
+        r.setDescription(raseRequest.getDescription());
+        r.setCategory(cr.getCategory());
+        raseRepository.save(r);
+
+        return new RaseResponse(r, "Rase successfully updated!", "OK", true);
     }
 }

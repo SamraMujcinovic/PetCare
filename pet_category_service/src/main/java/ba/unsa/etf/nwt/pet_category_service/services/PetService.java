@@ -115,4 +115,43 @@ public class PetService {
     public List<Pet> getPetsInRase(Long id) {
         return petRepository.findByRase_Id(id);
     }
+
+    public PetResponse updatePet(Long id, PetRequest petRequest) {
+        PetResponse pr = getPet(id);
+        if(!pr.getSuccess()) return new PetResponse(null, "Pet with that ID not found!", "NOT FOUND", false);
+
+        if(petRequest.getName().equals("")) return new PetResponse(null, "Pet's name can't be blank!", "BAD_REQUEST", false);
+        if(petRequest.getName().length()<2 || petRequest.getName().length()>50) return new PetResponse(null, "Pet's name must be between 2 and 50 characters!", "BAD_REQUEST", false);
+        if(petRequest.getLocation().equals("")) return new PetResponse(null, "Pet's location can't be blank!", "BAD_REQUEST", false);
+        if(petRequest.getImage().equals("")) return new PetResponse(null, "Add an image of a pet!", "BAD_REQUEST", false);
+
+        try{
+            Integer age = petRequest.getAge();
+            if(petRequest.getAge() > 100) return new PetResponse(null, "Pet can't be older than 100 years!", "BAD_REQUEST", false);
+
+            RaseResponse rr = raseService.getRase(petRequest.getRase_id());
+            if(!rr.getSuccess()) return new PetResponse(null, "Rase with that ID not found!", "NOT FOUND", false);
+
+            Pet p = pr.getPet();
+            p.setName(petRequest.getName());
+            p.setLocation(petRequest.getLocation());
+            p.setDescription(petRequest.getDescription());
+            p.setImage(petRequest.getImage());
+            p.setAge(petRequest.getAge());
+            p.setAdopted(petRequest.isAdopted());
+            p.setRase(rr.getRase());
+            petRepository.save(p);
+            return new PetResponse(p, "Pet successfully updated!", "OK", true);
+        }catch (NullPointerException e){
+            return new PetResponse(null, "Add the age of the pet!", "BAD_REQUEST", false);
+
+        }
+    }
+
+    public List<Pet> getPetsInCategory(Long id) {
+        //vraca sve petove koji pripadaju nekoj kategoriji
+        //znaci vraca sve cuke, ili sve mace, ili sve ribe i sl
+        //find all pets where rase.getCategoryID = id
+        return petRepository.findByRase_Category_Id(id);
+    }
 }

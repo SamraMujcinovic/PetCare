@@ -34,6 +34,11 @@ public class PetController {
         return petService.getPetsInRase(id);
     }
 
+    @GetMapping("/pets/inCategory")
+    public List<Pet> getPetsInCategory(@RequestParam Long id){
+        return petService.getPetsInCategory(id);
+    }
+
     @GetMapping("/pet/byName")
     public PetResponse getPetByName(@RequestParam String name){
         return petService.getPetByName(name);
@@ -44,11 +49,15 @@ public class PetController {
         return petService.addPet(petRequest);
     }
 
-
     //brisanje peta po id-u
     @DeleteMapping("/pet")
     public Response deletePet(@RequestParam Long id){
         return petService.deletePet(id);
+    }
+
+    @PutMapping("/pet/update/{id}")
+    public PetResponse updatePet(@PathVariable Long id, @RequestBody PetRequest petRequest){
+        return petService.updatePet(id, petRequest);
     }
 
 }

@@ -13,8 +13,10 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class RaseRequest {
 
+    @NotNull
     private String name;
 
+    @NotNull
     private String description;
 
     @NotNull
