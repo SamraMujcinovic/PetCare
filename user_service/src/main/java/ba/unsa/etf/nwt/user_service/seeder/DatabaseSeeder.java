@@ -1,14 +1,14 @@
 package ba.unsa.etf.nwt.user_service.seeder;
 
-import ba.unsa.etf.nwt.user_service.models.Answer;
-import ba.unsa.etf.nwt.user_service.models.Question;
-import ba.unsa.etf.nwt.user_service.models.User;
-import ba.unsa.etf.nwt.user_service.models.roles.Role;
-import ba.unsa.etf.nwt.user_service.models.roles.RoleName;
-import ba.unsa.etf.nwt.user_service.services.AnswerService;
-import ba.unsa.etf.nwt.user_service.services.QuestionService;
-import ba.unsa.etf.nwt.user_service.services.RoleService;
-import ba.unsa.etf.nwt.user_service.services.UserService;
+import ba.unsa.etf.nwt.user_service.model.Answer;
+import ba.unsa.etf.nwt.user_service.model.Question;
+import ba.unsa.etf.nwt.user_service.model.User;
+import ba.unsa.etf.nwt.user_service.model.roles.Role;
+import ba.unsa.etf.nwt.user_service.model.roles.RoleName;
+import ba.unsa.etf.nwt.user_service.service.AnswerService;
+import ba.unsa.etf.nwt.user_service.service.QuestionService;
+import ba.unsa.etf.nwt.user_service.service.RoleService;
+import ba.unsa.etf.nwt.user_service.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
@@ -49,23 +49,21 @@ public class DatabaseSeeder {
         Question q5 = createQuestion("What is your mother's maiden name?", "Mother information");
         Question q6 = createQuestion("Who was your childhood hero?", "Childhood hero memory");
 
-        //TODO sad za sad su svi useri i admini i useri...
-
         //prvi user
         Answer a1 = createAnswer("Sarajevo", q1);
-        createUser("Amila", "Lakovic", "alakovic1@etf.unsa.ba", "alakovic1", "password1", a1, r);
+        createUser("Amila", "Lakovic", "alakovic1@etf.unsa.ba", "alakovic1", "Password123!", a1, r);
 
         //drugi user
         Answer a2 = createAnswer("Passat", q3);
-        createUser("Samra", "Mujcinovic", "smujcinovi1@etf.unsa.ba", "smujcinovi1", "password2", a2, r);
+        createUser("Samra", "Mujcinovic", "smujcinovi1@etf.unsa.ba", "smujcinovi1", "Password234?", a2, r);
 
         //treci user
         Answer a3 = createAnswer("Spider-Man", q6);
-        createUser("Emir", "Pita", "epita1@etf.unsa.ba", "epita1", "password3", a3, r);
+        createUser("Emir", "Pita", "epita1@etf.unsa.ba", "epita1", "PASSword3!", a3, r);
 
         //cetvrti user
         Answer a4 = createAnswer("Zenica", q1);
-        createUser("Amila", "Hrustic", "ahrustic2@etf.unsa.ba", "ahrustic2", "password4", a4, r);
+        createUser("Amila", "Hrustic", "ahrustic2@etf.unsa.ba", "ahrustic2", "PASSWORDDd4?", a4, r);
     }
 
     private void createUser(String name, String surname, String email, String username, String password, Answer answer, Set<Role> roles) {

@@ -1,7 +1,6 @@
 package ba.unsa.etf.nwt.user_service.repository;
 
-import ba.unsa.etf.nwt.user_service.models.Question;
-import ba.unsa.etf.nwt.user_service.models.User;
+import ba.unsa.etf.nwt.user_service.model.Question;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

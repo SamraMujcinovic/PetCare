@@ -1,7 +1,5 @@
 package ba.unsa.etf.nwt.user_service;
 
-import ba.unsa.etf.nwt.user_service.repository.UserRepository;
-import ba.unsa.etf.nwt.user_service.services.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -24,12 +22,6 @@ public class UserTests {
 
     @Autowired
     private MockMvc mockMvc;
-
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private UserRepository userRepository;
 
     @Test
     void GetAllUsersInJSON() throws Exception{

@@ -188,8 +188,8 @@ public class PasswordChangeTests {
         String input = "{\n" +
                 "  \"answer\": \"Passat\",\n" +
                 "  \"email\": \"smujcinovi1@etf.unsa.ba\",\n" +
-                "  \"newPassword\": \"newPass\",\n" +
-                "  \"oldPassword\": \"password2\"\n" +
+                "  \"newPassword\": \"newPass111&\",\n" +
+                "  \"oldPassword\": \"Password234?\"\n" +
                 "}";
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/change/newPassword")
@@ -211,8 +211,8 @@ public class PasswordChangeTests {
         String input = "{\n" +
                 "  \"answer\": \"odgovor\",\n" +
                 "  \"email\": \"alakovic1@etf.unsa.ba\",\n" +
-                "  \"newPassword\": \"newPass\",\n" +
-                "  \"oldPassword\": \"password1\"\n" +
+                "  \"newPassword\": \"newPass1?\",\n" +
+                "  \"oldPassword\": \"Password123!\"\n" +
                 "}";
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/change/newPassword")
@@ -257,8 +257,8 @@ public class PasswordChangeTests {
         String input = "{\n" +
                 "  \"answer\": \"odgovor\",\n" +
                 "  \"email\": \"email@etf.unsa.ba\",\n" +
-                "  \"newPassword\": \"newPass\",\n" +
-                "  \"oldPassword\": \"password1\"\n" +
+                "  \"newPassword\": \"newPass123?\",\n" +
+                "  \"oldPassword\": \"Password123!\"\n" +
                 "}";
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/change/newPassword")
@@ -292,7 +292,7 @@ public class PasswordChangeTests {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(content().json("{\n" +
                         "  \"success\": false,\n" +
-                        "  \"message\": \"New Password not valid (at least 6 characters)!!\",\n" +
+                        "  \"message\": \"New Password not valid (at least 6 characters, 1 big letter, 1 small letter, 1 sign)!!\",\n" +
                         "  \"status\": \"BAD_REQUEST\"\n" +
                         "}"));
     }
@@ -303,8 +303,8 @@ public class PasswordChangeTests {
         String input = "{\n" +
                 "  \"answer\": \"Sarajevo\",\n" +
                 "  \"email\": \"alakovic1@etf.unsa.ba\",\n" +
-                "  \"newPassword\": \"newPass\",\n" +
-                "  \"oldPassword\": \"pass\"\n" +
+                "  \"newPassword\": \"newPass123!\",\n" +
+                "  \"oldPassword\": \"Password123!!!!\"\n" +
                 "}";
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/change/newPassword")

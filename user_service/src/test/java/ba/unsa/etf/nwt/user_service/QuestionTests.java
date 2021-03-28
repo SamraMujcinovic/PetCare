@@ -1,7 +1,7 @@
 package ba.unsa.etf.nwt.user_service;
 
 import ba.unsa.etf.nwt.user_service.repository.QuestionRepository;
-import ba.unsa.etf.nwt.user_service.services.QuestionService;
+import ba.unsa.etf.nwt.user_service.service.QuestionService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -10,7 +10,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -24,12 +23,6 @@ public class QuestionTests {
 
     @Autowired
     private MockMvc mockMvc;
-
-    @Autowired
-    private QuestionService questionService;
-
-    @Autowired
-    private QuestionRepository questionRepository;
 
     @Test
     void GetAllQuestionsInJSON() throws Exception{

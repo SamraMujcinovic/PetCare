@@ -1,6 +1,6 @@
 package ba.unsa.etf.nwt.user_service.validation_tests;
 
-import ba.unsa.etf.nwt.user_service.models.User;
+import ba.unsa.etf.nwt.user_service.model.User;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -34,6 +34,7 @@ class UserValidationTests {
     public void testBlankUsersName(){
         User u = new User();
         u.setName("");
+        u.setPassword("pass");
         Set<ConstraintViolation<User>> violations = validator.validate(u);
         assertFalse(violations.isEmpty());
     }
@@ -41,6 +42,7 @@ class UserValidationTests {
     @Test
     public void testNoUsersName(){
         User u = new User();
+        u.setPassword("pass");
         Set<ConstraintViolation<User>> violations = validator.validate(u);
         assertFalse(violations.isEmpty());
     }
@@ -56,6 +58,7 @@ class UserValidationTests {
         }
 
         u.setName(string.toString());
+        u.setPassword("pass");
         Set<ConstraintViolation<User>> violations = validator.validate(u);
         assertFalse(violations.isEmpty());
     }
@@ -64,6 +67,7 @@ class UserValidationTests {
     public void testBlankUsersSurname(){
         User u = new User();
         u.setSurname("");
+        u.setPassword("pass");
         Set<ConstraintViolation<User>> violations = validator.validate(u);
         assertFalse(violations.isEmpty());
     }
@@ -71,6 +75,7 @@ class UserValidationTests {
     @Test
     public void testNoUsersSurname(){
         User u = new User();
+        u.setPassword("pass");
         Set<ConstraintViolation<User>> violations = validator.validate(u);
         assertFalse(violations.isEmpty());
     }
@@ -86,6 +91,7 @@ class UserValidationTests {
         }
 
         u.setSurname(string.toString());
+        u.setPassword("pass");
         Set<ConstraintViolation<User>> violations = validator.validate(u);
         assertFalse(violations.isEmpty());
     }
@@ -94,6 +100,7 @@ class UserValidationTests {
     public void testBlankEmail(){
         User u = new User();
         u.setEmail("");
+        u.setPassword("pass");
         Set<ConstraintViolation<User>> violations = validator.validate(u);
         assertFalse(violations.isEmpty());
     }
@@ -101,6 +108,7 @@ class UserValidationTests {
     @Test
     public void testNoEmail(){
         User u = new User();
+        u.setPassword("pass");
         Set<ConstraintViolation<User>> violations = validator.validate(u);
         assertFalse(violations.isEmpty());
     }
@@ -116,6 +124,7 @@ class UserValidationTests {
         }
 
         u.setEmail(string.toString());
+        u.setPassword("pass");
         Set<ConstraintViolation<User>> violations = validator.validate(u);
         assertFalse(violations.isEmpty());
     }
@@ -124,6 +133,7 @@ class UserValidationTests {
     public void testBlankUsersUsername(){
         User u = new User();
         u.setUsername("");
+        u.setPassword("pass");
         Set<ConstraintViolation<User>> violations = validator.validate(u);
         assertFalse(violations.isEmpty());
     }
@@ -131,6 +141,7 @@ class UserValidationTests {
     @Test
     public void testNoUsersUsername(){
         User u = new User();
+        u.setPassword("pass");
         Set<ConstraintViolation<User>> violations = validator.validate(u);
         assertFalse(violations.isEmpty());
     }
@@ -146,6 +157,7 @@ class UserValidationTests {
         }
 
         u.setUsername(string.toString());
+        u.setPassword("pass");
         Set<ConstraintViolation<User>> violations = validator.validate(u);
         assertFalse(violations.isEmpty());
     }
@@ -161,6 +173,7 @@ class UserValidationTests {
     @Test
     public void testNoUsersPassword(){
         User u = new User();
+        u.setPassword("pass");
         Set<ConstraintViolation<User>> violations = validator.validate(u);
         assertFalse(violations.isEmpty());
     }

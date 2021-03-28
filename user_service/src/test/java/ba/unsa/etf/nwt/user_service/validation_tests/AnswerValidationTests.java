@@ -1,6 +1,6 @@
 package ba.unsa.etf.nwt.user_service.validation_tests;
 
-import ba.unsa.etf.nwt.user_service.models.Answer;
+import ba.unsa.etf.nwt.user_service.model.Answer;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

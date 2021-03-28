@@ -1,7 +1,5 @@
 package ba.unsa.etf.nwt.user_service;
 
-import ba.unsa.etf.nwt.user_service.repository.UserRepository;
-import ba.unsa.etf.nwt.user_service.services.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -190,7 +188,7 @@ public class PasswordRecoveryTests {
         String input = "{\n" +
                 "  \"answer\": \"Sarajevo\",\n" +
                 "  \"email\": \"alakovic1@etf.unsa.ba\",\n" +
-                "  \"newPassword\": \"newPassword\"\n" +
+                "  \"newPassword\": \"newPassword1&\"\n" +
                 "}";
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/recovery/newPassword")
@@ -212,7 +210,7 @@ public class PasswordRecoveryTests {
         String input = "{\n" +
                 "  \"answer\": \"odgovor\",\n" +
                 "  \"email\": \"alakovic1@etf.unsa.ba\",\n" +
-                "  \"newPassword\": \"newPassword\"\n" +
+                "  \"newPassword\": \"newPassword123!!\"\n" +
                 "}";
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/recovery/newPassword")
@@ -256,7 +254,7 @@ public class PasswordRecoveryTests {
         String input = "{\n" +
                 "  \"answer\": \"odgovor\",\n" +
                 "  \"email\": \"email@etf.unsa.ba\",\n" +
-                "  \"newPassword\": \"newPassword\"\n" +
+                "  \"newPassword\": \"newPassword11?\"\n" +
                 "}";
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/recovery/newPassword")
@@ -289,7 +287,7 @@ public class PasswordRecoveryTests {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(content().json("{\n" +
                         "  \"success\": false,\n" +
-                        "  \"message\": \"New Password not valid (at least 6 characters)!!\",\n" +
+                        "  \"message\": \"New Password not valid (at least 6 characters, 1 big letter, 1 small letter, 1 sign)!!\",\n" +
                         "  \"status\": \"BAD_REQUEST\"\n" +
                         "}"));
     }
