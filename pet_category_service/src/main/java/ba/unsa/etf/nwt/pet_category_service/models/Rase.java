@@ -23,11 +23,11 @@ public class Rase {
     @JsonIgnore
     private Long id;
 
-    @NotBlank(message = "Rase must have a name!")
-    @Size(min = 2, max = 50)
+    @NotBlank(message = "Rase name can't be blank!")
+    @Size(min = 2, max = 50, message = "Rase name must be between 2 and 50 characters!")
     private String name;
 
-    @NotBlank(message = "Rase must have a description!")
+    @NotBlank(message = "Rase description can't be blank!")
     @Column(columnDefinition = "text")
     private String description;
 

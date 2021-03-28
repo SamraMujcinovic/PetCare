@@ -46,6 +46,15 @@ public class CategoryValidationTest {
     }
 
     @Test
+    public void testBlankCategoryDescription(){
+        Category c = new Category();
+        c.setName("name");
+        c.setDescription("");
+        Set<ConstraintViolation<Category>> violations = validator.validate(c);
+        assertFalse(violations.isEmpty());
+    }
+
+    @Test
     public void testNameSizeTooBig(){
         Category c = new Category();
         StringBuilder sb = new StringBuilder();

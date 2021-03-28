@@ -66,4 +66,13 @@ public class RaseRequestValidationTests {
         assertFalse(violations.isEmpty());
     }
 
+    @Test
+    public void testBlankRaseDescription(){
+        RaseRequest r = new RaseRequest();
+        r.setName("name");
+        r.setDescription("");
+        Set<ConstraintViolation<RaseRequest>> violations = validator.validate(r);
+        assertFalse(violations.isEmpty());
+    }
+
 }

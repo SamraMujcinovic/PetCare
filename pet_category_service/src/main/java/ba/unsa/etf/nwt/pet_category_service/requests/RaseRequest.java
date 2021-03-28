@@ -4,22 +4,27 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class RaseRequest {
 
-    @NotNull
+    @NotBlank(message = "Rase name can't be blank!")
+    @Size(min = 2, max = 50, message = "Rase name must be between 2 and 50 characters!")
     private String name;
 
-    @NotNull
+    @NotBlank(message = "Rase description can't be blank!")
+    @Column(columnDefinition = "text")
     private String description;
 
-    @NotNull
+
+    @NotNull(message = "ID for rase caregory can't be blank")
     private Long category_id;
 
     public String getName() {

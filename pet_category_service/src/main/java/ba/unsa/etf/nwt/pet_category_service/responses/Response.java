@@ -1,14 +1,15 @@
 package ba.unsa.etf.nwt.pet_category_service.responses;
 
 import lombok.Data;
+import org.springframework.http.HttpStatus;
 
 @Data
 public class Response {
     private Boolean success;
     private String message;
-    private String status;
+    private HttpStatus status;
 
-    public Response(Boolean success, String message, String status) {
+    public Response(Boolean success, String message, HttpStatus status) {
         this.success = success;
         this.message = message;
         this.status = status;
@@ -36,11 +37,11 @@ public class Response {
         this.message = message;
     }
 
-    public String getStatus() {
+    public HttpStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(HttpStatus status) {
         this.status = status;
     }
 }

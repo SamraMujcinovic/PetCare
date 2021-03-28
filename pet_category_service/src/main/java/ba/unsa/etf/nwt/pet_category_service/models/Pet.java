@@ -21,22 +21,22 @@ public class Pet {
     @JsonIgnore
     private Long id;
 
-    @NotEmpty(message = "Pet must have a name!")
+    @NotBlank(message = "Pet name can't be blank!")
     @Size(min = 2, max = 50)
     private String name;
 
-    @NotBlank(message = "You have to add a pets location!")
+    @NotBlank(message = "Pet location can't be blank!")
     private String location;
 
     //da li je image string?
-    @NotBlank(message = "Please add an image of pet!")
+    @NotBlank(message = "Pet image can't be blank!")
     private String image;
 
     @Column(columnDefinition = "text")
     private String description;
 
-    @NotNull(message = "Add age for pet!")
-    @Max(value = 100, message = "Pet cannot be older than 100 years!")
+    @NotNull(message = "Pet age can't be blank!")
+    @Max(value = 100, message = "Pet can't be older than 100 years!")
     private Integer age;
 
     private boolean adopted;

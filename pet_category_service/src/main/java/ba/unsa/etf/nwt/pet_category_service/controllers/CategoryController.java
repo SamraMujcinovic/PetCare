@@ -1,17 +1,13 @@
 package ba.unsa.etf.nwt.pet_category_service.controllers;
 
 import ba.unsa.etf.nwt.pet_category_service.models.Category;
-import ba.unsa.etf.nwt.pet_category_service.responses.CategoryResponse;
 import ba.unsa.etf.nwt.pet_category_service.responses.Response;
 import ba.unsa.etf.nwt.pet_category_service.services.CategoryService;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @AllArgsConstructor
@@ -27,29 +23,29 @@ public class CategoryController {
     }
 
 
-    @GetMapping("/category")
-    public CategoryResponse getCategory(@RequestParam Long id){
+    @GetMapping("/category/{id}")
+    public Category getCategory(@NotNull @PathVariable Long id){
         return categoryService.getCategory(id);
     }
 
     @GetMapping("/category/byName")
-    public CategoryResponse getCategoryByName(@RequestParam String name){
+    public Category getCategoryByName(@NotNull @RequestParam String name){
         return categoryService.getCategoryByName(name);
     }
 
     @PostMapping("/category")
-    public ResponseEntity<?> addCategory(@RequestBody Category category){
+    public Response addCategory(@Valid @RequestBody Category category){
 
         return categoryService.addCategory(category);
     }
 
     @DeleteMapping("/category")
-    public Response deleteCategory(@RequestParam Long id){
+    public Response deleteCategory(@NotNull @RequestParam Long id){
         return categoryService.deleteCategory(id);
     }
 
     @PutMapping("/category/update/{id}")
-    public CategoryResponse updateCategory(@PathVariable Long id, @RequestBody Category category){
+    public Category updateCategory(@NotNull @PathVariable Long id, @Valid @RequestBody Category category){
         return categoryService.updateCategory(id, category);
     }
 

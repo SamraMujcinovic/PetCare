@@ -1,21 +1,16 @@
 package ba.unsa.etf.nwt.pet_category_service.services;
 
 import ba.unsa.etf.nwt.pet_category_service.exceptions.ResourceNotFoundException;
-import ba.unsa.etf.nwt.pet_category_service.models.Category;
 import ba.unsa.etf.nwt.pet_category_service.models.Pet;
 import ba.unsa.etf.nwt.pet_category_service.models.Rase;
 import ba.unsa.etf.nwt.pet_category_service.repository.PetRepository;
 import ba.unsa.etf.nwt.pet_category_service.repository.RaseRepository;
 import ba.unsa.etf.nwt.pet_category_service.requests.PetRequest;
-import ba.unsa.etf.nwt.pet_category_service.responses.PetResponse;
-import ba.unsa.etf.nwt.pet_category_service.responses.RaseResponse;
 import ba.unsa.etf.nwt.pet_category_service.responses.Response;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
@@ -30,16 +25,9 @@ public class PetService {
         return petRepository.findAll();
     }
 
-    public ResponseEntity<Response> addPet(PetRequest petRequest) {
-        if(petRequest.getName().equals("")) return new ResponseEntity(new Response(false, "Pet's name can't be blank!", "BAD_REQUEST"), HttpStatus.BAD_REQUEST);
-        if(petRequest.getName().length()<2 || petRequest.getName().length()>50) return new ResponseEntity(new Response(false, "Pet's name must be between 2 and 50 characters!", "BAD_REQUEST"), HttpStatus.BAD_REQUEST);
-        if(petRequest.getLocation().equals("")) return new ResponseEntity(new Response(false, "Pet's location can't be blank!", "BAD_REQUEST"), HttpStatus.BAD_REQUEST);
-        if(petRequest.getImage().equals("")) return new ResponseEntity(new Response(false, "Add an image of a pet!", "BAD_REQUEST"), HttpStatus.BAD_REQUEST);
-
-        try{
+    public Response addPet(PetRequest petRequest) {
+       // try{
             Integer age = petRequest.getAge();
-            if(petRequest.getAge() > 100) return new ResponseEntity(new Response(false, "Pet can't be older than 100 years!", "BAD_REQUEST"), HttpStatus.BAD_REQUEST);
-
             Pet pet = new Pet();
             pet.setName(petRequest.getName());
             pet.setLocation(petRequest.getLocation());
@@ -47,20 +35,17 @@ public class PetService {
             pet.setAge(petRequest.getAge());
             pet.setAdopted(petRequest.isAdopted());
             pet.setDescription(petRequest.getDescription());
-            try{
-                Rase r = raseService.getRaseById(petRequest.getRase_id());
-                pet.setRase(r);
-                petRepository.save(pet);
-            }
-            catch (ResourceNotFoundException e){
-                return new ResponseEntity(new Response(false, "There is no rase with that ID!!", "NOT_FOUND"), HttpStatus.NOT_FOUND);
-            }
-            return new ResponseEntity(new Response(true, "Pet successfully added!!", "OK"), HttpStatus.OK);
 
+            Rase r = raseService.getRaseById(petRequest.getRase_id());
+            pet.setRase(r);
+            petRepository.save(pet);
+
+            return new Response(true, "Pet successfully added!!", HttpStatus.OK);
+/*
         }catch (NullPointerException e){
-            return new ResponseEntity(new Response(false, "Add the age of the pet!", "BAD_REQUEST"), HttpStatus.BAD_REQUEST);
+            return new Response(false, "Add the age of the pet!", HttpStatus.BAD_REQUEST);
 
-        }
+        }*/
 
     }
 
@@ -74,78 +59,56 @@ public class PetService {
                 .orElseThrow(() -> new ResourceNotFoundException("No pet with ID " + id));
     }
 
-    public PetResponse getPet(Long id) {
+    public Pet getPet(Long id) {
 
-        try{
-            Pet p = getPetById(id);
-            return new PetResponse(p, "Pet OK!", "OK", true);
-        }catch (ResourceNotFoundException e){
-            return new PetResponse(null, "Pet with that ID not found", "NOT FOUND",false);
-        }
+        Pet p = getPetById(id);
+        return p;
     }
 
     public Response deletePet(Long id) {
-        try{
-            Pet p = getPetById(id);
-            petRepository.deleteById(id);
-            return new Response(true, "Pet successfully deleted!", "OK");
-        }catch (ResourceNotFoundException e){
-            return new Response(false, "Pet with that ID not found", "NOT FOUND");
-        }
+
+        Pet p = getPetById(id);
+        petRepository.deleteById(id);
+        return new Response(true, "Pet successfully deleted!", HttpStatus.OK);
     }
 
     public Pet findPetByName(String name) {
         return petRepository
                 .findByName(name)
-                .orElseThrow(() -> new ResourceNotFoundException("No rase with name " + name));
+                .orElseThrow(() -> new ResourceNotFoundException("No pet with name " + name));
     }
 
-    public PetResponse getPetByName(String name) {
-        if(name == null) return new PetResponse(null, "Add a name for search!", "BAD_REQUEST", false);
-        try {
-            Pet p = findPetByName(name);
-            return new PetResponse(p, "Pet found!", "OK", true);
-
-        }catch (ResourceNotFoundException e){
-            return new PetResponse(null, "Pet with that name not found!", "NOT FOUND", false);
-
-        }
+    public Pet getPetByName(String name) {
+        //if(name == null) return new PetResponse(null, "Add a name for search!", "BAD_REQUEST", false);
+        Pet p = findPetByName(name);
+        return p;
     }
 
     public List<Pet> getPetsInRase(Long id) {
         return petRepository.findByRase_Id(id);
     }
 
-    public PetResponse updatePet(Long id, PetRequest petRequest) {
-        PetResponse pr = getPet(id);
-        if(!pr.getSuccess()) return new PetResponse(null, "Pet with that ID not found!", "NOT FOUND", false);
+    public Pet updatePet(Long id, PetRequest petRequest) {
+        Pet p = getPet(id);
 
-        if(petRequest.getName().equals("")) return new PetResponse(null, "Pet's name can't be blank!", "BAD_REQUEST", false);
-        if(petRequest.getName().length()<2 || petRequest.getName().length()>50) return new PetResponse(null, "Pet's name must be between 2 and 50 characters!", "BAD_REQUEST", false);
-        if(petRequest.getLocation().equals("")) return new PetResponse(null, "Pet's location can't be blank!", "BAD_REQUEST", false);
-        if(petRequest.getImage().equals("")) return new PetResponse(null, "Add an image of a pet!", "BAD_REQUEST", false);
-
-        try{
+       // try{
             Integer age = petRequest.getAge();
-            if(petRequest.getAge() > 100) return new PetResponse(null, "Pet can't be older than 100 years!", "BAD_REQUEST", false);
 
-            RaseResponse rr = raseService.getRase(petRequest.getRase_id());
-            if(!rr.getSuccess()) return new PetResponse(null, "Rase with that ID not found!", "NOT FOUND", false);
+            Rase r= raseService.getRase(petRequest.getRase_id());
 
-            Pet p = pr.getPet();
             p.setName(petRequest.getName());
             p.setLocation(petRequest.getLocation());
             p.setDescription(petRequest.getDescription());
             p.setImage(petRequest.getImage());
             p.setAge(petRequest.getAge());
             p.setAdopted(petRequest.isAdopted());
-            p.setRase(rr.getRase());
+            p.setRase(r);
             petRepository.save(p);
-            return new PetResponse(p, "Pet successfully updated!", "OK", true);
-        }catch (NullPointerException e){
-            return new PetResponse(null, "Add the age of the pet!", "BAD_REQUEST", false);
+            return p;
+    /*    }catch (NullPointerException e){
+            return new Response(false, "Add the age of the pet!", HttpStatus.OK);
 
-        }
+        }*/
     }
 
     public List<Pet> getPetsInCategory(Long id) {

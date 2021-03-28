@@ -1,21 +1,18 @@
 package ba.unsa.etf.nwt.pet_category_service.services;
 
 import ba.unsa.etf.nwt.pet_category_service.exceptions.ResourceNotFoundException;
+import ba.unsa.etf.nwt.pet_category_service.exceptions.WrongInputException;
 import ba.unsa.etf.nwt.pet_category_service.models.Category;
 import ba.unsa.etf.nwt.pet_category_service.models.Rase;
 import ba.unsa.etf.nwt.pet_category_service.repository.CategoryRepository;
 import ba.unsa.etf.nwt.pet_category_service.repository.RaseRepository;
 import ba.unsa.etf.nwt.pet_category_service.requests.RaseRequest;
-import ba.unsa.etf.nwt.pet_category_service.responses.CategoryResponse;
-import ba.unsa.etf.nwt.pet_category_service.responses.RaseResponse;
 import ba.unsa.etf.nwt.pet_category_service.responses.Response;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @AllArgsConstructor
 @Service
@@ -29,40 +26,32 @@ public class RaseService {
         return raseRepository.findAll();
     }
 
-    public ResponseEntity<Response> addRase(RaseRequest raseRequest) {
-        if(raseRequest.getName().equals("")) return new ResponseEntity(new Response(false, "Rase name can't be blank!", "BAD_REQUEST"), HttpStatus.BAD_REQUEST);
-        if(raseRequest.getName().length()<2 || raseRequest.getName().length()>50) return new ResponseEntity(new Response(false, "Rase name must be between 2 and 50 characters!", "BAD_REQUEST"), HttpStatus.BAD_REQUEST);
-        if(raseRequest.getDescription().equals("")) return new ResponseEntity(new Response(false, "Rase name can't be blank!", "BAD_REQUEST"), HttpStatus.BAD_REQUEST);
+    public Response addRase(RaseRequest raseRequest) {
+        try {
+            Rase r = findRaseByName(raseRequest.getName());
+            throw new WrongInputException("Rase with that name already exists!");
+        }catch (ResourceNotFoundException e) {
+            Rase rase = new Rase();
+            rase.setName(raseRequest.getName());
+            rase.setDescription(raseRequest.getDescription());
 
-        Rase r = findRaseByName(raseRequest.getName());
-        if(r != null) return new ResponseEntity(new Response(false, "Rase with that name already exists!", "BAD REQUEST"), HttpStatus.BAD_REQUEST);
-
-        Rase rase = new Rase();
-        rase.setName(raseRequest.getName());
-        rase.setDescription(raseRequest.getDescription());
-        try{
             Category category = categoryService.getCategoryById(raseRequest.getCategory_id());
             rase.setCategory(category);
             raseRepository.save(rase);
-        }catch (ResourceNotFoundException e){
-            return new ResponseEntity(new Response(false, "There is no rase with that ID!!", "NOT_FOUND"), HttpStatus.NOT_FOUND);
+
+            return new Response(true, "Rase successfully added!!", HttpStatus.OK);
         }
-
-        return new ResponseEntity(new Response(true, "Rase successfully added!!", "OK"), HttpStatus.OK);
-
     }
 
     public Rase saveRase(Rase rase){
         return raseRepository.save(rase);
     }
 
-    public RaseResponse getRase(Long id) {
-        try{
-            Rase r = getRaseById(id);
-            return new RaseResponse(r, "Rase OK!", "OK", true);
-        }catch (ResourceNotFoundException e){
-            return new RaseResponse(null, "Rase with that ID not found", "NOT FOUND", false);
-        }
+    public Rase getRase(Long id) {
+
+        Rase r = getRaseById(id);
+        return r;
+
     }
 
     public Rase getRaseById(Long id) {
@@ -72,13 +61,10 @@ public class RaseService {
     }
 
     public Response deleteRase(Long id) {
-        try{
-            Rase r = getRaseById(id);
-            raseRepository.deleteById(id);
-            return new Response(true, "Rase successfully deleted", "OK");
-        }catch (ResourceNotFoundException e){
-            return  new Response(false, "Rase with that ID not found!", "NOT FOUND");
-        }
+
+        Rase r = getRaseById(id);
+        raseRepository.deleteById(id);
+        return new Response(true, "Rase successfully deleted", HttpStatus.OK);
     }
 
     public Rase findRaseByName(String name) {
@@ -87,16 +73,11 @@ public class RaseService {
                 .orElseThrow(() -> new ResourceNotFoundException("No rase with name " + name));
     }
 
-    public RaseResponse getRaseByName(String name) {
-        if(name == null) return new RaseResponse(null, "Add a name for search!", "BAD_REQUEST", false);
-        try {
-            Rase r = findRaseByName(name);
-            return new RaseResponse(r, "Rase found!", "OK", true);
+    public Rase getRaseByName(String name) {
+        //if(name == null) return new RaseResponse(null, "Add a name for search!", "BAD_REQUEST", false);
 
-        }catch (ResourceNotFoundException e){
-            return new RaseResponse(null, "Rase with that name not found!", "NOT FOUND", false);
-
-        }
+        Rase r = findRaseByName(name);
+        return r;
     }
 
     public List<Rase> getRasesInCategory(Long id) {
@@ -106,26 +87,19 @@ public class RaseService {
         return raseRepository.findByCategory_Id(id);
     }
 
-    public RaseResponse updateRase(Long id, RaseRequest raseRequest) {
-        if(raseRequest.getName().equals("")) return new RaseResponse(null,  "Rase name can't be blank!", "BAD_REQUEST", false);
-        if(raseRequest.getName().length()<2 || raseRequest.getName().length()>50) return new RaseResponse(null, "Rase name must be between 2 and 50 characters!", "BAD_REQUEST", false);
-        if(raseRequest.getDescription().equals("")) return new RaseResponse(null,  "Rase description can't be blank!", "BAD_REQUEST", false);
-        RaseResponse rr1 = getRase(id);
+    public Rase updateRase(Long id, RaseRequest raseRequest) {
+        Rase r = getRase(id);
 
-        RaseResponse rr = getRaseByName(raseRequest.getName());
-        if(!rr1.getSuccess()) return rr1;
-
-        if(rr.getSuccess()) return new RaseResponse(null, "Rase with that name already exists!", "BAD REQUEST", false);
-
-        CategoryResponse cr = categoryService.getCategory(raseRequest.getCategory_id());
-        if(!cr.getSuccess()) return new RaseResponse(null, "Category with given ID not found", "NOT FOUND", false);
-
-        Rase r = rr1.getRase();
-        r.setName(raseRequest.getName());
-        r.setDescription(raseRequest.getDescription());
-        r.setCategory(cr.getCategory());
-        raseRepository.save(r);
-
-        return new RaseResponse(r, "Rase successfully updated!", "OK", true);
+        try {
+            Rase rr = getRaseByName(raseRequest.getName());
+            throw new WrongInputException("Rase with that name already exists!");
+        }catch (ResourceNotFoundException e){
+            Category cr = categoryService.getCategory(raseRequest.getCategory_id());
+            r.setName(raseRequest.getName());
+            r.setDescription(raseRequest.getDescription());
+            r.setCategory(cr);
+            raseRepository.save(r);
+            return r;
+        }
     }
 }

@@ -23,12 +23,12 @@ public class Category {
     @JsonIgnore
     private Long id;
 
-    @NotBlank(message = "Category must have a name!")
-    @Size(min = 2,max = 50)
+    @NotBlank(message = "Category name can't be blank!")
+    @Size(min = 2,max = 50, message = "Category name must be between 2 and 50 characters!")
     private String name;
 
 
-    @NotBlank(message = "Category must have a description!")
+    @NotBlank(message = "Category description can't be blank!")
     @Column(columnDefinition = "text")
     private String description;
 
