@@ -1,6 +1,7 @@
 package ba.unsa.etf.nwt.user_service.controller;
 
 import ba.unsa.etf.nwt.user_service.exception.ResourceNotFoundException;
+import ba.unsa.etf.nwt.user_service.exception.WrongInputException;
 import ba.unsa.etf.nwt.user_service.model.User;
 import ba.unsa.etf.nwt.user_service.request.password_requests.PasswordAnswerRequest;
 import ba.unsa.etf.nwt.user_service.request.password_requests.PasswordChangeRequest;
@@ -40,22 +41,23 @@ public class PasswordChangeController {
     @PostMapping("/newPassword")
     public ResponseMessage getNewPassword(@Valid @RequestBody PasswordChangeRequest passwordChangeRequest) {
         User user = userService.findByEmail(passwordChangeRequest.getEmail())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found!"));
 
-        if (user == null)
-            throw new ResourceNotFoundException("User does not exist");
+        /*if (user == null)
+            throw new ResourceNotFoundException("User does not exist!");*/
 
-        if(passwordChangeRequest.getAnswer().equals(user.getAnswer().getText())){
+        if(passwordChangeRequest.getAnswer().getText().equals(user.getAnswer().getText())){
 
             if(!passwordChangeRequest.getOldPassword().equals(user.getPassword())){
-                throw new ResourceNotFoundException("Old password is not a match!!");
+                throw new WrongInputException("Old password is not a match!");
             }
 
             user.setPassword(passwordChangeRequest.getNewPassword());
             userService.save(user);
-            return new ResponseMessage(true, HttpStatus.OK,"You have successfully changed your password");
+            return new ResponseMessage(true, HttpStatus.OK,"You have successfully changed your password.");
         }
-
-        throw new ResourceNotFoundException("Wrong answer!!");
+        else {
+            throw new WrongInputException("Wrong answer!");
+        }
     }
 }

@@ -17,27 +17,27 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @NotBlank
-    @Size(max = 100)
+    @NotBlank(message = "Name can't be blank")
+    @Size(min = 3, max = 50, message = "Names min length is 3, max length is 50")
     @Column(columnDefinition = "text")
     private String name;
 
-    @NotBlank
-    @Size(max = 100)
+    @NotBlank(message = "Surname can't be blank")
+    @Size(min = 3, max = 50, message = "Surnames min length is 3, max length is 50")
     @Column(columnDefinition = "text")
     private String surname;
 
-    @NotBlank
-    @Size(max = 100)
+    @NotBlank(message = "Email can't be blank")
+    @Size(max = 100, message = "Emails max length is 100")
     @Email(message = "Email should be valid")
     private String email;
 
-    @NotBlank
-    @Size(max = 100)
+    @NotBlank(message = "Username can't be blank")
+    @Size(min = 4, max = 40, message = "Usernames min length is 4, max length is 40")
     private String username;
 
-    @NotBlank
-    @Size(max = 100)
+    @NotBlank(message = "Password can't be blank")
+    @Size(min = 6, max = 40, message = "Passwords min length is 6, max length is 40")
     @PasswordValidation
     private String password;
 
@@ -51,7 +51,7 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
-    public User(@NotBlank @Size(max = 100) String name, @NotBlank @Size(max = 100) String surname, @NotBlank @Size(max = 100) @Email(message = "Email should be valid") String email, @NotBlank @Size(max = 100) String username, @NotBlank @Size(max = 100) String password, Answer answer) {
+    public User(@NotBlank(message = "Name can't be blank") @Size(min = 3, max = 50, message = "Names min length is 3, max length is 50") String name, @NotBlank(message = "Surname can't be blank") @Size(min = 3, max = 50, message = "Surnames min length is 3, max length is 50") String surname, @NotBlank(message = "Email can't be blank") @Size(max = 100, message = "Emails max length is 100") @Email(message = "Email should be valid") String email, @NotBlank(message = "Username can't be blank") @Size(min = 4, max = 40, message = "Usernames min length is 4, max length is 40") String username, @NotBlank(message = "Password can't be blank") @Size(min = 6, max = 40, message = "Passwords min length is 6, max length is 40") String password, Answer answer) {
         this.name = name;
         this.surname = surname;
         this.email = email;

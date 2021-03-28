@@ -18,12 +18,21 @@ import java.util.List;
 @ControllerAdvice
 public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
+    public ResponseEntity<Object> tempHandler(String exceptionMessage, String message, HttpStatus status){
+        List<String> details = new ArrayList<>();
+        details.add(exceptionMessage);
+        ErrorResponse er = new ErrorResponse(new ResponseMessage(false, status, message), details);
+        return new ResponseEntity<>(er, status);
+    }
+
     @ExceptionHandler(value = {ResourceNotFoundException.class})
     public ResponseEntity<Object> handleNotFoundException(ResourceNotFoundException e){
-        List<String> details = new ArrayList<>();
-        details.add(e.getMessage());
-        ErrorResponse er = new ErrorResponse(new ResponseMessage(false, HttpStatus.NOT_FOUND, "Exception was thrown"), details);
-        return new ResponseEntity<>(er, HttpStatus.NOT_FOUND);
+        return tempHandler(e.getMessage(), "Exception for NOT_FOUND was thrown", HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(value = {WrongInputException.class})
+    public ResponseEntity<Object> handleWrongInputException(WrongInputException e){
+        return tempHandler(e.getMessage(), "Exception for wrong input was thrown", HttpStatus.BAD_REQUEST);
     }
 
     @Override

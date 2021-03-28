@@ -3,38 +3,41 @@ package ba.unsa.etf.nwt.user_service.request;
 import ba.unsa.etf.nwt.user_service.annotation.PasswordValidation;
 import ba.unsa.etf.nwt.user_service.model.Answer;
 
+import javax.persistence.Column;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 public class RegistrationRequest {
-    @NotBlank
-    @Size(min = 2, max = 50)
+    @NotBlank(message = "Name can't be blank")
+    @Size(min = 3, max = 50, message = "Names min length is 3, max length is 50")
+    @Column(columnDefinition = "text")
     private String name;
 
-    @NotBlank
-    @Size(min = 3, max = 50)
+    @NotBlank(message = "Surname can't be blank")
+    @Size(min = 3, max = 50, message = "Surnames min length is 3, max length is 50")
+    @Column(columnDefinition = "text")
     private String surname;
 
-    @NotBlank
-    @Size(max = 100)
+    @NotBlank(message = "Email can't be blank")
+    @Size(max = 100, message = "Emails max length is 100")
     @Email(message = "Email should be valid")
     private String email;
 
-    @NotBlank
-    @Size(min = 4, max = 40)
+    @NotBlank(message = "Username can't be blank")
+    @Size(min = 4, max = 40, message = "Usernames min length is 4, max length is 40")
     private String username;
 
-    @NotBlank
-    @Size(min = 6, max = 40)
+    @NotBlank(message = "Password can't be blank")
+    @Size(min = 6, max = 40, message = "Passwords min length is 6, max length is 40")
     @PasswordValidation
     private String password;
 
-    @NotNull
+    @NotNull(message = "Answer can't be null")
     private Answer answer;
 
-    public RegistrationRequest(@NotBlank @Size(min = 2, max = 40) String name, @NotBlank @Size(min = 3, max = 40) String surname, @NotBlank @Size(max = 100) @Email(message = "Email should be valid") String email, @NotBlank @Size(min = 4, max = 20) String username, @NotBlank @Size(min = 6, max = 20) String password, @NotNull Answer answer) {
+    public RegistrationRequest(@NotBlank(message = "Name can't be blank") @Size(min = 3, max = 50, message = "Names min length is 3, max length is 50") String name, @NotBlank(message = "Surname can't be blank") @Size(min = 3, max = 50, message = "Surnames min length is 3, max length is 50") String surname, @NotBlank(message = "Email can't be blank") @Size(max = 100, message = "Emails max length is 100") @Email(message = "Email should be valid") String email, @NotBlank(message = "Username can't be blank") @Size(min = 4, max = 40, message = "Usernames min length is 4, max length is 40") String username, @NotBlank(message = "Password can't be blank") @Size(min = 6, max = 40, message = "Passwords min length is 6, max length is 40") String password, @NotNull(message = "Answer can't be null") Answer answer) {
         this.name = name;
         this.surname = surname;
         this.email = email;

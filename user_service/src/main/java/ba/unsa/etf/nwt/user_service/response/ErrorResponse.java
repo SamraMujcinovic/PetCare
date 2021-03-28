@@ -1,7 +1,5 @@
 package ba.unsa.etf.nwt.user_service.response;
 
-import org.springframework.http.HttpStatus;
-
 import java.util.List;
 
 public class ErrorResponse {

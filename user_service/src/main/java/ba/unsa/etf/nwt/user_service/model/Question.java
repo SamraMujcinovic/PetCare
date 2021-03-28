@@ -12,7 +12,7 @@ public class Question {
     private Long id;
 
     @NotBlank(message = "Title can't be blank")
-    @Size(max = 100, message = "max length is 100")
+    @Size(max = 100, message = "Titles max length is 100")
     private String title;
 
     @NotBlank(message = "Description can't be blank")

@@ -5,8 +5,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 public class PasswordQuestionRequest {
-    @NotBlank
-    @Size(max = 100)
+    @NotBlank(message = "Email can't be blank")
+    @Size(max = 100, message = "Emails max length is 100")
     @Email(message = "Email should be valid")
     private String email;
 

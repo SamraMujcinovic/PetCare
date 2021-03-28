@@ -1,6 +1,7 @@
 package ba.unsa.etf.nwt.user_service.controller;
 
 import ba.unsa.etf.nwt.user_service.exception.ResourceNotFoundException;
+import ba.unsa.etf.nwt.user_service.exception.WrongInputException;
 import ba.unsa.etf.nwt.user_service.model.User;
 import ba.unsa.etf.nwt.user_service.request.UserProfileRequest;
 import ba.unsa.etf.nwt.user_service.request.UserRequest;
@@ -30,7 +31,7 @@ public class UserController {
     @GetMapping("/users/{username}")
     public UserProfileResponse getUserProfile(@PathVariable(value = "username") String username) {
         User user = userService.findByUsername(username)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found!!"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found!"));
 
         return new UserProfileResponse(user.getName(), user.getSurname(), user.getUsername(), user.getEmail());
     }
@@ -55,25 +56,26 @@ public class UserController {
     @PostMapping("/user/update")
     public ResponseMessage updateUserProfile(@Valid @RequestBody UserProfileRequest userProfileRequest){
         User user = userService.findByEmail(userProfileRequest.getEmail())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found!"));
 
         user.setName(userProfileRequest.getName());
         user.setSurname(userProfileRequest.getSurname());
         user.setUsername(userProfileRequest.getUsername());
         userService.save(user);
-        return new ResponseMessage(true, HttpStatus.OK,"Profile successfully updated!!");
+        return new ResponseMessage(true, HttpStatus.OK,"Profile successfully updated.");
     }
 
     @DeleteMapping("/user/delete")
     public ResponseMessage deleteUser(@Valid @RequestBody UserRequest userRequest){
         User user = userService.findByEmail(userRequest.getEmail())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found!"));
 
         if(user.getPassword().equals(userRequest.getPassword())){
             userService.delete(user);
-            return new ResponseMessage(true, HttpStatus.OK,"You have successfully deleted your account!!");
+            return new ResponseMessage(true, HttpStatus.OK,"You have successfully deleted your account.");
         }
-
-        throw new ResourceNotFoundException("Wrong password!!");
+        else {
+            throw new WrongInputException("Wrong password!");
+        }
     }
 }

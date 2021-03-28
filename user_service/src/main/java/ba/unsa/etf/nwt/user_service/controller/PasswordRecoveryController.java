@@ -1,6 +1,7 @@
 package ba.unsa.etf.nwt.user_service.controller;
 
 import ba.unsa.etf.nwt.user_service.exception.ResourceNotFoundException;
+import ba.unsa.etf.nwt.user_service.exception.WrongInputException;
 import ba.unsa.etf.nwt.user_service.model.User;
 import ba.unsa.etf.nwt.user_service.request.password_requests.PasswordAnswerRequest;
 import ba.unsa.etf.nwt.user_service.request.password_requests.PasswordRecoveryRequest;
@@ -40,17 +41,18 @@ public class PasswordRecoveryController {
     @PostMapping("/newPassword")
     public ResponseMessage getNewPassword(@Valid @RequestBody PasswordRecoveryRequest passwordRecoveryRequest) {
         User user = userService.findByEmail(passwordRecoveryRequest.getEmail())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found!"));
 
-        if (user == null)
-            throw new ResourceNotFoundException("User does not exist");
+        /*if (user == null)
+            throw new ResourceNotFoundException("User does not exist");*/
 
-        if(passwordRecoveryRequest.getAnswer().equals(user.getAnswer().getText())){
+        if(passwordRecoveryRequest.getAnswer().getText().equals(user.getAnswer().getText())){
             user.setPassword(passwordRecoveryRequest.getNewPassword());
             userService.save(user);
-            return new ResponseMessage(true, HttpStatus.OK,"You have successfully recovered your password");
+            return new ResponseMessage(true, HttpStatus.OK,"You have successfully recovered your password.");
         }
-
-        throw new ResourceNotFoundException("Wrong answer!!");
+        else {
+            throw new WrongInputException("Wrong answer!");
+        }
     }
 }

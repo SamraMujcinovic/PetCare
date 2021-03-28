@@ -27,15 +27,7 @@ public class QuestionController {
     //admin
     @PostMapping("/questions")
     public ResponseMessage createQuestion(@Valid @RequestBody Question question) {
-        try {
-            questionService.findByTitle(question.getTitle())
-                .orElseThrow(() -> new ResourceNotFoundException("Question not found!"));
-
-            return new ResponseMessage(false, HttpStatus.BAD_REQUEST,"Question already exists!!");
-        }
-        catch(ResourceNotFoundException e) {
-            questionService.save(question);
-            return new ResponseMessage(true, HttpStatus.OK,"Question added successfully!!");
-        }
+        questionService.save(question);
+        return new ResponseMessage(true, HttpStatus.OK,"Question added successfully.");
     }
 }

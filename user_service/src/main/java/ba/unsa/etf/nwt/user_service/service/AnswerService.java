@@ -2,7 +2,6 @@ package ba.unsa.etf.nwt.user_service.service;
 
 import ba.unsa.etf.nwt.user_service.model.Answer;
 import ba.unsa.etf.nwt.user_service.repository.AnswerRepository;
-import ba.unsa.etf.nwt.user_service.response.ResponseMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

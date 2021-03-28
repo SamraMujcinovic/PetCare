@@ -1,20 +1,18 @@
 package ba.unsa.etf.nwt.user_service.request;
 
-import ba.unsa.etf.nwt.user_service.annotation.PasswordValidation;
-
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 public class UserRequest {
 
-    @NotBlank
-    @Size(max = 100)
+    @NotBlank(message = "Email can't be blank")
+    @Size(max = 100, message = "Emails max length is 100")
     @Email(message = "Email should be valid")
     private String email;
 
-    @NotBlank
-    @Size(min = 6, max = 40)
+    @NotBlank(message = "Password can't be blank")
+    //@Size(min = 6, max = 40, message = "Passwords min length is 6, max length is 40")
     //@PasswordValidation
     private String password;
 

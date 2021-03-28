@@ -1,12 +1,9 @@
 package ba.unsa.etf.nwt.user_service.service;
 
 import ba.unsa.etf.nwt.user_service.exception.ResourceNotFoundException;
-import ba.unsa.etf.nwt.user_service.model.Question;
 import ba.unsa.etf.nwt.user_service.model.User;
 import ba.unsa.etf.nwt.user_service.request.password_requests.PasswordAnswerRequest;
-import ba.unsa.etf.nwt.user_service.request.password_requests.PasswordChangeRequest;
 import ba.unsa.etf.nwt.user_service.request.password_requests.PasswordQuestionRequest;
-import ba.unsa.etf.nwt.user_service.request.password_requests.PasswordRecoveryRequest;
 import ba.unsa.etf.nwt.user_service.response.QuestionResponse;
 import ba.unsa.etf.nwt.user_service.response.ResponseMessage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,25 +17,26 @@ public class PasswordService {
 
     public QuestionResponse getQuestion(PasswordQuestionRequest passwordQuestionRequest){
         User user = userService.findByEmail(passwordQuestionRequest.getEmail())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found!"));
 
         if (user == null)
-            throw new ResourceNotFoundException("User does not exist");
+            throw new ResourceNotFoundException("User does not exist!");
 
-        return new QuestionResponse(new ResponseMessage(true, HttpStatus.OK,"Valid email, question found!!"), user.getAnswer().getQuestion());
+        return new QuestionResponse(new ResponseMessage(true, HttpStatus.OK,"Valid email, question found."), user.getAnswer().getQuestion());
     }
 
     public ResponseMessage getAnswerOfQuestion(PasswordAnswerRequest passwordAnswerRequest){
         User user = userService.findByEmail(passwordAnswerRequest.getEmail())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found!"));
 
         if (user == null)
-            throw new ResourceNotFoundException("User does not exist");
+            throw new ResourceNotFoundException("User does not exist!");
 
-        if(passwordAnswerRequest.getAnswer().equals(user.getAnswer().getText())){
-            return new ResponseMessage(true, HttpStatus.OK,"You have successfully answered the question");
+        if(passwordAnswerRequest.getAnswer().getText().equals(user.getAnswer().getText())){
+            return new ResponseMessage(true, HttpStatus.OK,"You have successfully answered the question.");
         }
-
-        throw new ResourceNotFoundException("Wrong answer!!");
+        else {
+            throw new ResourceNotFoundException("Wrong answer!");
+        }
     }
 }

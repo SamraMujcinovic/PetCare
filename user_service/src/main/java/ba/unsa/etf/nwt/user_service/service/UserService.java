@@ -2,9 +2,6 @@ package ba.unsa.etf.nwt.user_service.service;
 
 import ba.unsa.etf.nwt.user_service.model.User;
 import ba.unsa.etf.nwt.user_service.repository.UserRepository;
-import ba.unsa.etf.nwt.user_service.request.UserRequest;
-import ba.unsa.etf.nwt.user_service.response.ResponseMessage;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -44,5 +41,9 @@ public class UserService {
 
     public void delete(User user){
         userRepository.delete(user);
+    }
+
+    public Optional<User> findBuUsernameOrEmail(String username, String email){
+        return userRepository.findByUsernameOrEmail(username, email);
     }
 }

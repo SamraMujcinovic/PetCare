@@ -1,6 +1,7 @@
 package ba.unsa.etf.nwt.user_service.controller;
 
 import ba.unsa.etf.nwt.user_service.exception.ResourceNotFoundException;
+import ba.unsa.etf.nwt.user_service.exception.WrongInputException;
 import ba.unsa.etf.nwt.user_service.model.Question;
 import ba.unsa.etf.nwt.user_service.model.User;
 import ba.unsa.etf.nwt.user_service.model.roles.Role;
@@ -36,6 +37,18 @@ public class AuthController {
     @PostMapping("/register/{questionId}")
     public ResponseMessage registration(@PathVariable Long questionId, @Valid @RequestBody RegistrationRequest registrationRequest) {
 
+        if(userService.existsByUsername(registrationRequest.getUsername())) {
+            throw new WrongInputException("Username is already taken!");
+        }
+
+        if(userService.existsByEmail(registrationRequest.getEmail())) {
+            throw new WrongInputException("Email Address already in use!");
+        }
+
+        if(registrationRequest.getAnswer()==null || registrationRequest.getAnswer().getText().isEmpty()){
+            throw new WrongInputException("Answer text must not be empty!");
+        }
+
         User user = new User(registrationRequest.getName(),registrationRequest.getSurname(),
                 registrationRequest.getEmail(), registrationRequest.getUsername(),
                 registrationRequest.getPassword(), registrationRequest.getAnswer());
@@ -58,32 +71,19 @@ public class AuthController {
 
         return new ResponseMessage(true, HttpStatus.OK,
                 "User registered successfully");
-
     }
 
     @PostMapping("/login")
     public ResponseMessage login(@Valid @RequestBody LoginRequest loginRequest) {
-        //TODO popraviti jos....
 
-        try {
-            User user = userService.findByUsername(loginRequest.getUsernameOrEmail())
-                    .orElseThrow(() -> new ResourceNotFoundException("User not found!!"));
+        User user = userService.findBuUsernameOrEmail(loginRequest.getUsernameOrEmail(), loginRequest.getUsernameOrEmail())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found!"));
 
-            if (user.getPassword().equals(loginRequest.getPassword())) {
-                return new ResponseMessage(true, HttpStatus.OK, "Login successfull");
-            }
-
-            return new ResponseMessage(false, HttpStatus.NOT_FOUND,"Login not successfull, wrong password");
+        if (user.getPassword().equals(loginRequest.getPassword())) {
+            return new ResponseMessage(true, HttpStatus.OK, "Login successfull.");
         }
-        catch(ResourceNotFoundException e){
-            User user = userService.findByEmail(loginRequest.getUsernameOrEmail())
-                    .orElseThrow(() -> new ResourceNotFoundException(e.getMessage()));
-
-            if (user.getPassword().equals(loginRequest.getPassword())) {
-                return new ResponseMessage(true, HttpStatus.OK, "Login successfull");
-            }
-
-            throw new ResourceNotFoundException("Login not successfull, wrong password");
+        else {
+            throw new WrongInputException("Wrong password!");
         }
     }
 }
