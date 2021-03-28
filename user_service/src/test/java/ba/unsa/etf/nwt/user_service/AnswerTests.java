@@ -24,7 +24,7 @@ public class AnswerTests {
     private MockMvc mockMvc;
 
     @Test
-    void GetAnswerOfQuestionTest() throws Exception{
+    void GetAnswerOfQuestion() throws Exception{
 
         Long questionId = 1L;
 
@@ -32,12 +32,12 @@ public class AnswerTests {
                 .contentType(MediaType.APPLICATION_JSON);
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().json("[{\"id\":7,\"text\":\"Sarajevo\",\"question\":{\"id\":1,\"title\":\"What is the name of the town where you were born?\",\"description\":\"Home town\"}},{\"id\":13,\"text\":\"Zenica\",\"question\":{\"id\":1,\"title\":\"What is the name of the town where you were born?\",\"description\":\"Home town\"}},{\"id\":16,\"text\":\"string\",\"question\":{\"id\":1,\"title\":\"What is the name of the town where you were born?\",\"description\":\"Home town\"}}]"));
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+
     }
 
     @Test
-    void AnswerQuestionSuccessTest() throws Exception{
+    void AnswerQuestionSuccess() throws Exception{
 
         Long questionId = 1L;
 
@@ -51,11 +51,15 @@ public class AnswerTests {
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().json("{\"success\":true,\"message\":\"Answer added successfully!!\",\"status\":\"OK\"}"));
+                .andExpect(content().json("{\n" +
+                        "  \"success\": true,\n" +
+                        "  \"status\": \"OK\",\n" +
+                        "  \"message\": \"Answer added successfully!!\"\n" +
+                        "}"));
     }
 
     @Test
-    void AnswerQuestionBlankAnswerTest() throws Exception{
+    void AnswerQuestionBlankAnswer() throws Exception{
 
         Long questionId = 1L;
 
@@ -67,8 +71,17 @@ public class AnswerTests {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(newAnswer);
         mockMvc.perform(requestBuilder)
-                .andExpect(status().isOk())
+                .andExpect(status().isBadRequest())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().json("{\"success\":false,\"message\":\"Answer not valid!!\",\"status\":\"BAD_REQUEST\"}"));
+                .andExpect(content().json("{\n" +
+                        "  \"responseMessage\": {\n" +
+                        "    \"success\": false,\n" +
+                        "    \"status\": \"BAD_REQUEST\",\n" +
+                        "    \"message\": \"Validation Failed\"\n" +
+                        "  },\n" +
+                        "  \"details\": [\n" +
+                        "    \"Answer can't be blank\"\n" +
+                        "  ]\n" +
+                        "}"));
     }
 }

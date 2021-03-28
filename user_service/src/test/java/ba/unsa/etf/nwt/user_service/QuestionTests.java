@@ -1,7 +1,5 @@
 package ba.unsa.etf.nwt.user_service;
 
-import ba.unsa.etf.nwt.user_service.repository.QuestionRepository;
-import ba.unsa.etf.nwt.user_service.service.QuestionService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -36,7 +34,10 @@ public class QuestionTests {
     @Test
     void CreateNewQuestionTestSuccess() throws Exception{
 
-        String newQuestion = " { \"description\":\"string\", \"title\":\"string\" }";
+        String newQuestion = "{\n" +
+                "  \"description\": \"string\",\n" +
+                "  \"title\": \"string\"\n" +
+                "}";
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/questions")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -44,42 +45,89 @@ public class QuestionTests {
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().json("{\"success\":true,\"message\":\"Question added successfully!!\",\"status\":\"OK\"}"));
+                .andExpect(content().json("{\n" +
+                        "  \"success\": true,\n" +
+                        "  \"status\": \"OK\",\n" +
+                        "  \"message\": \"Question added successfully.\"\n" +
+                        "}"));
     }
 
     @Test
     void CreateNewQuestionTestNotSuccess1() throws Exception{
 
-        String newQuestion = " { \"description\":\"\", \"title\":\"string\" }";
+        String newQuestion = "{\n" +
+                "  \"description\": \"\",\n" +
+                "  \"title\": \"string\"\n" +
+                "}";
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/questions")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(newQuestion);
         mockMvc.perform(requestBuilder)
-                .andExpect(status().isOk())
+                .andExpect(status().isBadRequest())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(content().json("{\n" +
-                        "  \"success\": false,\n" +
-                        "  \"message\": \"Description can't be blank!!\",\n" +
-                        "  \"status\": \"BAD_REQUEST\"\n" +
-                        "}\n"));
+                        "  \"responseMessage\": {\n" +
+                        "    \"success\": false,\n" +
+                        "    \"status\": \"BAD_REQUEST\",\n" +
+                        "    \"message\": \"Validation Failed\"\n" +
+                        "  },\n" +
+                        "  \"details\": [\n" +
+                        "    \"Description can't be blank\"\n" +
+                        "  ]\n" +
+                        "}"));
     }
 
     @Test
     void CreateNewQuestionTestNotSuccess2() throws Exception{
 
-        String newQuestion = " { \"description\":\"string\", \"title\":\"\" }";
+        String newQuestion = "{\n" +
+                "  \"description\": \"string\",\n" +
+                "  \"title\": \"\"\n" +
+                "}";
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/questions")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(newQuestion);
         mockMvc.perform(requestBuilder)
-                .andExpect(status().isOk())
+                .andExpect(status().isBadRequest())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(content().json("{\n" +
-                        "  \"success\": false,\n" +
-                        "  \"message\": \"Title can't be blank!!\",\n" +
-                        "  \"status\": \"BAD_REQUEST\"\n" +
-                        "}\n"));
+                        "  \"responseMessage\": {\n" +
+                        "    \"success\": false,\n" +
+                        "    \"status\": \"BAD_REQUEST\",\n" +
+                        "    \"message\": \"Validation Failed\"\n" +
+                        "  },\n" +
+                        "  \"details\": [\n" +
+                        "    \"Title can't be blank\"\n" +
+                        "  ]\n" +
+                        "}"));
+    }
+
+    @Test
+    void CreateNewQuestionTestNotSuccess3() throws Exception{
+
+        String newQuestion = "{\n" +
+                "  \"description\": \"\",\n" +
+                "  \"title\": \"\"\n" +
+                "}";
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/questions")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(newQuestion);
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("{\n" +
+                        "  \"responseMessage\": {\n" +
+                        "    \"success\": false,\n" +
+                        "    \"status\": \"BAD_REQUEST\",\n" +
+                        "    \"message\": \"Validation Failed\"\n" +
+                        "  },\n" +
+                        "  \"details\": [\n" +
+                        "    \"Description can't be blank\",\n" +
+                        "    \"Title can't be blank\"\n" +
+                        "  ]\n" +
+                        "}"));
     }
 }

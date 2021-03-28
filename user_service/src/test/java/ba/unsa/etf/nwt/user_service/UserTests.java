@@ -58,13 +58,17 @@ public class UserTests {
         RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/users/{username}", username)
                 .contentType(MediaType.APPLICATION_JSON);
         mockMvc.perform(requestBuilder)
-                .andExpect(status().isOk())
+                .andExpect(status().isNotFound())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(content().json("{\n" +
-                        "  \"name\": \"User not found!!\",\n" +
-                        "  \"surname\": \"/\",\n" +
-                        "  \"username\": \"/\",\n" +
-                        "  \"email\": \"/\"\n" +
+                        "  \"responseMessage\": {\n" +
+                        "    \"success\": false,\n" +
+                        "    \"status\": \"NOT_FOUND\",\n" +
+                        "    \"message\": \"Exception for NOT_FOUND was thrown\"\n" +
+                        "  },\n" +
+                        "  \"details\": [\n" +
+                        "    \"User not found!\"\n" +
+                        "  ]\n" +
                         "}"));
     }
 
@@ -76,18 +80,7 @@ public class UserTests {
         RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/users/usernameCheck/")
                 .param("username", username);
         mockMvc.perform(requestBuilder)
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    void CheckUsernameNotAvailable() throws Exception{
-
-        String username = "alakovic1";
-
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/users/usernameCheck/")
-                .param("username", username);
-        mockMvc.perform(requestBuilder)
-                .andExpect(status().isOk());
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -99,19 +92,7 @@ public class UserTests {
                 .param("email", email)
                 .contentType(MediaType.APPLICATION_JSON);
         mockMvc.perform(requestBuilder)
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    void CheckEmailNotAvailable() throws Exception{
-
-        String email = "alakovic1@etf.unsa.ba";
-
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/users/emailCheck/")
-                .param("email", email)
-                .contentType(MediaType.APPLICATION_JSON);
-        mockMvc.perform(requestBuilder)
-                .andExpect(status().isOk());
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -119,7 +100,7 @@ public class UserTests {
 
         String newUserInfo = "{\n" +
                 "  \"email\": \"alakovic1@etf.unsa.ba\",\n" +
-                "  \"name\": \"amilaaa\",\n" +
+                "  \"name\": \"amilaa\",\n" +
                 "  \"surname\": \"lakovic\",\n" +
                 "  \"username\": \"newusername\"\n" +
                 "}";
@@ -132,8 +113,8 @@ public class UserTests {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(content().json("{\n" +
                         "  \"success\": true,\n" +
-                        "  \"message\": \"Profile successfully updated!!\",\n" +
-                        "  \"status\": \"OK\"\n" +
+                        "  \"status\": \"OK\",\n" +
+                        "  \"message\": \"Profile successfully updated.\"\n" +
                         "}"));
     }
 
@@ -151,12 +132,17 @@ public class UserTests {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(newUserInfo);
         mockMvc.perform(requestBuilder)
-                .andExpect(status().isOk())
+                .andExpect(status().isNotFound())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(content().json("{\n" +
-                        "  \"success\": false,\n" +
-                        "  \"message\": \"User not found\",\n" +
-                        "  \"status\": \"BAD_REQUEST\"\n" +
+                        "  \"responseMessage\": {\n" +
+                        "    \"success\": false,\n" +
+                        "    \"status\": \"NOT_FOUND\",\n" +
+                        "    \"message\": \"Exception for NOT_FOUND was thrown\"\n" +
+                        "  },\n" +
+                        "  \"details\": [\n" +
+                        "    \"User not found!\"\n" +
+                        "  ]\n" +
                         "}"));
     }
 
@@ -174,12 +160,17 @@ public class UserTests {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(newUserInfo);
         mockMvc.perform(requestBuilder)
-                .andExpect(status().isOk())
+                .andExpect(status().isBadRequest())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(content().json("{\n" +
-                        "  \"success\": false,\n" +
-                        "  \"message\": \"Email is not valid!!\",\n" +
-                        "  \"status\": \"BAD_REQUEST\"\n" +
+                        "  \"responseMessage\": {\n" +
+                        "    \"success\": false,\n" +
+                        "    \"status\": \"BAD_REQUEST\",\n" +
+                        "    \"message\": \"Validation Failed\"\n" +
+                        "  },\n" +
+                        "  \"details\": [\n" +
+                        "    \"Email should be valid\"\n" +
+                        "  ]\n" +
                         "}"));
     }
 
@@ -197,12 +188,18 @@ public class UserTests {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(newUserInfo);
         mockMvc.perform(requestBuilder)
-                .andExpect(status().isOk())
+                .andExpect(status().isBadRequest())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(content().json("{\n" +
-                        "  \"success\": false,\n" +
-                        "  \"message\": \"Username not valid (at least 4 characters)!!\",\n" +
-                        "  \"status\": \"BAD_REQUEST\"\n" +
+                        "  \"responseMessage\": {\n" +
+                        "    \"success\": false,\n" +
+                        "    \"status\": \"BAD_REQUEST\",\n" +
+                        "    \"message\": \"Validation Failed\"\n" +
+                        "  },\n" +
+                        "  \"details\": [\n" +
+                        "    \"Username can't be blank\",\n" +
+                        "    \"Usernames min length is 4, max length is 40\"\n" +
+                        "  ]\n" +
                         "}"));
     }
 
@@ -220,12 +217,18 @@ public class UserTests {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(newUserInfo);
         mockMvc.perform(requestBuilder)
-                .andExpect(status().isOk())
+                .andExpect(status().isBadRequest())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(content().json("{\n" +
-                        "  \"success\": false,\n" +
-                        "  \"message\": \"Surname not valid (at least 2 characters)!!\",\n" +
-                        "  \"status\": \"BAD_REQUEST\"\n" +
+                        "  \"responseMessage\": {\n" +
+                        "    \"success\": false,\n" +
+                        "    \"status\": \"BAD_REQUEST\",\n" +
+                        "    \"message\": \"Validation Failed\"\n" +
+                        "  },\n" +
+                        "  \"details\": [\n" +
+                        "    \"Surname can't be blank\",\n" +
+                        "    \"Surnames min length is 3, max length is 50\"\n" +
+                        "  ]\n" +
                         "}"));
     }
 
@@ -243,12 +246,18 @@ public class UserTests {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(newUserInfo);
         mockMvc.perform(requestBuilder)
-                .andExpect(status().isOk())
+                .andExpect(status().isBadRequest())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(content().json("{\n" +
-                        "  \"success\": false,\n" +
-                        "  \"message\": \"Name not valid (at least 2 characters)!!\",\n" +
-                        "  \"status\": \"BAD_REQUEST\"\n" +
+                        "  \"responseMessage\": {\n" +
+                        "    \"success\": false,\n" +
+                        "    \"status\": \"BAD_REQUEST\",\n" +
+                        "    \"message\": \"Validation Failed\"\n" +
+                        "  },\n" +
+                        "  \"details\": [\n" +
+                        "    \"Names min length is 3, max length is 50\",\n" +
+                        "    \"Name can't be blank\"\n" +
+                        "  ]\n" +
                         "}"));
     }
 
