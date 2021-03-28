@@ -13,7 +13,7 @@ public class Answer {
 
     @NotBlank(message = "Answer can't be blank")
     @Column(columnDefinition = "text")
-    @Size(max = 100)
+    @Size(max = 100, message = "max length is 100")
     private String text;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)

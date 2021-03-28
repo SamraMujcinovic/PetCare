@@ -12,9 +12,6 @@ import java.util.Optional;
 
 @Service
 public class UserService {
-    @Autowired
-    private ValidationsService validationsService;
-
     private final UserRepository userRepository;
 
     public UserService(UserRepository userRepository) {
@@ -45,24 +42,7 @@ public class UserService {
         return userRepository.findByEmail(email);
     }
 
-    public ResponseMessage deleteUser(UserRequest userRequest) {
-        ResponseMessage rm = validationsService.validateUserProfile2(userRequest);
-        if(!rm.getSuccess()){
-            return new ResponseMessage(false, rm.getMessage(), rm.getStatus());
-        }
-        try {
-            User user = userRepository.findByEmail(userRequest.getEmail())
-                    .orElseThrow(() -> new RuntimeException("User not found"));
-
-            if(user.getPassword().equals(userRequest.getPassword())){
-                userRepository.delete(user);
-                return new ResponseMessage(true, "You have successfully deleted your account!!", "OK");
-            }
-
-            return new ResponseMessage(false, "Wrong password!!", "BAD_REQUEST");
-        }
-        catch(RuntimeException e){
-            return new ResponseMessage(false, e.getMessage(), "NOT_FOUND");
-        }
+    public void delete(User user){
+        userRepository.delete(user);
     }
 }

@@ -30,25 +30,4 @@ public class AnswerService {
     public Answer save(Answer answer) {
         return  answerRepository.save(answer);
     }
-
-    public ResponseMessage addAnswer(Long questionId, Answer answer){
-
-        if(answer.getText().isEmpty() || answer.getText().length() > 100) {
-            return new ResponseMessage(false, "Answer not valid!!",
-                    "BAD_REQUEST");
-        }
-
-        try {
-            questionService.findById(questionId).map(question -> {
-                answer.setQuestion(question);
-                answerRepository.save(answer);
-                return new ResponseMessage(true, "Answer added successfully!!", "OK");
-            }).orElseThrow(() -> new RuntimeException("There is no question with that ID!!"));
-        }
-        catch (RuntimeException e){
-            return new ResponseMessage(false, "There is no question with that ID!!", "NOT_FOUND");
-        }
-
-        return new ResponseMessage(true, "Answer added successfully!!", "OK");
-    }
 }

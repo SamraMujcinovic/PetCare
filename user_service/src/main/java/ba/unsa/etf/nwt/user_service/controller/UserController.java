@@ -1,5 +1,6 @@
 package ba.unsa.etf.nwt.user_service.controller;
 
+import ba.unsa.etf.nwt.user_service.exception.ResourceNotFoundException;
 import ba.unsa.etf.nwt.user_service.model.User;
 import ba.unsa.etf.nwt.user_service.request.UserProfileRequest;
 import ba.unsa.etf.nwt.user_service.request.UserRequest;
@@ -7,19 +8,17 @@ import ba.unsa.etf.nwt.user_service.response.AvailabilityResponse;
 import ba.unsa.etf.nwt.user_service.response.ResponseMessage;
 import ba.unsa.etf.nwt.user_service.response.UserProfileResponse;
 import ba.unsa.etf.nwt.user_service.service.UserService;
-import ba.unsa.etf.nwt.user_service.service.ValidationsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
 public class UserController {
     @Autowired
     private UserService userService;
-
-    @Autowired
-    private ValidationsService validationsService;
 
     //admin
     @GetMapping("/users")
@@ -30,15 +29,10 @@ public class UserController {
     //admin
     @GetMapping("/users/{username}")
     public UserProfileResponse getUserProfile(@PathVariable(value = "username") String username) {
-        try {
-            User user = userService.findByUsername(username)
-                    .orElseThrow(() -> new RuntimeException("User not found!!"));
+        User user = userService.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found!!"));
 
-            return new UserProfileResponse(user.getName(), user.getSurname(), user.getUsername(), user.getEmail());
-        }
-        catch(RuntimeException e){
-            return new UserProfileResponse(e.getMessage(), "/", "/", "/");
-        }
+        return new UserProfileResponse(user.getName(), user.getSurname(), user.getUsername(), user.getEmail());
     }
 
     @GetMapping("/user/usernameCheck")
@@ -59,30 +53,27 @@ public class UserController {
 
     //user
     @PostMapping("/user/update")
-    public ResponseMessage updateUserProfile(@RequestBody UserProfileRequest userProfileRequest){
-        ResponseMessage rm = validationsService.validateUserProfile(userProfileRequest);
-        if(!rm.getSuccess()){
-            return new ResponseMessage(false, rm.getMessage(), rm.getStatus());
-        }
+    public ResponseMessage updateUserProfile(@Valid @RequestBody UserProfileRequest userProfileRequest){
+        User user = userService.findByEmail(userProfileRequest.getEmail())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-        try {
-            User user = userService.findByEmail(userProfileRequest.getEmail())
-                    .orElseThrow(() -> new RuntimeException("User not found"));
-
-            user.setName(userProfileRequest.getName());
-            user.setSurname(userProfileRequest.getSurname());
-            user.setUsername(userProfileRequest.getUsername());
-            userService.save(user);
-            return new ResponseMessage(true, "Profile successfully updated!!", "OK");
-        }
-        catch (RuntimeException e){
-            return new ResponseMessage(false, e.getMessage(),
-                    "BAD_REQUEST");
-        }
+        user.setName(userProfileRequest.getName());
+        user.setSurname(userProfileRequest.getSurname());
+        user.setUsername(userProfileRequest.getUsername());
+        userService.save(user);
+        return new ResponseMessage(true, HttpStatus.OK,"Profile successfully updated!!");
     }
 
     @DeleteMapping("/user/delete")
-    public ResponseMessage deleteUser(@RequestBody UserRequest userRequest){
-        return userService.deleteUser(userRequest);
+    public ResponseMessage deleteUser(@Valid @RequestBody UserRequest userRequest){
+        User user = userService.findByEmail(userRequest.getEmail())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        if(user.getPassword().equals(userRequest.getPassword())){
+            userService.delete(user);
+            return new ResponseMessage(true, HttpStatus.OK,"You have successfully deleted your account!!");
+        }
+
+        throw new ResourceNotFoundException("Wrong password!!");
     }
 }

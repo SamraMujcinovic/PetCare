@@ -11,9 +11,6 @@ import java.util.Optional;
 
 @Service
 public class QuestionService {
-    @Autowired
-    private ValidationsService validationsService;
-
     private final QuestionRepository questionRepository;
 
     public QuestionService(QuestionRepository questionRepository) {
@@ -38,27 +35,5 @@ public class QuestionService {
 
     public Question save(Question question) {
         return questionRepository.save(question);
-    }
-
-    public ResponseMessage addQuestion(Question question){
-        ResponseMessage rm = validationsService.validateQuestionRequest(question);
-        if(!rm.getSuccess()){
-            return new ResponseMessage(false, rm.getMessage(), rm.getStatus());
-        }
-
-        try {
-            questionRepository.findByTitle(question.getTitle())
-                    .orElseThrow(() -> new RuntimeException("Question not found!"));
-
-            return new ResponseMessage(false, "Question already exists!!", "BAD_REQUEST");
-        }
-        catch(RuntimeException e) {
-            Question q = new Question();
-            q.setTitle(question.getTitle());
-            q.setDescription(question.getDescription());
-
-            questionRepository.save(q);
-            return new ResponseMessage(true, "Question added successfully!!", "OK");
-        }
     }
 }
