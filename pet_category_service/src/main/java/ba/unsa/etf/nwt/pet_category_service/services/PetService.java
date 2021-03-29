@@ -72,15 +72,15 @@ public class PetService {
         return new Response(true, "Pet successfully deleted!", HttpStatus.OK);
     }
 
-    public Pet findPetByName(String name) {
-        return petRepository
-                .findByName(name)
-                .orElseThrow(() -> new ResourceNotFoundException("No pet with name " + name));
+    public List<Pet> findPetByName(String name) {
+        List<Pet> petoviSaIstimImenom = petRepository.findPetsByName(name);
+        if(petoviSaIstimImenom.isEmpty()) throw new ResourceNotFoundException("No pet with name " + name);
+        return petoviSaIstimImenom;
     }
 
-    public Pet getPetByName(String name) {
+    public List<Pet> getPetByName(String name) {
         //if(name == null) return new PetResponse(null, "Add a name for search!", "BAD_REQUEST", false);
-        Pet p = findPetByName(name);
+        List<Pet> p = findPetByName(name);
         return p;
     }
 

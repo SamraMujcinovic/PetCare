@@ -38,7 +38,7 @@ public class PetController {
     }
 
     @GetMapping("/pet/byName")
-    public Pet getPetByName(@NotNull @RequestParam String name){
+    public List<Pet> getPetByName(@NotNull @RequestParam String name){
         return petService.getPetByName(name);
     }
 

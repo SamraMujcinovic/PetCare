@@ -113,7 +113,7 @@ public class PetTests {
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().json("{\n" +
+                .andExpect(content().json("[\n{\n" +
                         "  \"name\": \"Rex\",\n" +
                         "  \"location\": \"Sarajevo\",\n" +
                         "  \"image\": \"image1\",\n" +
@@ -128,7 +128,7 @@ public class PetTests {
                         "      \"description\": \"Dogs are domesticated mammals, not natural wild animals. \"\n" +
                         "    }\n" +
                         "  }\n" +
-                        "}"));
+                        "}\n]"));
     }
 
     @Test

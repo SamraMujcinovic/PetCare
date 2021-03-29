@@ -10,7 +10,7 @@ import java.util.Optional;
 @Repository
 public interface PetRepository extends JpaRepository<Pet, Long> {
 
-    Optional<Pet> findByName(String name);
+    //Optional<Pet> findByName(String name);
 
     List<Pet> findByRase_Id(Long id);
 
@@ -19,5 +19,7 @@ public interface PetRepository extends JpaRepository<Pet, Long> {
     List<Pet> findByNameContains(String substring);
 
     List<Pet> findByRase_NameContains(String substring);
+
+    List<Pet> findPetsByName(String substring);
 
 }

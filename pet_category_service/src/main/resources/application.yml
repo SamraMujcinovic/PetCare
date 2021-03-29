@@ -9,3 +9,13 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: update
+  application:
+    name: pet_category_service
+  config:
+      import: optional:configserver:http://localhost:8888
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
