@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Entity
 @Data
@@ -19,9 +21,15 @@ public class AddPetRequest {
     @JsonIgnore
     private Long id;
 
+    @NotNull(message = "User ID can't be null.")
     private Long userID;
+
+    @NotNull(message = "New pet ID can't be null.")
     private Long newPetID;
+
+    @Size(max = 1000, message = "Request message can't have more than 1000 characters.")
     private String message;
+
     private boolean approved = false;
 
     public Long getId() {
