@@ -1,4 +1,4 @@
-package ba.unsa.etf.nwt.comment_service.models;
+package ba.unsa.etf.nwt.comment_service.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
@@ -7,6 +7,7 @@ import lombok.Data;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -23,18 +24,17 @@ public class Reply {
     @JsonIgnore
     private Long id;
 
-    @NotNull(message = "Comment cannot be null")
     @ManyToOne( fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "comment_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Comment comment;
 
-    @NotNull(message = "User id cannot be null")
     private Long userID;
 
-    @NotNull(message = "Content cannot be null")
+    @NotNull(message = "Content can't be blank!!")
     @Size(min = 2, max = 1000, message
-            = "Content must be between 2 and 1000 characters")
+            = "Content must be between 2 and 1000 characters!!")
+    @Column(columnDefinition = "text")
     private String content;
 
     public Reply(Comment comment, Long userID, String content) {

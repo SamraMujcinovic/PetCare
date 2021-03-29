@@ -1,14 +1,16 @@
-package ba.unsa.etf.nwt.comment_service.responses;
+package ba.unsa.etf.nwt.notification_service.response;
+
+import org.springframework.http.HttpStatus;
 
 public class ResponseMessage {
     private Boolean success;
+    private HttpStatus status;
     private String message;
-    private String status;
 
-    public ResponseMessage(Boolean success, String message, String status) {
+    public ResponseMessage(Boolean success, HttpStatus status, String message) {
         this.success = success;
-        this.message = message;
         this.status = status;
+        this.message = message;
     }
 
     public Boolean getSuccess() {
@@ -27,11 +29,11 @@ public class ResponseMessage {
         this.message = message;
     }
 
-    public String getStatus() {
+    public HttpStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(HttpStatus status) {
         this.status = status;
     }
 }

@@ -1,4 +1,4 @@
-package ba.unsa.etf.nwt.notification_service.models;
+package ba.unsa.etf.nwt.notification_service.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -13,7 +13,6 @@ import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.Optional;
 
 @Entity
 @Data
@@ -26,13 +25,13 @@ public class Notification {
     @JsonIgnore
     private Long id;
 
-    @NotBlank
-    @NotNull(message = "Content cannot be null")
+    @NotBlank(message = "Content can't be blank!!")
+    @Column(columnDefinition = "text")
     @Size(min = 2, max = 150, message
-            = "Content must be between 2 and 150 characters")
+            = "Content must be between 2 and 150 characters!!")
     private String content;
 
-    @NotNull(message = "UserID cannot be null")
+    @NotNull(message = "UserID can't be null")
     private Long userID;
 
     private Boolean read = false;

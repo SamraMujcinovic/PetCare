@@ -1,19 +1,16 @@
 package ba.unsa.etf.nwt.comment_service.seeder;
 
-import ba.unsa.etf.nwt.comment_service.models.Comment;
-import ba.unsa.etf.nwt.comment_service.models.Reply;
-import ba.unsa.etf.nwt.comment_service.models.sectionRoles.MainRole;
-import ba.unsa.etf.nwt.comment_service.models.sectionRoles.SectionRoleName;
-import ba.unsa.etf.nwt.comment_service.services.CommentService;
-import ba.unsa.etf.nwt.comment_service.services.MainRoleService;
-import ba.unsa.etf.nwt.comment_service.services.ReplyService;
+import ba.unsa.etf.nwt.comment_service.model.Comment;
+import ba.unsa.etf.nwt.comment_service.model.Reply;
+import ba.unsa.etf.nwt.comment_service.model.sectionRole.MainRole;
+import ba.unsa.etf.nwt.comment_service.model.sectionRole.SectionRoleName;
+import ba.unsa.etf.nwt.comment_service.service.CommentService;
+import ba.unsa.etf.nwt.comment_service.service.MainRoleService;
+import ba.unsa.etf.nwt.comment_service.service.ReplyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
-
-import java.util.HashSet;
-import java.util.Set;
 
 @Component
 public class DatabaseSeeder {
@@ -54,7 +51,7 @@ public class DatabaseSeeder {
         comment.setTitle(title);
         comment.setContent(content);
         comment.setRoles(role);
-        commentService.addComment(comment, role.getId());
+        commentService.addComment(comment, 2L);
         return comment;
     }
 

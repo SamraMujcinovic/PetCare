@@ -1,13 +1,13 @@
-package ba.unsa.etf.nwt.comment_service.controllers;
+package ba.unsa.etf.nwt.comment_service.controller;
 
-import ba.unsa.etf.nwt.comment_service.models.Comment;
-import ba.unsa.etf.nwt.comment_service.models.Reply;
-import ba.unsa.etf.nwt.comment_service.responses.ResponseMessage;
-import ba.unsa.etf.nwt.comment_service.services.CommentService;
-import ba.unsa.etf.nwt.comment_service.services.ReplyService;
+import ba.unsa.etf.nwt.comment_service.model.Comment;
+import ba.unsa.etf.nwt.comment_service.model.Reply;
+import ba.unsa.etf.nwt.comment_service.response.ResponseMessage;
+import ba.unsa.etf.nwt.comment_service.service.ReplyService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @AllArgsConstructor
@@ -21,7 +21,7 @@ public class ReplyController {
     }
 
     @PostMapping("/reply/{commentId}")
-    public ResponseMessage addReply(@RequestBody Reply reply, @PathVariable Long commentId) {
+    public ResponseMessage addReply(@Valid  @RequestBody Reply reply, @PathVariable Long commentId) {
           return replyService.addReply(reply, commentId);
     }
 
@@ -31,7 +31,7 @@ public class ReplyController {
     }
 
     @PutMapping("/reply/{replyID}")
-    public ResponseMessage updateReply(@RequestBody Comment reply, @PathVariable Long replyID) {
+    public ResponseMessage updateReply(@Valid @RequestBody Reply reply, @PathVariable Long replyID) {
         return replyService.updateReply(reply, replyID);
     }
 

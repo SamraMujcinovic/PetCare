@@ -1,8 +1,7 @@
-package ba.unsa.etf.nwt.comment_service.models.sectionRoles;
+package ba.unsa.etf.nwt.comment_service.model.sectionRole;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;

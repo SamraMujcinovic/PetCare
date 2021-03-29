@@ -1,6 +1,6 @@
 package ba.unsa.etf.nwt.notification_service.repository;
 
-import ba.unsa.etf.nwt.notification_service.models.Notification;
+import ba.unsa.etf.nwt.notification_service.model.Notification;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

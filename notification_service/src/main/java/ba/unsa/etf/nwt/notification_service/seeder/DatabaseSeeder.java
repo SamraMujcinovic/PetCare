@@ -1,7 +1,7 @@
 package ba.unsa.etf.nwt.notification_service.seeder;
 
-import ba.unsa.etf.nwt.notification_service.models.Notification;
-import ba.unsa.etf.nwt.notification_service.services.NotificationService;
+import ba.unsa.etf.nwt.notification_service.model.Notification;
+import ba.unsa.etf.nwt.notification_service.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;

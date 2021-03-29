@@ -1,8 +1,7 @@
-package ba.unsa.etf.nwt.comment_service.services;
+package ba.unsa.etf.nwt.comment_service.service;
 
-import ba.unsa.etf.nwt.comment_service.models.Comment;
-import ba.unsa.etf.nwt.comment_service.models.sectionRoles.MainRole;
-import ba.unsa.etf.nwt.comment_service.models.sectionRoles.SectionRoleName;
+import ba.unsa.etf.nwt.comment_service.model.sectionRole.MainRole;
+import ba.unsa.etf.nwt.comment_service.model.sectionRole.SectionRoleName;
 import ba.unsa.etf.nwt.comment_service.repository.MainRoleRepository;
 import org.springframework.stereotype.Service;
 

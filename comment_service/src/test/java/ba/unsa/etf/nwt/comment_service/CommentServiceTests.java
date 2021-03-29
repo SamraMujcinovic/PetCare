@@ -68,13 +68,17 @@ class CommentServiceTests {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(newComment);
         mockMvc.perform(requestBuilder)
-                .andExpect(status().isOk())
+                .andExpect(status().isBadRequest())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().json("{\n" +
-                        "    \"success\": false,\n" +
-                        "    \"message\": \"Title must be between 2 and 1000 characters!!\",\n" +
-                        "    \"status\": \"BAD_REQUEST\"\n" +
-                        "}\n"));
+                .andExpect(content().json("{\"responseMessage\": {\n" +
+                        "        \"success\": false,\n" +
+                        "        \"status\": \"BAD_REQUEST\",\n" +
+                        "        \"message\": \"Validation Failed\"\n" +
+                        "    },\n" +
+                        "    \"details\": [\n" +
+                        "        \"Title must be between 2 and 100 characters!!\"\n" +
+                        "    ]\n" +
+                        "}\n}\n"));
     }
 
     @Test
@@ -91,13 +95,9 @@ class CommentServiceTests {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(newComment);
         mockMvc.perform(requestBuilder)
-                .andExpect(status().isOk())
+                .andExpect(status().isBadRequest())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().json("{\n" +
-                        "    \"success\": false,\n" +
-                        "    \"message\": \"Content must be between 2 and 1000 characters!!\",\n" +
-                        "    \"status\": \"BAD_REQUEST\"\n" +
-                        "}\n"));
+                .andExpect(content().json("{\"responseMessage\":{\"success\":false,\"status\":\"BAD_REQUEST\",\"message\":\"Validation Failed\"},\"details\":[\"Content must be between 2 and 1000 characters!!\"]}"));
     }
 
     @Test
@@ -153,13 +153,17 @@ class CommentServiceTests {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(newComment);
         mockMvc.perform(requestBuilder)
-                .andExpect(status().isOk())
+                .andExpect(status().isBadRequest())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().json("{\n" +
-                        "    \"success\": false,\n" +
-                        "    \"message\": \"Title must be between 2 and 1000 characters!!\",\n" +
-                        "    \"status\": \"BAD_REQUEST\"\n" +
-                        "}\n"));
+                .andExpect(content().json("{\"responseMessage\": {\n" +
+                        "        \"success\": false,\n" +
+                        "        \"status\": \"BAD_REQUEST\",\n" +
+                        "        \"message\": \"Validation Failed\"\n" +
+                        "    },\n" +
+                        "    \"details\": [\n" +
+                        "        \"Title must be between 2 and 100 characters!!\"\n" +
+                        "    ]\n" +
+                        "}\n}\n"));
     }
 
     @Test
@@ -174,12 +178,8 @@ class CommentServiceTests {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(newComment);
         mockMvc.perform(requestBuilder)
-                .andExpect(status().isOk())
+                .andExpect(status().isBadRequest())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().json("{\n" +
-                        "    \"success\": false,\n" +
-                        "    \"message\": \"Content must be between 2 and 1000 characters!!\",\n" +
-                        "    \"status\": \"BAD_REQUEST\"\n" +
-                        "}\n"));
+                .andExpect(content().json("{\"responseMessage\":{\"success\":false,\"status\":\"BAD_REQUEST\",\"message\":\"Validation Failed\"},\"details\":[\"Content must be between 2 and 1000 characters!!\"]}"));
     }
 }

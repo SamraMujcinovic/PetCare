@@ -1,6 +1,6 @@
 package ba.unsa.etf.nwt.notification_service;
 
-import ba.unsa.etf.nwt.notification_service.models.Notification;
+import ba.unsa.etf.nwt.notification_service.model.Notification;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

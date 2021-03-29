@@ -1,16 +1,13 @@
-package ba.unsa.etf.nwt.comment_service.controllers;
+package ba.unsa.etf.nwt.comment_service.controller;
 
-import ba.unsa.etf.nwt.comment_service.models.Comment;
-import ba.unsa.etf.nwt.comment_service.models.sectionRoles.MainRole;
-import ba.unsa.etf.nwt.comment_service.models.sectionRoles.SectionRoleName;
-import ba.unsa.etf.nwt.comment_service.responses.ResponseMessage;
-import ba.unsa.etf.nwt.comment_service.services.CommentService;
-import ba.unsa.etf.nwt.comment_service.services.MainRoleService;
+import ba.unsa.etf.nwt.comment_service.model.Comment;
+import ba.unsa.etf.nwt.comment_service.response.ResponseMessage;
+import ba.unsa.etf.nwt.comment_service.service.CommentService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
-import java.util.Optional;
 
 @AllArgsConstructor
 @RestController
@@ -23,7 +20,7 @@ public class CommentController {
     }
 
     @PostMapping("/comment/{mainRoleId}")
-    public ResponseMessage addComment(@RequestBody Comment comment, @PathVariable Long mainRoleId) {
+    public ResponseMessage addComment(@Valid @RequestBody Comment comment, @PathVariable Long mainRoleId) {
             return commentService.addComment(comment, mainRoleId);
     }
 
@@ -38,7 +35,7 @@ public class CommentController {
     }
 
     @PutMapping("/comment/{commentID}")
-    public ResponseMessage updateComment(@RequestBody Comment comment, @PathVariable Long commentID) {
+    public ResponseMessage updateComment(@Valid @RequestBody Comment comment, @PathVariable Long commentID) {
         return commentService.updateComment(comment, commentID);
     }
 

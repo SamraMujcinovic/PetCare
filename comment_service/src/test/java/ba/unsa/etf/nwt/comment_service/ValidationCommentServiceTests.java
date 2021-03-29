@@ -1,9 +1,9 @@
 package ba.unsa.etf.nwt.comment_service;
 
-import ba.unsa.etf.nwt.comment_service.models.Comment;
-import ba.unsa.etf.nwt.comment_service.models.Reply;
-import ba.unsa.etf.nwt.comment_service.models.sectionRoles.MainRole;
-import ba.unsa.etf.nwt.comment_service.models.sectionRoles.SectionRoleName;
+import ba.unsa.etf.nwt.comment_service.model.Comment;
+import ba.unsa.etf.nwt.comment_service.model.Reply;
+import ba.unsa.etf.nwt.comment_service.model.sectionRole.MainRole;
+import ba.unsa.etf.nwt.comment_service.model.sectionRole.SectionRoleName;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -13,7 +13,6 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
-import java.util.HashSet;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;

@@ -1,7 +1,9 @@
-package ba.unsa.etf.nwt.comment_service.models;
+package ba.unsa.etf.nwt.comment_service.model;
 
-import ba.unsa.etf.nwt.comment_service.models.sectionRoles.MainRole;
+import ba.unsa.etf.nwt.comment_service.model.sectionRole.MainRole;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -9,8 +11,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Data
@@ -23,17 +23,18 @@ public class Comment {
     @JsonIgnore
     private Long id;
 
-    @NotNull(message = "UserID cannot be null")
     private Long userID;
 
-    @NotNull(message = "Title cannot be null")
+    @NotBlank(message = "Title can't be blank")
     @Size(min = 2, max = 100, message
-            = "Title must be between 2 and 1000 characters")
+            = "Title must be between 2 and 100 characters!!")
+    @Column(columnDefinition = "text")
     private String title;
 
-    @NotNull(message = "Content cannot be null")
-    @Size(min = 2, max = 100, message
-            = "Content must be between 2 and 1000 characters")
+    @NotBlank(message = "Content can't be blank")
+    @Size(min = 2, max = 1000, message
+            = "Content must be between 2 and 1000 characters!!")
+    @Column(columnDefinition = "text")
     private String content;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
