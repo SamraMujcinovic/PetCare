@@ -43,9 +43,6 @@ public class PasswordRecoveryController {
         User user = userService.findByEmail(passwordRecoveryRequest.getEmail())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found!"));
 
-        /*if (user == null)
-            throw new ResourceNotFoundException("User does not exist");*/
-
         if(passwordRecoveryRequest.getAnswer().getText().equals(user.getAnswer().getText())){
             user.setPassword(passwordRecoveryRequest.getNewPassword());
             userService.save(user);

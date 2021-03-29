@@ -1,6 +1,7 @@
 package ba.unsa.etf.nwt.user_service.service;
 
 import ba.unsa.etf.nwt.user_service.exception.ResourceNotFoundException;
+import ba.unsa.etf.nwt.user_service.exception.WrongInputException;
 import ba.unsa.etf.nwt.user_service.model.User;
 import ba.unsa.etf.nwt.user_service.request.password_requests.PasswordAnswerRequest;
 import ba.unsa.etf.nwt.user_service.request.password_requests.PasswordQuestionRequest;
@@ -19,9 +20,6 @@ public class PasswordService {
         User user = userService.findByEmail(passwordQuestionRequest.getEmail())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found!"));
 
-        if (user == null)
-            throw new ResourceNotFoundException("User does not exist!");
-
         return new QuestionResponse(new ResponseMessage(true, HttpStatus.OK,"Valid email, question found."), user.getAnswer().getQuestion());
     }
 
@@ -29,14 +27,11 @@ public class PasswordService {
         User user = userService.findByEmail(passwordAnswerRequest.getEmail())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found!"));
 
-        if (user == null)
-            throw new ResourceNotFoundException("User does not exist!");
-
         if(passwordAnswerRequest.getAnswer().getText().equals(user.getAnswer().getText())){
             return new ResponseMessage(true, HttpStatus.OK,"You have successfully answered the question.");
         }
         else {
-            throw new ResourceNotFoundException("Wrong answer!");
+            throw new WrongInputException("Wrong answer!");
         }
     }
 }

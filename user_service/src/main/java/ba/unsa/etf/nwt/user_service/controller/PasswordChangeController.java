@@ -43,9 +43,6 @@ public class PasswordChangeController {
         User user = userService.findByEmail(passwordChangeRequest.getEmail())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found!"));
 
-        /*if (user == null)
-            throw new ResourceNotFoundException("User does not exist!");*/
-
         if(passwordChangeRequest.getAnswer().getText().equals(user.getAnswer().getText())){
 
             if(!passwordChangeRequest.getOldPassword().equals(user.getPassword())){
