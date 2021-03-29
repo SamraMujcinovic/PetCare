@@ -67,9 +67,9 @@ public class AdoptionRequestService {
             adoptionRequestRepository.delete(adoptionRequest);
             if (adoptionRequestRepository.findById(id) != null)
                 return new ResponseMessage(true, HttpStatus.OK, "Adoption request with id=" + id + " deleted successfully!");
-            return new ResponseMessage(false, HttpStatus.NOT_FOUND, "There is no adoption request with id=" + id + "!");
-        } catch (Exception e) {
             return new ResponseMessage(false, HttpStatus.INTERNAL_SERVER_ERROR, "Internal server or database error!");
+        } catch (Exception e) {
+            return new ResponseMessage(false, HttpStatus.NOT_FOUND, "There is no adoption request with id=" + id + "!");
         }
     }
 
@@ -87,11 +87,11 @@ public class AdoptionRequestService {
                     .findAll()
                     .stream()
                     .filter(n -> n.getUserID().equals(userID))
-                    .collect(Collectors.toList()).get(0) != null)
+                    .collect(Collectors.toList()).size() == 0)
                 return new ResponseMessage(true, HttpStatus.OK, "Adoption request with user id=" + userID + " deleted successfully!");
-            return new ResponseMessage(false, HttpStatus.NOT_FOUND, "There are no adoption requests with user id=" + userID + "!");
-        } catch (Exception e) {
             return new ResponseMessage(false, HttpStatus.INTERNAL_SERVER_ERROR, "Internal server or database error!");
+        } catch (Exception e) {
+            return new ResponseMessage(false, HttpStatus.NOT_FOUND, "There are no adoption requests with user id=" + userID + "!");
         }
     }
 
@@ -109,11 +109,11 @@ public class AdoptionRequestService {
                     .findAll()
                     .stream()
                     .filter(n -> n.getPetID().equals(petID))
-                    .collect(Collectors.toList()).get(0) != null)
+                    .collect(Collectors.toList()).size() == 0)
                 return new ResponseMessage(true, HttpStatus.OK, "Adoption request with pet id=" + petID + " deleted successfully!");
-            return new ResponseMessage(false, HttpStatus.NOT_FOUND, "There are no adoption requests with pet id=" + petID + "!");
-        } catch (Exception e) {
             return new ResponseMessage(false, HttpStatus.INTERNAL_SERVER_ERROR, "Internal server or database error!");
+        } catch (Exception e) {
+            return new ResponseMessage(false, HttpStatus.NOT_FOUND, "There are no adoption requests with pet id=" + petID + "!");
         }
     }
 }

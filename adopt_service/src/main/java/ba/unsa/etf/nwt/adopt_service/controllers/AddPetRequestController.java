@@ -24,12 +24,12 @@ public class AddPetRequestController {
         return addPetRequestService.addAddPetRequest(addPetRequest);
     }
 
-    @GetMapping("/add-pet-request/{userID}")
+    @GetMapping("/add-pet-request/user/{userID}")
     public List<AddPetRequest> getAddPetRequestByUserID(@PathVariable Long userID) {
         return addPetRequestService.getAddPetRequestByUserID(userID);
     }
 
-    @GetMapping("/add-pet-request/{newPetID}")
+    @GetMapping("/add-pet-request/pet/{newPetID}")
     public List<AddPetRequest> getAddPetRequestByNewPetID(@PathVariable Long newPetID) {
         return addPetRequestService.getAddPetRequestByNewPetID(newPetID);
     }
@@ -49,12 +49,12 @@ public class AddPetRequestController {
         return addPetRequestService.deleteAddPetRequestByID(id);
     }
 
-    @DeleteMapping("/add-pet-request/{userID}")
+    @DeleteMapping("/add-pet-request/user/{userID}")
     public ResponseMessage deleteAddPetRequestsByUserID(@PathVariable Long userID) {
         return addPetRequestService.deleteAddPetRequestsByUserID(userID);
     }
 
-    @DeleteMapping("/add-pet-request/{newPetID}")
+    @DeleteMapping("/add-pet-request/pet/{newPetID}")
     public ResponseMessage deleteAddPetRequestsByNewPetID(@PathVariable Long newPetID) {
         return addPetRequestService.deleteAddPetRequestsByNewPetID(newPetID);
     }

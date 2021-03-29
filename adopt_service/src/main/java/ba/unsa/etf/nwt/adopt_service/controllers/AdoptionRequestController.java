@@ -4,8 +4,6 @@ import ba.unsa.etf.nwt.adopt_service.models.AdoptionRequest;
 import ba.unsa.etf.nwt.adopt_service.response.ResponseMessage;
 import ba.unsa.etf.nwt.adopt_service.services.AdoptionRequestService;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -13,18 +11,8 @@ import java.util.List;
 
 @AllArgsConstructor
 @RestController
-@RefreshScope
 public class AdoptionRequestController {
     private final AdoptionRequestService adoptionRequestService;
-
-    @Value("${my.variable: default value}")
-    private String variable;
-
-    @GetMapping("/configserver/test")
-    public String getVariable() {
-        return "RETURNED VARIABLE: " + variable;
-    }
-
 
     @GetMapping("/adoption-request")
     public List<AdoptionRequest> getAdoptionRequests() {
@@ -36,12 +24,12 @@ public class AdoptionRequestController {
         return adoptionRequestService.addAdoptionRequest(adoptionRequest);
     }
 
-    @GetMapping("/adoption-request/{userID}")
+    @GetMapping("/adoption-request/user/{userID}")
     public List<AdoptionRequest> getAdoptionRequestByUserID(@PathVariable Long userID) {
         return adoptionRequestService.getAdoptionRequestByUserID(userID);
     }
 
-    @GetMapping("/adoption-request/{petID}")
+    @GetMapping("/adoption-request/pet/{petID}")
     public List<AdoptionRequest> getAdoptionRequestByPetID(@PathVariable Long petID) {
         return adoptionRequestService.getAdoptionRequestByPetID(petID);
     }
@@ -61,12 +49,12 @@ public class AdoptionRequestController {
         return adoptionRequestService.deleteAdoptionRequestByID(id);
     }
 
-    @DeleteMapping("/adoption-request/{userID}")
+    @DeleteMapping("/adoption-request/user/{userID}")
     public ResponseMessage deleteAdoptionRequestsByUserID(@PathVariable Long userID) {
         return adoptionRequestService.deleteAdoptionRequestsByUserID(userID);
     }
 
-    @DeleteMapping("/adoption-request/{petID}")
+    @DeleteMapping("/adoption-request/pet/{petID}")
     public ResponseMessage deleteAdoptionRequestsByPetID(@PathVariable Long petID) {
         return adoptionRequestService.deleteAdoptionRequestsByPetID(petID);
     }

@@ -67,9 +67,9 @@ public class AddPetRequestService {
             addPetRequestRepository.delete(addPetRequest);
             if (addPetRequestRepository.findById(id) != null)
                 return new ResponseMessage(true, HttpStatus.OK, "Request to add a pet with id=" + id + " deleted successfully!");
-            return new ResponseMessage(false, HttpStatus.NOT_FOUND, "There is no request to add a pet with id=" + id + "!");
-        } catch (Exception e) {
             return new ResponseMessage(false, HttpStatus.INTERNAL_SERVER_ERROR, "Internal server or database error!");
+        } catch (Exception e) {
+            return new ResponseMessage(false, HttpStatus.NOT_FOUND, "There is no request to add a pet with id=" + id + "!");
         }
     }
 
@@ -87,11 +87,11 @@ public class AddPetRequestService {
                     .findAll()
                     .stream()
                     .filter(n -> n.getUserID().equals(userID))
-                    .collect(Collectors.toList()).get(0) != null)
-                return new ResponseMessage(true, HttpStatus.OK, "Request to add a pet with user id=" + userID + " deleted successfully!");
-            return new ResponseMessage(false, HttpStatus.NOT_FOUND, "There are no requests to add a pet with user id=" + userID + "!");
-        } catch (Exception e) {
+                    .collect(Collectors.toList()).size() == 0)
+                return new ResponseMessage(true, HttpStatus.OK, "Requests to add a pet with user id=" + userID + " deleted successfully!");
             return new ResponseMessage(false, HttpStatus.INTERNAL_SERVER_ERROR, "Internal server or database error!");
+        } catch (Exception e) {
+            return new ResponseMessage(false, HttpStatus.NOT_FOUND, "There are no requests to add a pet with user id=" + userID + "!");
         }
     }
 
@@ -109,11 +109,11 @@ public class AddPetRequestService {
                     .findAll()
                     .stream()
                     .filter(n -> n.getNewPetID().equals(newPetID))
-                    .collect(Collectors.toList()).get(0) != null)
+                    .collect(Collectors.toList()).size() == 0)
                 return new ResponseMessage(true, HttpStatus.OK, "Request to add a pet with pet id=" + newPetID + " deleted successfully!");
-            return new ResponseMessage(false, HttpStatus.NOT_FOUND, "There are no requests to add a pet with pet id=" + newPetID + "!");
-        } catch (Exception e) {
             return new ResponseMessage(false, HttpStatus.INTERNAL_SERVER_ERROR, "Internal server or database error!");
+        } catch (Exception e) {
+            return new ResponseMessage(false, HttpStatus.NOT_FOUND, "There are no requests to add a pet with pet id=" + newPetID + "!");
         }
     }
 }
