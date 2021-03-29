@@ -5,6 +5,8 @@ import ba.unsa.etf.nwt.user_service.model.Question;
 import ba.unsa.etf.nwt.user_service.response.ResponseMessage;
 import ba.unsa.etf.nwt.user_service.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,9 +17,18 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
+@RefreshScope
 public class QuestionController {
     @Autowired
     private QuestionService questionService;
+
+    @Value("${my.variable: default value}")
+    private String variable;
+
+    @GetMapping("/configserver/test")
+    public String getVariable() {
+        return "RETURNED VARIABLE: " + variable;
+    }
 
     @GetMapping("/questions")
     public List<Question> getQuestions() {
