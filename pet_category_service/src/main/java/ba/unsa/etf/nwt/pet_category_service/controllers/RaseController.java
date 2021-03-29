@@ -27,8 +27,8 @@ public class RaseController {
         return raseService.getRasesInCategory(id);
     }
 
-    @GetMapping("/rase")
-    public Rase getRase(@NotNull @RequestParam Long id){
+    @GetMapping("/rase/{id}")
+    public Rase getRase(@NotNull @PathVariable Long id){
         return raseService.getRase(id);
     }
 

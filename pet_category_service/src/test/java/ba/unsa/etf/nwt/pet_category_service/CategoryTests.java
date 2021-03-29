@@ -1,5 +1,7 @@
 package ba.unsa.etf.nwt.pet_category_service;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -23,6 +25,20 @@ public class CategoryTests {
     private MockMvc mockMvc;
 
     @Test
+    void AddCategoryTest() throws Exception{
+
+        String novaCat = "{\"name\": \"prvaCat\",\"description\": \"string\"}";
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/category")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(novaCat);
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("{\"success\": true, \"message\": \"Category added successfully!\",\"status\": \"OK\"}"));
+    }
+
+    @Test
     void GetAllCategoriesInJSON() throws Exception{
         RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/categories")
                 .contentType(MediaType.APPLICATION_JSON);
@@ -34,14 +50,14 @@ public class CategoryTests {
     @Test
     void GetCategoryByIDTest() throws Exception{
 
-        Long categoryID = 1L;
+        Long id = 1L;
 
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/category/{categoryID}", categoryID)
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/category/{id}", id)
                 .contentType(MediaType.APPLICATION_JSON);
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().json("{\"category\":{\"name\":\"Dog\",\"description\":\"Dogs are domesticated mammals, not natural wild animals. \"},\"message\":\"Request OK!\",\"status\":\"OK\",\"success\":true}"));
+                .andExpect(content().json("{\"name\":\"Dog\",\"description\":\"Dogs are domesticated mammals, not natural wild animals. \"}"));
     }
 
     @Test
@@ -54,8 +70,36 @@ public class CategoryTests {
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().json("{\"category\":{\"name\":\"Cat\",\"description\":\"Cats, also called domestic cats (Felis catus), are small, carnivorous (meat-eating) mammals, of the family Felidae.\"},\"message\":\"Category found!\",\"status\":\"OK\",\"success\":true}"));
+                .andExpect(content().json("{\"name\":\"Cat\",\"description\":\"Cats, also called domestic cats (Felis catus), are small, carnivorous (meat-eating) mammals, of the family Felidae.\"}"));
     }
 
+    @Test
+    void UpdateCategoryTest() throws Exception{
+
+        Long id = 3L;
+
+        String novaCat = "{\"name\": \"novaCat\",\"description\": \"string\"}";
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/category/update/{id}", id)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(novaCat);
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("{\"name\": \"novaCat\",\"description\": \"string\"}"));
+    }
+
+    @Test
+    void DeleteCategoryTest() throws Exception{
+
+        Long categoryID = 4L;
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/category?id={categoryID}", categoryID)
+                .contentType(MediaType.APPLICATION_JSON);
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("{\"success\": true, \"message\": \"Category successfully deleted!\",\"status\": \"OK\"}"));
+    }
 
 }

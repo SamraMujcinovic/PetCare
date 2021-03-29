@@ -117,4 +117,12 @@ public class PetService {
         //find all pets where rase.getCategoryID = id
         return petRepository.findByRase_Category_Id(id);
     }
+
+    public List<Pet> getPetsNameContainsString(String substring) {
+        return petRepository.findByNameContains(substring);
+    }
+
+    public List<Pet> getPetsRaseContainsString(String substring) {
+        return petRepository.findByRase_NameContains(substring);
+    }
 }

@@ -42,6 +42,16 @@ public class PetController {
         return petService.getPetByName(name);
     }
 
+    @GetMapping("/pets/name/contains")
+    public List<Pet> getPetsNameContainsString(@NotNull String substring){
+        return petService.getPetsNameContainsString(substring);
+    }
+
+    @GetMapping("/pets/rase/contains")
+    public List<Pet> getPetsRaseContainsString(@NotNull String substring){
+        return petService.getPetsRaseContainsString(substring);
+    }
+
     @PostMapping("/pet")
     public Response addPet(@Valid @RequestBody PetRequest petRequest){
         return petService.addPet(petRequest);
