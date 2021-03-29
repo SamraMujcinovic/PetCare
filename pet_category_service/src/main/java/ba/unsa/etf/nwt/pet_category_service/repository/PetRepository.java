@@ -19,4 +19,5 @@ public interface PetRepository extends JpaRepository<Pet, Long> {
     List<Pet> findByNameContains(String substring);
 
     List<Pet> findByRase_NameContains(String substring);
+
 }

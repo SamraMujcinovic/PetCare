@@ -43,12 +43,12 @@ public class PetController {
     }
 
     @GetMapping("/pets/name/contains")
-    public List<Pet> getPetsNameContainsString(@NotNull String substring){
+    public List<Pet> getPetsNameContainsString(@NotNull @RequestParam String substring){
         return petService.getPetsNameContainsString(substring);
     }
 
     @GetMapping("/pets/rase/contains")
-    public List<Pet> getPetsRaseContainsString(@NotNull String substring){
+    public List<Pet> getPetsRaseContainsString(@NotNull @RequestParam String substring){
         return petService.getPetsRaseContainsString(substring);
     }
 
