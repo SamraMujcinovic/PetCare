@@ -1,11 +1,11 @@
 package ba.unsa.etf.nwt.pet_category_service.seeder;
 
-import ba.unsa.etf.nwt.pet_category_service.models.Category;
-import ba.unsa.etf.nwt.pet_category_service.models.Pet;
-import ba.unsa.etf.nwt.pet_category_service.models.Rase;
-import ba.unsa.etf.nwt.pet_category_service.services.CategoryService;
-import ba.unsa.etf.nwt.pet_category_service.services.PetService;
-import ba.unsa.etf.nwt.pet_category_service.services.RaseService;
+import ba.unsa.etf.nwt.pet_category_service.model.Category;
+import ba.unsa.etf.nwt.pet_category_service.model.Pet;
+import ba.unsa.etf.nwt.pet_category_service.model.Rase;
+import ba.unsa.etf.nwt.pet_category_service.service.CategoryService;
+import ba.unsa.etf.nwt.pet_category_service.service.PetService;
+import ba.unsa.etf.nwt.pet_category_service.service.RaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;

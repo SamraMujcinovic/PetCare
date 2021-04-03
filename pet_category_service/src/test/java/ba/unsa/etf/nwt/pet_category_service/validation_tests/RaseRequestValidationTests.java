@@ -1,7 +1,7 @@
 package ba.unsa.etf.nwt.pet_category_service.validation_tests;
 
 
-import ba.unsa.etf.nwt.pet_category_service.requests.RaseRequest;
+import ba.unsa.etf.nwt.pet_category_service.request.RaseRequest;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

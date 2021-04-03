@@ -1,6 +1,6 @@
 package ba.unsa.etf.nwt.pet_category_service.repository;
 
-import ba.unsa.etf.nwt.pet_category_service.models.Rase;
+import ba.unsa.etf.nwt.pet_category_service.model.Rase;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

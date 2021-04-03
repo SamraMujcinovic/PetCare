@@ -1,7 +1,7 @@
 package ba.unsa.etf.nwt.adopt_service;
 
-import ba.unsa.etf.nwt.adopt_service.models.AddPetRequest;
-import ba.unsa.etf.nwt.adopt_service.models.AdoptionRequest;
+import ba.unsa.etf.nwt.adopt_service.model.AddPetRequest;
+import ba.unsa.etf.nwt.adopt_service.model.AdoptionRequest;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

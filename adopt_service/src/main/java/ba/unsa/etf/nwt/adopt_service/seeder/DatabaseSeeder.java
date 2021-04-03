@@ -1,9 +1,9 @@
 package ba.unsa.etf.nwt.adopt_service.seeder;
 
-import ba.unsa.etf.nwt.adopt_service.models.AddPetRequest;
-import ba.unsa.etf.nwt.adopt_service.models.AdoptionRequest;
-import ba.unsa.etf.nwt.adopt_service.services.AddPetRequestService;
-import ba.unsa.etf.nwt.adopt_service.services.AdoptionRequestService;
+import ba.unsa.etf.nwt.adopt_service.model.AddPetRequest;
+import ba.unsa.etf.nwt.adopt_service.model.AdoptionRequest;
+import ba.unsa.etf.nwt.adopt_service.service.AddPetRequestService;
+import ba.unsa.etf.nwt.adopt_service.service.AdoptionRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;

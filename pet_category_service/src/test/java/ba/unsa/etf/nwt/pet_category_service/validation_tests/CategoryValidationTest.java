@@ -1,6 +1,6 @@
 package ba.unsa.etf.nwt.pet_category_service.validation_tests;
 
-import ba.unsa.etf.nwt.pet_category_service.models.Category;
+import ba.unsa.etf.nwt.pet_category_service.model.Category;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
