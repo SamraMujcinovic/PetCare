@@ -27,8 +27,8 @@ public class Swager2Config {
                 //.securitySchemes(Lists.newArrayList(apiKey()));
     }
     private ApiInfo apiEndPointsInfo() {
-        return new ApiInfoBuilder().title("User Service Documentation")
-                .description("Pet Care user service")
+        return new ApiInfoBuilder().title("Adopt Service Documentation")
+                .description("Pet Care adopt service")
                 .license("Apache 2.0")
                 .licenseUrl("http://www.apache.org/licenses/LICENSE-2.0.html")
                 .version("1.0.0")

@@ -13,6 +13,11 @@ spring:
     name: pet_category_service
   config:
       import: optional:configserver:http://localhost:8888
+  security:
+    user:
+      name: user
+      password: password
+
 management:
   endpoints:
     web:

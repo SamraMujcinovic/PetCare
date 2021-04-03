@@ -6,4 +6,8 @@ spring:
     config:
       server:
         git:
-          uri: ${HOME}/Desktop/config
+          uri: https://github.com/alakovic1/config.git
+  security:
+    user:
+      name: user
+      password: password
