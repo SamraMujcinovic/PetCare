@@ -254,4 +254,317 @@ public class PetTests {
                         "}"));
     }
 
+    //NOT FOUND tests
+
+    @Test
+    void GetPetByIDNotFound() throws Exception{
+
+        Long id = 50L;
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/pet?id={id}", id)
+                .contentType(MediaType.APPLICATION_JSON);
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isNotFound())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("{\"responseMessage\":{\"success\":false,\"message\":\"Exception for NOT_FOUND was thrown\",\"status\":\"NOT_FOUND\"},\"details\":[\"No pet with ID 50\"]}"));
+    }
+
+    @Test
+    void GetPetsInRaseNotFound() throws Exception{
+
+        Long id = 50L;
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/pets/inRase?id={id}", id)
+                .contentType(MediaType.APPLICATION_JSON);
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("[]"));
+    }
+
+    @Test
+    void GetPetsInCategoryNotFound() throws Exception{
+
+        Long id = 50L;
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/pets/inCategory?id={id}", id)
+                .contentType(MediaType.APPLICATION_JSON);
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("[]"));
+    }
+
+    @Test
+    void GetPetByNameNotFound() throws Exception{
+
+        String name = "behwbf";
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/pet/byName?name={name}", name)
+                .contentType(MediaType.APPLICATION_JSON);
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isNotFound())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("{\"responseMessage\":{\"success\":false,\"message\":\"Exception for NOT_FOUND was thrown\",\"status\":\"NOT_FOUND\"},\"details\":[\"No pet with name behwbf\"]}"));
+    }
+
+    @Test
+    void GetPetByNameContainsNotFound() throws Exception{
+
+        String substring = "bebf";
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/pets/name/contains?substring={substring}", substring)
+                .contentType(MediaType.APPLICATION_JSON);
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("[]"));
+    }
+
+    @Test
+    void GetPetByRaseContainsNotFound() throws Exception{
+
+        String substring = "bebf";
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/pets/rase/contains?substring={substring}", substring)
+                .contentType(MediaType.APPLICATION_JSON);
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("[]"));
+    }
+
+    @Test
+    void DeletePetNotFound() throws Exception{
+
+        Long id = 50L;
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/pet?id={id}", id)
+                .contentType(MediaType.APPLICATION_JSON);
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isNotFound())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("{\"responseMessage\":{\"success\":false,\"message\":\"Exception for NOT_FOUND was thrown\",\"status\":\"NOT_FOUND\"},\"details\":[\"No pet with ID 50\"]}"));
+    }
+
+    @Test
+    void UpdatePetNotFound() throws Exception{
+
+        Long id = 50L;
+
+        String noviPet = "{\n" +
+                "  \"name\": \"noviPet\",\n" +
+                "  \"location\": \"string\",\n" +
+                "  \"image\": \"string\",\n" +
+                "  \"description\": \"string\",\n" +
+                "  \"age\": 5,\n" +
+                "  \"adopted\": true,\n" +
+                "  \"rase_id\": 5\n" +
+                "}";
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/pet/update/{id}", id)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(noviPet);
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isNotFound())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("{\"responseMessage\":{\"success\":false,\"message\":\"Exception for NOT_FOUND was thrown\",\"status\":\"NOT_FOUND\"},\"details\":[\"No pet with ID 50\"]}"));
+    }
+
+    @Test
+    void UpdatePetRaseNotFound() throws Exception{
+
+        Long id = 10L;
+
+        String noviPet = "{\n" +
+                "  \"name\": \"noviPet\",\n" +
+                "  \"location\": \"string\",\n" +
+                "  \"image\": \"string\",\n" +
+                "  \"description\": \"string\",\n" +
+                "  \"age\": 5,\n" +
+                "  \"adopted\": true,\n" +
+                "  \"rase_id\": 70\n" +
+                "}";
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/pet/update/{id}", id)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(noviPet);
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isNotFound())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("{\"responseMessage\":{\"success\":false,\"message\":\"Exception for NOT_FOUND was thrown\",\"status\":\"NOT_FOUND\"},\"details\":[\"No rase with ID 70\"]}"));
+    }
+
+    //BAD REQUEST tests
+
+    @Test
+    void UpdatePetBadRequest1() throws Exception{
+
+        Long id = 10L;
+
+        String noviPet = "{\n" +
+                "  \"name\": \"\",\n" +
+                "  \"location\": \"string\",\n" +
+                "  \"image\": \"string\",\n" +
+                "  \"description\": \"string\",\n" +
+                "  \"age\": 5,\n" +
+                "  \"adopted\": true,\n" +
+                "  \"rase_id\": 5\n" +
+                "}";
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/pet/update/{id}", id)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(noviPet);
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("{\"responseMessage\":{\"success\":false,\"message\":\"Validation Failed\",\"status\":\"BAD_REQUEST\"},\"details\":[\"Pet name must be between 2 and 50 characters!\",\"Pet name can't be blank!\"]}"));
+    }
+
+    @Test
+    void UpdatePetBadRequest2() throws Exception{
+
+        Long id = 10L;
+
+        String noviPet = "{\n" +
+                "  \"name\": \"g\",\n" +
+                "  \"location\": \"string\",\n" +
+                "  \"image\": \"string\",\n" +
+                "  \"description\": \"string\",\n" +
+                "  \"age\": 5,\n" +
+                "  \"adopted\": true,\n" +
+                "  \"rase_id\": 5\n" +
+                "}";
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/pet/update/{id}", id)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(noviPet);
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("{\"responseMessage\":{\"success\":false,\"message\":\"Validation Failed\",\"status\":\"BAD_REQUEST\"},\"details\":[\"Pet name must be between 2 and 50 characters!\"]}"));
+    }
+
+    @Test
+    void UpdatePetBadRequest3() throws Exception{
+
+        Long id = 10L;
+
+        String noviPet = "{\n" +
+                "  \"name\": \"gfghb\",\n" +
+                "  \"location\": \"\",\n" +
+                "  \"image\": \"string\",\n" +
+                "  \"description\": \"string\",\n" +
+                "  \"age\": 5,\n" +
+                "  \"adopted\": true,\n" +
+                "  \"rase_id\": 5\n" +
+                "}";
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/pet/update/{id}", id)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(noviPet);
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("{\"responseMessage\":{\"success\":false,\"message\":\"Validation Failed\",\"status\":\"BAD_REQUEST\"},\"details\":[\"Pet location can't be blank!\"]}"));
+    }
+
+    @Test
+    void UpdatePetBadRequest4() throws Exception{
+
+        Long id = 10L;
+
+        String noviPet = "{\n" +
+                "  \"name\": \"gfghb\",\n" +
+                "  \"location\": \"\",\n" +
+                "  \"image\": \"\",\n" +
+                "  \"description\": \"string\",\n" +
+                "  \"age\": 5,\n" +
+                "  \"adopted\": true,\n" +
+                "  \"rase_id\": 5\n" +
+                "}";
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/pet/update/{id}", id)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(noviPet);
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("{\"responseMessage\":{\"success\":false,\"message\":\"Validation Failed\",\"status\":\"BAD_REQUEST\"},\"details\":[\"Pet image can't be blank!\",\"Pet location can't be blank!\"]}"));
+    }
+/*
+    @Test
+    void UpdatePetBadRequest5() throws Exception{
+
+        Long id = 10L;
+
+        String noviPet = "{\n" +
+                "  \"name\": \"gfghb\",\n" +
+                "  \"location\": \"ghb\",\n" +
+                "  \"image\": \"gvb\",\n" +
+                "  \"description\": \"\",\n" +
+                "  \"age\": 5,\n" +
+                "  \"adopted\": true,\n" +
+                "  \"rase_id\": 5\n" +
+                "}";
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/pet/update/{id}", id)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(noviPet);
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("{\"responseMessage\":{\"success\":false,\"message\":\"Validation Failed\",\"status\":\"BAD_REQUEST\"},\"details\":[\"Category name can't be blank!\",\"Category name must be between 2 and 50 characters!\",\"Category description can't be blank!\"]}"));
+    }*/
+
+    @Test
+    void UpdatePetBadRequest6() throws Exception{
+
+        Long id = 10L;
+
+        String noviPet = "{\n" +
+                "  \"name\": \"gfghb\",\n" +
+                "  \"location\": \"ghb\",\n" +
+                "  \"image\": \"gvb\",\n" +
+                "  \"description\": \"gbjn\",\n" +
+                "  \"age\": null,\n" +
+                "  \"adopted\": true,\n" +
+                "  \"rase_id\": 5\n" +
+                "}";
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/pet/update/{id}", id)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(noviPet);
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("{\"responseMessage\":{\"success\":false,\"message\":\"Validation Failed\",\"status\":\"BAD_REQUEST\"},\"details\":[\"Pet age can't be blank!\"]}"));
+    }
+
+    @Test
+    void UpdatePetBadRequest7() throws Exception{
+
+        Long id = 10L;
+
+        String noviPet = "{\n" +
+                "  \"name\": \"gfghb\",\n" +
+                "  \"location\": \"ghb\",\n" +
+                "  \"image\": \"gvb\",\n" +
+                "  \"description\": \"gbjn\",\n" +
+                "  \"age\": 200,\n" +
+                "  \"adopted\": true,\n" +
+                "  \"rase_id\": 5\n" +
+                "}";
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/pet/update/{id}", id)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(noviPet);
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("{\"responseMessage\":{\"success\":false,\"message\":\"Validation Failed\",\"status\":\"BAD_REQUEST\"},\"details\":[\"Pet can't be older than 100 years!\"]}"));
+    }
+
+
+
 }

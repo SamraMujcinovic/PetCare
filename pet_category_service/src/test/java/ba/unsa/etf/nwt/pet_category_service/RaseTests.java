@@ -136,4 +136,321 @@ public class RaseTests {
                         "  }\n" +
                         "}"));
     }
+
+    //NOT FOUND tests
+
+    @Test
+    void GetRaseByIDNotFound() throws Exception{
+
+        Long id = 50L;
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/rase/{id}", id)
+                .contentType(MediaType.APPLICATION_JSON);
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isNotFound())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("{\n" +
+                        "  \"responseMessage\": {\n" +
+                        "    \"success\": false,\n" +
+                        "    \"message\": \"Exception for NOT_FOUND was thrown\",\n" +
+                        "    \"status\": \"NOT_FOUND\"\n" +
+                        "  },\n" +
+                        "  \"details\": [\n" +
+                        "    \"No rase with ID 50\"\n" +
+                        "  ]\n" +
+                        "}\n"));
+    }
+
+    @Test
+    void GetRasesInCategoryNotFound() throws Exception{
+
+        Long id = 50L;
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/rases/inCategory?id={id}", id)
+                .contentType(MediaType.APPLICATION_JSON);
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("[]"));
+    }
+
+    @Test
+    void GetRaseByNameNotFound() throws Exception{
+
+        String name = "abcd";
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/rase/byName?name={name}", name)
+                .contentType(MediaType.APPLICATION_JSON);
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isNotFound())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("{\n" +
+                        "  \"responseMessage\": {\n" +
+                        "    \"success\": false,\n" +
+                        "    \"message\": \"Exception for NOT_FOUND was thrown\",\n" +
+                        "    \"status\": \"NOT_FOUND\"\n" +
+                        "  },\n" +
+                        "  \"details\": [\n" +
+                        "    \"No rase with name abcd\"\n" +
+                        "  ]\n" +
+                        "}\n"));
+    }
+
+    @Test
+    void DeleteRaseNotFound() throws Exception{
+
+        Long id = 50L;
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/rase?id={id}", id)
+                .contentType(MediaType.APPLICATION_JSON);
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isNotFound())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("{\n" +
+                        "  \"responseMessage\": {\n" +
+                        "    \"success\": false,\n" +
+                        "    \"message\": \"Exception for NOT_FOUND was thrown\",\n" +
+                        "    \"status\": \"NOT_FOUND\"\n" +
+                        "  },\n" +
+                        "  \"details\": [\n" +
+                        "    \"No rase with ID 50\"\n" +
+                        "  ]\n" +
+                        "}"));
+    }
+
+    @Test
+    void UpdateRaseNotFound1() throws Exception{
+
+        Long id = 50L;
+
+        String novaRase = "{\"name\": \"novaRasaa\",\"description\": \"nova\",\"category_id\": 1}";
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/rase/update/{id}", id)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(novaRase);
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isNotFound())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("{\n" +
+                        "  \"responseMessage\": {\n" +
+                        "    \"success\": false,\n" +
+                        "    \"message\": \"Exception for NOT_FOUND was thrown\",\n" +
+                        "    \"status\": \"NOT_FOUND\"\n" +
+                        "  },\n" +
+                        "  \"details\": [\n" +
+                        "    \"No rase with ID 50\"\n" +
+                        "  ]\n" +
+                        "}"));
+    }
+
+    @Test
+    void UpdateRaseNotFound2() throws Exception{
+
+        Long id = 5L;
+
+        String novaRase = "{\"name\": \"gdfgd\",\"description\": \"nova\",\"category_id\": 50}";
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/rase/update/{id}", id)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(novaRase);
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isNotFound())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("{\"responseMessage\":{\"success\":false,\"message\":\"Exception for NOT_FOUND was thrown\",\"status\":\"NOT_FOUND\"},\"details\":[\"No category with ID 50\"]}"));
+    }
+
+
+    //BAD REQUEST tests
+
+    @Test
+    void AddRaseBadRequest1() throws Exception{
+
+        String novaRasa = "{\n" +
+                "  \"name\": \"\",\n" +
+                "  \"description\": \"\",\n" +
+                "  \"category_id\": 1\n" +
+                "}";
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/rase")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(novaRasa);
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("{\"responseMessage\":{\"success\":false,\"message\":\"Validation Failed\",\"status\":\"BAD_REQUEST\"},\"details\":[\"Rase name must be between 2 and 50 characters!\",\"Rase name can't be blank!\",\"Rase description can't be blank!\"]}"));
+    }
+
+    @Test
+    void AddRaseBadRequest2() throws Exception{
+
+        String novaRasa = "{\n" +
+                "  \"name\": \"g\",\n" +
+                "  \"description\": \"\",\n" +
+                "  \"category_id\": 1\n" +
+                "}";
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/rase")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(novaRasa);
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("{\"responseMessage\":{\"success\":false,\"message\":\"Validation Failed\",\"status\":\"BAD_REQUEST\"},\"details\":[\"Rase name must be between 2 and 50 characters!\",\"Rase description can't be blank!\"]}"));
+    }
+
+    @Test
+    void AddRaseBadRequest3() throws Exception{
+
+        String novaRasa = "{\n" +
+                "  \"name\": \"gfsdg\",\n" +
+                "  \"description\": \"\",\n" +
+                "  \"category_id\": 1\n" +
+                "}";
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/rase")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(novaRasa);
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("{\"responseMessage\":{\"success\":false,\"message\":\"Validation Failed\",\"status\":\"BAD_REQUEST\"},\"details\":[\"Rase description can't be blank!\"]}"));
+    }
+
+    @Test
+    void AddRaseBadRequest4() throws Exception{
+
+        String novaRasa = "{\n" +
+                "  \"name\": \"\",\n" +
+                "  \"description\": \"gfjdg\",\n" +
+                "  \"category_id\": 1\n" +
+                "}";
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/rase")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(novaRasa);
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("{\"responseMessage\":{\"success\":false,\"message\":\"Validation Failed\",\"status\":\"BAD_REQUEST\"},\"details\":[\"Rase name can't be blank!\",\"Rase name must be between 2 and 50 characters!\"]}"));
+    }
+
+    @Test
+    void AddRaseBadRequest5() throws Exception{
+
+        String novaRasa = "{\n" +
+                "  \"name\": \"Goldfish\",\n" +
+                "  \"description\": \"gfjdg\",\n" +
+                "  \"category_id\": 1\n" +
+                "}";
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/rase")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(novaRasa);
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("{\"responseMessage\":{\"success\":false,\"message\":\"Exception for wrong input was thrown\",\"status\":\"BAD_REQUEST\"},\"details\":[\"Rase with that name already exists!\"]}"));
+    }
+
+    @Test
+    void UpdateRaseBadRequest1() throws Exception{
+
+        Long id = 5L;
+
+        String novaRasa = "{\n" +
+                "  \"name\": \"\",\n" +
+                "  \"description\": \"\",\n" +
+                "  \"category_id\": 1\n" +
+                "}";
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/rase/update/{id}", id)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(novaRasa);
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("{\"responseMessage\":{\"success\":false,\"message\":\"Validation Failed\",\"status\":\"BAD_REQUEST\"},\"details\":[\"Rase name can't be blank!\",\"Rase description can't be blank!\",\"Rase name must be between 2 and 50 characters!\"]}"));
+    }
+
+    @Test
+    void UpdateRaseBadRequest2() throws Exception{
+
+        Long id = 5L;
+
+        String novaRasa = "{\n" +
+                "  \"name\": \"g\",\n" +
+                "  \"description\": \"\",\n" +
+                "  \"category_id\": 1\n" +
+                "}";
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/rase/update/{id}", id)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(novaRasa);
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("{\"responseMessage\":{\"success\":false,\"message\":\"Validation Failed\",\"status\":\"BAD_REQUEST\"},\"details\":[\"Rase name must be between 2 and 50 characters!\",\"Rase description can't be blank!\"]}"));
+    }
+
+    @Test
+    void UpdateRaseBadRequest3() throws Exception{
+
+        Long id = 5L;
+
+        String novaRasa = "{\n" +
+                "  \"name\": \"gvgss\",\n" +
+                "  \"description\": \"\",\n" +
+                "  \"category_id\": 1\n" +
+                "}";
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/rase/update/{id}", id)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(novaRasa);
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("{\"responseMessage\":{\"success\":false,\"message\":\"Validation Failed\",\"status\":\"BAD_REQUEST\"},\"details\":[\"Rase description can't be blank!\"]}"));
+    }
+
+    @Test
+    void UpdateRaseBadRequest4() throws Exception{
+
+        Long id = 5L;
+
+        String novaRasa = "{\n" +
+                "  \"name\": \"\",\n" +
+                "  \"description\": \"fdsngj\",\n" +
+                "  \"category_id\": 1\n" +
+                "}";
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/rase/update/{id}", id)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(novaRasa);
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("{\"responseMessage\":{\"success\":false,\"message\":\"Validation Failed\",\"status\":\"BAD_REQUEST\"},\"details\":[\"Rase name must be between 2 and 50 characters!\",\"Rase name can't be blank!\"]}"));
+    }
+
+    @Test
+    void UpdateRaseBadRequest5() throws Exception{
+
+        Long id = 5L;
+
+        String novaRasa = "{\n" +
+                "  \"name\": \"\",\n" +
+                "  \"description\": \"fdsngj\",\n" +
+                "  \"category_id\": 1\n" +
+                "}";
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/rase/update/{id}", id)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(novaRasa);
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("{\"responseMessage\":{\"success\":false,\"message\":\"Validation Failed\",\"status\":\"BAD_REQUEST\"},\"details\":[\"Rase name must be between 2 and 50 characters!\",\"Rase name can't be blank!\"]}"));
+    }
+
+
 }

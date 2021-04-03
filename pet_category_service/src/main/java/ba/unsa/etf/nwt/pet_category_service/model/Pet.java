@@ -22,7 +22,7 @@ public class Pet {
     private Long id;
 
     @NotBlank(message = "Pet name can't be blank!")
-    @Size(min = 2, max = 50)
+    @Size(min = 2, max = 50, message = "Pet name must be between 2 and 50 characters!")
     private String name;
 
     @NotBlank(message = "Pet location can't be blank!")
