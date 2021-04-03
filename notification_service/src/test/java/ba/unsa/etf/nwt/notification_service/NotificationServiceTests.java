@@ -109,6 +109,119 @@ class NotificationServiceTests {
     }
 
     @Test
+    void CreateNewNotificationNoContent() throws Exception {
+        String newNotification = "{\n" +
+                "    \"userID\": 1,\n" +
+                "    \"read\": false,\n" +
+                "    \"createdAt\": null\n" +
+                "}\n";
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/notifications")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(newNotification);
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("{\"responseMessage\":{\"success\":false,\"status\":\"BAD_REQUEST\",\"message\":\"Validation Failed\"},\"details\":[\"Content can't be blank!!\"]}"));
+    }
+
+    @Test
+    void CreateNewNotificationEmptyNotification() throws Exception {
+        String newNotification = "{}\n";
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/notifications")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(newNotification);
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("{\"responseMessage\":{\"success\":false,\"status\":\"BAD_REQUEST\",\"message\":\"Validation Failed\"},\"details\":[\"Content can't be blank!!\",\"UserID can't be null\"]}"));
+    }
+
+    @Test
+    void CreateNewNotificationOnlyUser() throws Exception {
+        String newNotification = "{\n" +
+                "    \"userID\": 1,\n" +
+                "    \"createdAt\": null\n" +
+                "}\n";
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/notifications")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(newNotification);
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("{\"responseMessage\":{\"success\":false,\"status\":\"BAD_REQUEST\",\"message\":\"Validation Failed\"},\"details\":[\"Content can't be blank!!\"]}"));
+    }
+
+    @Test
+    void CreateNewNotificationOnlyContent() throws Exception {
+        String newNotification = "{\n" +
+                "    \"content\": 1,\n" +
+                "    \"createdAt\": null\n" +
+                "}\n";
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/notifications")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(newNotification);
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("{\"responseMessage\":{\"success\":false,\"status\":\"BAD_REQUEST\",\"message\":\"Validation Failed\"},\"details\":[\"Content must be between 2 and 150 characters!!\",\"UserID can't be null\"]}"));
+    }
+
+    @Test
+    void CreateNewNotificationReadTrue() throws Exception {
+        String newNotification = "{\n" +
+                "    \"content\": \"Notif\",\n" +
+                "    \"userID\": 1,\n" +
+                "    \"read\": true,\n" +
+                "    \"createdAt\": null\n" +
+                "}\n";
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/notifications")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(newNotification);
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("{\"success\":true,\"status\":\"OK\",\"message\":\"Notification added successfully!!\"}"));
+    }
+
+    @Test
+    void CreateNewNotificationNoRead() throws Exception {
+        String newNotification = "{\n" +
+                "    \"content\": \"Notif\",\n" +
+                "    \"userID\": 1,\n" +
+                "    \"createdAt\": null\n" +
+                "}\n";
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/notifications")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(newNotification);
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("{\"success\":true,\"status\":\"OK\",\"message\":\"Notification added successfully!!\"}"));
+    }
+
+    @Test
+    void CreateNewNotificationOnlyValidContent() throws Exception {
+        String newNotification = "{\n" +
+                "    \"content\": 123,\n" +
+                "    \"createdAt\": null\n" +
+                "}\n";
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/notifications")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(newNotification);
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("{\"responseMessage\":{\"success\":false,\"status\":\"BAD_REQUEST\",\"message\":\"Validation Failed\"},\"details\":[\"UserID can't be null\"]}"));
+    }
+
+    @Test
     void CreateNewNotificationIsntAdded() throws Exception {
         String newNotification = "{}\n";
 

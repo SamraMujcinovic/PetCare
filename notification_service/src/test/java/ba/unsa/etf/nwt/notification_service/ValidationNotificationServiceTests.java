@@ -48,6 +48,14 @@ class ValidationNotificationServiceTests {
     }
 
     @Test
+    public void notificationDiffWithUser() {
+        Notification notification = new Notification();
+        notification.setUserID(1L);
+        Set<ConstraintViolation<Notification>> violations = validator.validate(notification);
+        assertFalse(violations.isEmpty());
+    }
+
+    @Test
     public void notificationOnlyWithContent() {
         Notification notification = new Notification();
         notification.setContent("Error");
@@ -56,12 +64,186 @@ class ValidationNotificationServiceTests {
     }
 
     @Test
-    public void contentSmallerThan5() {
+    public void contentSmaller() {
         Notification notification = new Notification();
         notification.setContent("O");
+        Set<ConstraintViolation<Notification>> violations = validator.validate(notification);
+        assertFalse(violations.isEmpty());
+    }
+
+    @Test
+    public void validContentAndUser() {
+        Notification notification = new Notification();
+        notification.setContent("Notif");
+        notification.setUserID(1L);
+        Set<ConstraintViolation<Notification>> violations = validator.validate(notification);
+        assertTrue(violations.isEmpty());
+    }
+
+    @Test
+    public void smallContentAndUser() {
+        Notification notification = new Notification();
+        notification.setContent("N");
+        notification.setUserID(1L);
+        Set<ConstraintViolation<Notification>> violations = validator.validate(notification);
+        assertFalse(violations.isEmpty());
+    }
+
+    @Test
+    public void smallContentUserAndRead() {
+        Notification notification = new Notification();
+        notification.setContent("N");
+        notification.setUserID(1L);
+        notification.setRead(false);
+        Set<ConstraintViolation<Notification>> violations = validator.validate(notification);
+        assertFalse(violations.isEmpty());
+    }
+
+    @Test
+    public void smallContentUserAndRead2() {
+        Notification notification = new Notification();
+        notification.setContent("N");
+        notification.setUserID(1L);
+        notification.setRead(true);
+        Set<ConstraintViolation<Notification>> violations = validator.validate(notification);
+        assertFalse(violations.isEmpty());
+    }
+
+    @Test
+    public void contentUserAndRead2() {
+        Notification notification = new Notification();
+        notification.setContent("Notif");
+        notification.setUserID(1L);
+        notification.setRead(true);
+        Set<ConstraintViolation<Notification>> violations = validator.validate(notification);
+        assertTrue(violations.isEmpty());
+    }
+
+    @Test
+    public void contentUserAndRead() {
+        Notification notification = new Notification();
+        notification.setContent("Notif");
+        notification.setUserID(1L);
+        notification.setRead(false);
+        Set<ConstraintViolation<Notification>> violations = validator.validate(notification);
+        assertTrue(violations.isEmpty());
+    }
+
+    @Test
+    public void smallContentAndRead2() {
+        Notification notification = new Notification();
+        notification.setContent("N");
+        notification.setRead(true);
+        Set<ConstraintViolation<Notification>> violations = validator.validate(notification);
+        assertFalse(violations.isEmpty());
+    }
+
+    @Test
+    public void smallContentAndRead() {
+        Notification notification = new Notification();
+        notification.setContent("N");
+        notification.setRead(false);
+        Set<ConstraintViolation<Notification>> violations = validator.validate(notification);
+        assertFalse(violations.isEmpty());
+    }
+
+    @Test
+    public void contentAndRead() {
+        Notification notification = new Notification();
+        notification.setContent("Notification");
+        notification.setRead(false);
+        Set<ConstraintViolation<Notification>> violations = validator.validate(notification);
+        assertFalse(violations.isEmpty());
+    }
+
+    @Test
+    public void contentAndRead2() {
+        Notification notification = new Notification();
+        notification.setContent("Notification");
+        notification.setRead(true);
+        Set<ConstraintViolation<Notification>> violations = validator.validate(notification);
+        assertFalse(violations.isEmpty());
+    }
+
+    @Test
+    public void smallContentWithTime() {
+        Notification notification = new Notification();
+        notification.setContent("C");
         notification.setUserID(1L);
         notification.setRead(false);
         notification.setCreatedAt(new Date());
+        Set<ConstraintViolation<Notification>> violations = validator.validate(notification);
+        assertFalse(violations.isEmpty());
+    }
+
+    @Test
+    public void contentWithTimeNoUser() {
+        Notification notification = new Notification();
+        notification.setContent("Content");
+        notification.setRead(false);
+        notification.setCreatedAt(new Date());
+        Set<ConstraintViolation<Notification>> violations = validator.validate(notification);
+        assertFalse(violations.isEmpty());
+    }
+
+    @Test
+    public void timeWithNoContent() {
+        Notification notification = new Notification();
+        notification.setUserID(1L);
+        notification.setRead(false);
+        notification.setCreatedAt(new Date());
+        Set<ConstraintViolation<Notification>> violations = validator.validate(notification);
+        assertFalse(violations.isEmpty());
+    }
+
+    @Test
+    public void smallContentWithTimeNoUser() {
+        Notification notification = new Notification();
+        notification.setContent("C");
+        notification.setRead(false);
+        notification.setCreatedAt(new Date());
+        Set<ConstraintViolation<Notification>> violations = validator.validate(notification);
+        assertFalse(violations.isEmpty());
+    }
+
+    @Test
+    public void readAndCreated() {
+        Notification notification = new Notification();
+        notification.setRead(false);
+        notification.setCreatedAt(new Date());
+        Set<ConstraintViolation<Notification>> violations = validator.validate(notification);
+        assertFalse(violations.isEmpty());
+    }
+
+    @Test
+    public void readAndCreated2() {
+        Notification notification = new Notification();
+        notification.setRead(true);
+        notification.setCreatedAt(new Date());
+        Set<ConstraintViolation<Notification>> violations = validator.validate(notification);
+        assertFalse(violations.isEmpty());
+    }
+
+    @Test
+    public void onlyCreated() {
+        Notification notification = new Notification();
+        notification.setCreatedAt(new Date());
+        Set<ConstraintViolation<Notification>> violations = validator.validate(notification);
+        assertFalse(violations.isEmpty());
+    }
+
+    @Test
+    public void onlyRead() {
+        Notification notification = new Notification();
+        notification.setRead(true);
+        Set<ConstraintViolation<Notification>> violations = validator.validate(notification);
+        assertFalse(violations.isEmpty());
+    }
+
+    @Test
+    public void onlyRead2() {
+        Notification notification = new Notification();
+        notification.setRead(false);
         Set<ConstraintViolation<Notification>> violations = validator.validate(notification);
         assertFalse(violations.isEmpty());
     }
