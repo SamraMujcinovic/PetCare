@@ -25,6 +25,8 @@ public class Comment {
 
     private Long userID;
 
+    private Long categoryID;
+
     @NotBlank(message = "Title can't be blank")
     @Size(min = 2, max = 100, message
             = "Title must be between 2 and 100 characters!!")
@@ -45,6 +47,7 @@ public class Comment {
         this.mainRole = comment.mainRole;
         this.content = comment.content;
         this.userID = comment.userID;
+        this.categoryID = comment.categoryID;
         this.id = comment.id;
         this.title = comment.title;
     }
@@ -63,6 +66,14 @@ public class Comment {
 
     public void setUserID(Long userID) {
         this.userID = userID;
+    }
+
+    public Long getCategoryID() {
+        return categoryID;
+    }
+
+    public void setCategoryID(Long categoryID) {
+        this.categoryID = categoryID;
     }
 
     public String getTitle() {

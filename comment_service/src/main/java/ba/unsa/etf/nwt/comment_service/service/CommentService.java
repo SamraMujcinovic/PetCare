@@ -82,4 +82,15 @@ public class CommentService {
             throw new ResourceNotFoundException("Comment isn't deleted!!");
         }
     }
+
+    public List<Comment> getCategoryComment(Long roleType, Long categoryID) {
+        SectionRoleName roleName = SectionRoleName.ROLE_PET;
+        if (roleType == 1L) roleName = SectionRoleName.ROLE_CATEGORY;
+        SectionRoleName finalRoleName = roleName;
+        return commentRepository
+                .findAll()
+                .stream()
+                .filter(c -> c.getMainRole().getName().equals(finalRoleName) && c.getCategoryID().equals(categoryID))
+                .collect(Collectors.toList());
+    }
 }

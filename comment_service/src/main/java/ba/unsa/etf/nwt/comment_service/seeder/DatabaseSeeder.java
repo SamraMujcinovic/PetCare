@@ -33,7 +33,7 @@ public class DatabaseSeeder {
         MainRole r1 = createRole(SectionRoleName.ROLE_CATEGORY);
         MainRole r2 = createRole(SectionRoleName.ROLE_PET);
 
-        Comment c1 = createComment( Long.valueOf(1), "Question", "What kind of dog do you want?", r2);
+        Comment c1 = createComment( Long.valueOf(1), Long.valueOf(1),"Question", "What kind of dog do you want?", r2);
         Reply rp1 = createReply(Long.valueOf(2), c1, "Sweet and relaxed, friendly towards everyone.");
         Reply rp2 = createReply(Long.valueOf(3), c1, "Amazing!");
 
@@ -45,9 +45,10 @@ public class DatabaseSeeder {
         return r;
     }
 
-    private Comment createComment(Long UserID, String title, String content, MainRole role) {
+    private Comment createComment(Long UserID, Long CategoryID,String title, String content, MainRole role) {
         Comment comment = new Comment();
         comment.setUserID(UserID);
+        comment.setCategoryID(CategoryID);
         comment.setTitle(title);
         comment.setContent(content);
         comment.setRoles(role);

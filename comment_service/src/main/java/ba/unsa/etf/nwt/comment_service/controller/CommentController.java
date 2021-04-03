@@ -34,6 +34,11 @@ public class CommentController {
         return commentService.getUserComments(userID);
     }
 
+    @GetMapping("/comment/category/{roleType}/{categoryID}")
+    public List<Comment> getCategoryComment(@PathVariable Long roleType, @PathVariable Long categoryID){
+        return commentService.getCategoryComment(roleType, categoryID);
+    }
+
     @PutMapping("/comment/{commentID}")
     public ResponseMessage updateComment(@Valid @RequestBody Comment comment, @PathVariable Long commentID) {
         return commentService.updateComment(comment, commentID);

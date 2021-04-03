@@ -101,19 +101,134 @@ class CommentServiceTests {
     }
 
     @Test
-    void GetOneCommentInJSON() throws Exception {
-        Long commentID = 1L;
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/comment/{commentID}", commentID)
-                .contentType(MediaType.APPLICATION_JSON);
+    void CreateNewCommentSmallContentSmallTitle() throws Exception {
+        Long mainRoleId = 1L;
+
+        String newComment = "{\n" +
+                "    \"userID\": 1,\n" +
+                "    \"title\": \"P\",\n" +
+                "    \"content\": \"H\"\n" +
+                "}\n";
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/comment/{mainRoleId}", mainRoleId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(newComment);
         mockMvc.perform(requestBuilder)
-                .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("{\"responseMessage\":{\"success\":false,\"status\":\"BAD_REQUEST\",\"message\":\"Validation Failed\"},\"details\":[\"Content must be between 2 and 1000 characters!!\",\"Title must be between 2 and 100 characters!!\"]}"));
     }
 
     @Test
-    void GetAllUserCommentsInJSON() throws Exception {
-        Long userID = 2L;
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/comment/user/{userID}", userID)
+    void CreateNewCommentNoUserIdSmallContentAndTitle() throws Exception {
+        Long mainRoleId = 1L;
+
+        String newComment = "{\n" +
+                "    \"title\": \"P\",\n" +
+                "    \"content\": \"H\"\n" +
+                "}\n";
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/comment/{mainRoleId}", mainRoleId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(newComment);
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("{\"responseMessage\":{\"success\":false,\"status\":\"BAD_REQUEST\",\"message\":\"Validation Failed\"},\"details\":[\"Title must be between 2 and 100 characters!!\",\"Content must be between 2 and 1000 characters!!\"]}"));
+    }
+
+    @Test
+    void CreateNewCommentNoUserIdSmallContent() throws Exception {
+        Long mainRoleId = 1L;
+        String newComment = "{\n" +
+                "    \"title\": \"Pet care\",\n" +
+                "    \"content\": \"H\"\n" +
+                "}\n";
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/comment/{mainRoleId}", mainRoleId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(newComment);
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("{\"responseMessage\":{\"success\":false,\"status\":\"BAD_REQUEST\",\"message\":\"Validation Failed\"},\"details\":[\"Content must be between 2 and 1000 characters!!\"]}"));
+    }
+
+    @Test
+    void CreateNewCommentNoUserIdSmallTitle() throws Exception {
+        Long mainRoleId = 1L;
+
+        String newComment = "{\n" +
+                "    \"title\": \"P\",\n" +
+                "    \"content\": \"Content\"\n" +
+                "}\n";
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/comment/{mainRoleId}", mainRoleId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(newComment);
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("{\"responseMessage\":{\"success\":false,\"status\":\"BAD_REQUEST\",\"message\":\"Validation Failed\"},\"details\":[\"Title must be between 2 and 100 characters!!\"]}"));
+    }
+
+    @Test
+    void CreateNewCommentNoUserId() throws Exception {
+        Long mainRoleId = 1L;
+
+        String newComment = "{\n" +
+                "    \"title\": \"Pet care\",\n" +
+                "    \"content\": \"Content\"\n" +
+                "}\n";
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/comment/{mainRoleId}", mainRoleId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(newComment);
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("{\"success\":true,\"status\":\"OK\",\"message\":\"Comment added successfully!!\"}"));
+    }
+
+    @Test
+    void CreateNewCommentNoTitle() throws Exception {
+        Long mainRoleId = 1L;
+
+        String newComment = "{\n" +
+                "    \"userID\": 1,\n" +
+                "    \"content\": \"How to take care of my pet?\"\n" +
+                "}\n";
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/comment/{mainRoleId}", mainRoleId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(newComment);
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("{\"responseMessage\":{\"success\":false,\"status\":\"BAD_REQUEST\",\"message\":\"Validation Failed\"},\"details\":[\"Title can't be blank\"]}\n"));
+    }
+
+    @Test
+    void CreateNewCommentNoTitleSmallContent() throws Exception {
+        Long mainRoleId = 1L;
+
+        String newComment = "{\n" +
+                "    \"userID\": 1,\n" +
+                "    \"content\": \"H\"\n" +
+                "}\n";
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/comment/{mainRoleId}", mainRoleId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(newComment);
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("{\"responseMessage\":{\"success\":false,\"status\":\"BAD_REQUEST\",\"message\":\"Validation Failed\"},\"details\":[\"Content must be between 2 and 1000 characters!!\",\"Title can't be blank\"]}\n"));
+    }
+
+    @Test
+    void GetOneCommentInJSON() throws Exception {
+        Long commentID = 1L;
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/comment/{commentID}", commentID)
                 .contentType(MediaType.APPLICATION_JSON);
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk())
@@ -181,5 +296,65 @@ class CommentServiceTests {
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(content().json("{\"responseMessage\":{\"success\":false,\"status\":\"BAD_REQUEST\",\"message\":\"Validation Failed\"},\"details\":[\"Content must be between 2 and 1000 characters!!\"]}"));
+    }
+
+    @Test
+    void UpdateCommentSmallContentSmallTitle() throws Exception {
+        Long commentId = 1L;
+        String newComment = "{\n" +
+                "    \"title\": \"P\",\n" +
+                "    \"content\": \"U\"\n" +
+                "}\n";
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/comment/{commentId}", commentId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(newComment);
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("{\"responseMessage\":{\"success\":false,\"status\":\"BAD_REQUEST\",\"message\":\"Validation Failed\"},\"details\":[\"Content must be between 2 and 1000 characters!!\",\"Title must be between 2 and 100 characters!!\"]}"));
+    }
+
+    @Test
+    void UpdateCommentSmallContentNoTitle() throws Exception {
+        Long commentId = 1L;
+        String newComment = "{\n" +
+                "    \"content\": \"U\"\n" +
+                "}\n";
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/comment/{commentId}", commentId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(newComment);
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("{\"responseMessage\":{\"success\":false,\"status\":\"BAD_REQUEST\",\"message\":\"Validation Failed\"},\"details\":[\"Content must be between 2 and 1000 characters!!\",\"Title can't be blank\"]}"));
+    }
+
+    @Test
+    void UpdateCommentNoTitle() throws Exception {
+        Long commentId = 1L;
+        String newComment = "{\n" +
+                "    \"content\": \"Content\"\n" +
+                "}\n";
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/comment/{commentId}", commentId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(newComment);
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("{\"responseMessage\":{\"success\":false,\"status\":\"BAD_REQUEST\",\"message\":\"Validation Failed\"},\"details\":[\"Title can't be blank\"]}"));
+    }
+
+    @Test
+    void GetAllCategoryCommentsInJSON() throws Exception {
+        Long roleType = 1L;
+        Long categoryID = 1L;
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/comment/category/{roleType}/{categoryID}", roleType, categoryID)
+                .contentType(MediaType.APPLICATION_JSON);
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
     }
 }

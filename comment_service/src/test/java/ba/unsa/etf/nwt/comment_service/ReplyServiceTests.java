@@ -72,6 +72,7 @@ class ReplyServiceTests {
                 .andExpect(content().json("{\"responseMessage\":{\"success\":false,\"status\":\"BAD_REQUEST\",\"message\":\"Validation Failed\"},\"details\":[\"Content must be between 2 and 1000 characters!!\"]}"));
     }
 
+    @Test
     void CreateNewReplyBlankContent() throws Exception {
         Long commentId = 1L;
 
@@ -84,13 +85,9 @@ class ReplyServiceTests {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(newReply);
         mockMvc.perform(requestBuilder)
-                .andExpect(status().isOk())
+                .andExpect(status().isBadRequest())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().json("{\n" +
-                        "    \"success\": false,\n" +
-                        "    \"message\": \"Content can't be blank!!\",\n" +
-                        "    \"status\": \"BAD_REQUEST\"\n" +
-                        "}\n"));
+                .andExpect(content().json("{\"responseMessage\":{\"success\":false,\"status\":\"BAD_REQUEST\",\"message\":\"Validation Failed\"},\"details\":[\"Content must be between 2 and 1000 characters!!\"]}\n"));
     }
 
     @Test
