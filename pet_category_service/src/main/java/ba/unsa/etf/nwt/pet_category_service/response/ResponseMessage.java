@@ -4,18 +4,18 @@ import lombok.Data;
 import org.springframework.http.HttpStatus;
 
 @Data
-public class Response {
+public class ResponseMessage {
     private Boolean success;
     private String message;
     private HttpStatus status;
 
-    public Response(Boolean success, String message, HttpStatus status) {
+    public ResponseMessage(Boolean success, String message, HttpStatus status) {
         this.success = success;
         this.message = message;
         this.status = status;
     }
 
-    public Response(Response r){
+    public ResponseMessage(ResponseMessage r){
         this.success = r.success;
         this.message = r.message;
         this.status = r.status;

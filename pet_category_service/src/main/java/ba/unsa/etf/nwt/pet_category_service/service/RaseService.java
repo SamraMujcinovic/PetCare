@@ -7,7 +7,7 @@ import ba.unsa.etf.nwt.pet_category_service.model.Rase;
 import ba.unsa.etf.nwt.pet_category_service.repository.CategoryRepository;
 import ba.unsa.etf.nwt.pet_category_service.repository.RaseRepository;
 import ba.unsa.etf.nwt.pet_category_service.request.RaseRequest;
-import ba.unsa.etf.nwt.pet_category_service.response.Response;
+import ba.unsa.etf.nwt.pet_category_service.response.ResponseMessage;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -26,7 +26,7 @@ public class RaseService {
         return raseRepository.findAll();
     }
 
-    public Response addRase(RaseRequest raseRequest) {
+    public ResponseMessage addRase(RaseRequest raseRequest) {
         try {
             Rase r = findRaseByName(raseRequest.getName());
             throw new WrongInputException("Rase with that name already exists!");
@@ -39,7 +39,7 @@ public class RaseService {
             rase.setCategory(category);
             raseRepository.save(rase);
 
-            return new Response(true, "Rase successfully added!!", HttpStatus.OK);
+            return new ResponseMessage(true, "Rase successfully added!!", HttpStatus.OK);
         }
     }
 
@@ -60,11 +60,11 @@ public class RaseService {
                 .orElseThrow(() -> new ResourceNotFoundException("No rase with ID " + id));
     }
 
-    public Response deleteRase(Long id) {
+    public ResponseMessage deleteRase(Long id) {
 
         Rase r = getRaseById(id);
         raseRepository.deleteById(id);
-        return new Response(true, "Rase successfully deleted", HttpStatus.OK);
+        return new ResponseMessage(true, "Rase successfully deleted", HttpStatus.OK);
     }
 
     public Rase findRaseByName(String name) {

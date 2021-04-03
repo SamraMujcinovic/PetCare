@@ -2,7 +2,7 @@ package ba.unsa.etf.nwt.pet_category_service.controller;
 
 import ba.unsa.etf.nwt.pet_category_service.model.Rase;
 import ba.unsa.etf.nwt.pet_category_service.request.RaseRequest;
-import ba.unsa.etf.nwt.pet_category_service.response.Response;
+import ba.unsa.etf.nwt.pet_category_service.response.ResponseMessage;
 import ba.unsa.etf.nwt.pet_category_service.service.RaseService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -38,12 +38,12 @@ public class RaseController {
     }
 
     @PostMapping("/rase")
-    public Response addRase( @Valid @RequestBody RaseRequest raseRequest){
+    public ResponseMessage addRase(@Valid @RequestBody RaseRequest raseRequest){
        return raseService.addRase(raseRequest);
     }
 
     @DeleteMapping("/rase")
-    public Response deleteRase(@NotNull @RequestParam Long id){
+    public ResponseMessage deleteRase(@NotNull @RequestParam Long id){
         return raseService.deleteRase(id);
     }
 

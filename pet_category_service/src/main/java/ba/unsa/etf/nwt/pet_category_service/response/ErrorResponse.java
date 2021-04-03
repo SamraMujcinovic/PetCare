@@ -3,19 +3,19 @@ package ba.unsa.etf.nwt.pet_category_service.response;
 import java.util.List;
 
 public class ErrorResponse {
-    private Response responseMessage;
+    private ResponseMessage responseMessage;
     private List<String> details;
 
-    public ErrorResponse(Response responseMessage, List<String> details) {
+    public ErrorResponse(ResponseMessage responseMessage, List<String> details) {
         this.responseMessage = responseMessage;
         this.details = details;
     }
 
-    public Response getResponseMessage() {
+    public ResponseMessage getResponseMessage() {
         return responseMessage;
     }
 
-    public void setResponseMessage(Response responseMessage) {
+    public void setResponseMessage(ResponseMessage responseMessage) {
         this.responseMessage = responseMessage;
     }
 
