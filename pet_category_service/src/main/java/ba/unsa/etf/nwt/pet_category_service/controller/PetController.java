@@ -3,7 +3,7 @@ package ba.unsa.etf.nwt.pet_category_service.controller;
 
 import ba.unsa.etf.nwt.pet_category_service.model.Pet;
 import ba.unsa.etf.nwt.pet_category_service.request.PetRequest;
-import ba.unsa.etf.nwt.pet_category_service.response.Response;
+import ba.unsa.etf.nwt.pet_category_service.response.ResponseMessage;
 import ba.unsa.etf.nwt.pet_category_service.service.PetService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -53,13 +53,13 @@ public class PetController {
     }
 
     @PostMapping("/pet")
-    public Response addPet(@Valid @RequestBody PetRequest petRequest){
+    public ResponseMessage addPet(@Valid @RequestBody PetRequest petRequest){
         return petService.addPet(petRequest);
     }
 
     //brisanje peta po id-u
     @DeleteMapping("/pet")
-    public Response deletePet(@NotNull @RequestParam Long id){
+    public ResponseMessage deletePet(@NotNull @RequestParam Long id){
         return petService.deletePet(id);
     }
 

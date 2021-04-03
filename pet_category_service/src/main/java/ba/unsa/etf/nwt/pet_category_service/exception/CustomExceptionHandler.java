@@ -1,7 +1,7 @@
 package ba.unsa.etf.nwt.pet_category_service.exception;
 
 import ba.unsa.etf.nwt.pet_category_service.response.ErrorResponse;
-import ba.unsa.etf.nwt.pet_category_service.response.Response;
+import ba.unsa.etf.nwt.pet_category_service.response.ResponseMessage;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +21,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> tempHandler(String exceptionMessage, String message, HttpStatus status){
         List<String> details = new ArrayList<>();
         details.add(exceptionMessage);
-        ErrorResponse er = new ErrorResponse(new Response(false, message, status), details);
+        ErrorResponse er = new ErrorResponse(new ResponseMessage(false, message, status), details);
         return new ResponseEntity<>(er, status);
     }
 
@@ -41,7 +41,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         for(ObjectError error : ex.getBindingResult().getAllErrors()) {
             details.add(error.getDefaultMessage());
         }
-        ErrorResponse error = new ErrorResponse(new Response(false, "Validation Failed", HttpStatus.BAD_REQUEST), details);
+        ErrorResponse error = new ErrorResponse(new ResponseMessage(false, "Validation Failed", HttpStatus.BAD_REQUEST), details);
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 }

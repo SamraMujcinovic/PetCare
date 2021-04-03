@@ -6,7 +6,7 @@ import ba.unsa.etf.nwt.pet_category_service.model.Rase;
 import ba.unsa.etf.nwt.pet_category_service.repository.PetRepository;
 import ba.unsa.etf.nwt.pet_category_service.repository.RaseRepository;
 import ba.unsa.etf.nwt.pet_category_service.request.PetRequest;
-import ba.unsa.etf.nwt.pet_category_service.response.Response;
+import ba.unsa.etf.nwt.pet_category_service.response.ResponseMessage;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -25,7 +25,7 @@ public class PetService {
         return petRepository.findAll();
     }
 
-    public Response addPet(PetRequest petRequest) {
+    public ResponseMessage addPet(PetRequest petRequest) {
        // try{
             Integer age = petRequest.getAge();
             Pet pet = new Pet();
@@ -40,7 +40,7 @@ public class PetService {
             pet.setRase(r);
             petRepository.save(pet);
 
-            return new Response(true, "Pet successfully added!!", HttpStatus.OK);
+            return new ResponseMessage(true, "Pet successfully added!!", HttpStatus.OK);
 /*
         }catch (NullPointerException e){
             return new Response(false, "Add the age of the pet!", HttpStatus.BAD_REQUEST);
@@ -65,11 +65,11 @@ public class PetService {
         return p;
     }
 
-    public Response deletePet(Long id) {
+    public ResponseMessage deletePet(Long id) {
 
         Pet p = getPetById(id);
         petRepository.deleteById(id);
-        return new Response(true, "Pet successfully deleted!", HttpStatus.OK);
+        return new ResponseMessage(true, "Pet successfully deleted!", HttpStatus.OK);
     }
 
     public List<Pet> findPetByName(String name) {

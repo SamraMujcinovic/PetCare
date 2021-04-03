@@ -1,7 +1,7 @@
 package ba.unsa.etf.nwt.pet_category_service.controller;
 
 import ba.unsa.etf.nwt.pet_category_service.model.Category;
-import ba.unsa.etf.nwt.pet_category_service.response.Response;
+import ba.unsa.etf.nwt.pet_category_service.response.ResponseMessage;
 import ba.unsa.etf.nwt.pet_category_service.service.CategoryService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -34,13 +34,13 @@ public class CategoryController {
     }
 
     @PostMapping("/category")
-    public Response addCategory(@Valid @RequestBody Category category){
+    public ResponseMessage addCategory(@Valid @RequestBody Category category){
 
         return categoryService.addCategory(category);
     }
 
     @DeleteMapping("/category")
-    public Response deleteCategory(@NotNull @RequestParam Long id){
+    public ResponseMessage deleteCategory(@NotNull @RequestParam Long id){
         return categoryService.deleteCategory(id);
     }
 
