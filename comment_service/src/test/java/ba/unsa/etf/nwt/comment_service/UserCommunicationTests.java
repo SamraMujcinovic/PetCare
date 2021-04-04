@@ -90,4 +90,22 @@ public class UserCommunicationTests {
                         .body(mapper.writeValueAsString(username))
                 );*/
     }
+
+    @Test
+    public void getCategoryByPetId(){
+        Long categoryId = 63L;
+        Mockito
+                .when(restTemplate.getForEntity(
+                        "http://localhost:8084/current/pet/petID/" + categoryId, Long.class))
+                .thenReturn(new ResponseEntity(categoryId, HttpStatus.OK));
+    }
+
+    @Test
+    public void getCategoryByRaseId(){
+        Long categoryId = 63L;
+        Mockito
+                .when(restTemplate.getForEntity(
+                        "http://localhost:8084/current/pet/petID/" + categoryId, Long.class))
+                .thenReturn(new ResponseEntity(categoryId, HttpStatus.OK));
+    }
 }

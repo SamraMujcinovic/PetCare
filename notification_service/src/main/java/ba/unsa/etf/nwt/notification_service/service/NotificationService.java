@@ -8,7 +8,9 @@ import ba.unsa.etf.nwt.notification_service.response.ResponseMessage;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,6 +28,9 @@ public class NotificationService {
     public ResponseMessage addNotification(Notification notification) {
         notification.setCreatedAt(new Date());
         try {
+            RestTemplate restTemplate = new RestTemplate();
+            Long userId = restTemplate.getForObject("http://localhost:8080/user/me/id", Long.class);
+            notification.setUserID(userId);
             notificationRepository.save(notification);
             return new ResponseMessage(true, HttpStatus.OK,"Notification added successfully!!");
         }
@@ -45,12 +50,30 @@ public class NotificationService {
         return notification;
     }
 
-    public List<Notification> getUserNotification(Long userID) {
-        return notificationRepository.findAllByUserID(userID);
+    public List<Notification> getUserNotification() {
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            Long userId = restTemplate.getForObject("http://localhost:8080/user/me/id", Long.class);
+            List<Notification> notifications = notificationRepository.findAllByUserID(userId);
+            return notifications;
+        }
+        catch (Exception e) {
+            List<Notification> notifications = new ArrayList<>();
+            return notifications;
+        }
     }
 
-    public List<Notification> getUnreadUserNotification(Long userID) {
-        return notificationRepository.findAllByUserIDAndRead(userID, false);
+    public List<Notification> getUnreadUserNotification() {
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            Long userId = restTemplate.getForObject("http://localhost:8080/user/me/id", Long.class);
+            List<Notification> notifications = notificationRepository.findAllByUserIDAndRead(userId, false);
+            return notifications;
+        }
+        catch (Exception e) {
+            List<Notification> notifications = new ArrayList<>();
+            return notifications;
+        }
     }
 
     public ResponseMessage deleteNotification(Long notificationID) {
@@ -62,7 +85,10 @@ public class NotificationService {
         } catch (Exception e) {
             throw new ResourceNotFoundException("Notification isn't deleted!!");
         }
+    }
 
+    public Notification saveNotification(Notification n){
+        return notificationRepository.save(n);
     }
 
 }

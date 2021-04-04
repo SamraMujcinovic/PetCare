@@ -31,7 +31,6 @@ public class Notification {
             = "Content must be between 2 and 150 characters!!")
     private String content;
 
-    @NotNull(message = "UserID can't be null")
     private Long userID;
 
     private Boolean read = false;
