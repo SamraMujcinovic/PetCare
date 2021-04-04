@@ -37,12 +37,6 @@ public class RaseController {
         return raseService.getRaseByName(name);
     }
 
-    @GetMapping("/current/rase/raseID/{id}")
-    public Long getCurrentRaseID(@NotNull @PathVariable Long id){
-        Rase rase = raseService.getRaseById(id);
-        return rase.getId();
-    }
-
     @PostMapping("/rase")
     public ResponseMessage addRase(@Valid @RequestBody RaseRequest raseRequest){
        return raseService.addRase(raseRequest);
