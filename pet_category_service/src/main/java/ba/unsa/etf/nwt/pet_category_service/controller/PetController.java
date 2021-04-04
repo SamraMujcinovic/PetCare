@@ -53,10 +53,18 @@ public class PetController {
         return petService.getPetsRaseContainsString(substring);
     }
 
-    @GetMapping("/petID/{id}")
+    @GetMapping("/current/pet/petID/{id}")
     public Long getCurrentPetID(@NotNull @PathVariable Long id){
         Pet pet = petService.getPetById(id);
         return pet.getId();
+    }
+
+    @GetMapping("/current/pet/raseID/{id}")
+    public Long getCurrentPetRaseID(@NotNull @PathVariable Long id){
+        //argument je id peta trenutnog
+        Pet pet = petService.getPetById(id);
+        //vraceni id je id rase trenutnog peta
+        return pet.getRase().getId();
     }
 
     @PostMapping("/pet")
