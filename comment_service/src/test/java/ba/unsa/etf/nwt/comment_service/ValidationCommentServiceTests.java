@@ -401,7 +401,7 @@ class ValidationCommentServiceTests {
     @Test
     public void CreateReplyWithOnlyUserId() {
         Reply reply = new Reply();
-        reply.setUserID(2L);
+        reply.setUsername("user");
         Set<ConstraintViolation<Reply>> violations = validator.validate(reply);
         assertFalse(violations.isEmpty());
     }
@@ -410,7 +410,7 @@ class ValidationCommentServiceTests {
     public void CreateReplyWithContentUserId() {
         Reply reply = new Reply();
         reply.setContent("Reply 1");
-        reply.setUserID(2L);
+        reply.setUsername("alakovic1");
         Set<ConstraintViolation<Reply>> violations = validator.validate(reply);
         assertTrue(violations.isEmpty());
     }
@@ -419,7 +419,7 @@ class ValidationCommentServiceTests {
     public void CreateReplyWithShortContentUserId() {
         Reply reply = new Reply();
         reply.setContent("R");
-        reply.setUserID(2L);
+        reply.setUsername("user");
         Set<ConstraintViolation<Reply>> violations = validator.validate(reply);
         assertFalse(violations.isEmpty());
     }
@@ -432,7 +432,7 @@ class ValidationCommentServiceTests {
         comment.setTitle("Question 13");
         comment.setContent( "Favorite animal?");
         comment.setRoles(r2);
-        Reply reply = new Reply(comment, Long.valueOf(1), "C");
+        Reply reply = new Reply(comment, "user", "C");
         Set<ConstraintViolation<Reply>> violations = validator.validate(reply);
         assertFalse(violations.isEmpty());
     }
@@ -489,7 +489,7 @@ class ValidationCommentServiceTests {
         comment.setTitle("Question 13");
         comment.setContent( "Favorite animal?");
         comment.setRoles(r2);
-        Reply reply = new Reply(comment, Long.valueOf(1), "Amazing");
+        Reply reply = new Reply(comment, "user", "Amazing");
         Set<ConstraintViolation<Reply>> violations = validator.validate(reply);
         assertTrue(violations.isEmpty());
     }

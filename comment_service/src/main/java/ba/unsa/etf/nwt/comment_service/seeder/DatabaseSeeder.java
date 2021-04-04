@@ -39,9 +39,8 @@ public class DatabaseSeeder {
 
         Comment c = createComment("user", 1L,"Question", "What kind of dog do you want?", r2);
 
-        //Comment c1 = createComment( Long.valueOf(1), Long.valueOf(1),"Question", "What kind of dog do you want?", r2);
-        //Reply rp1 = createReply(Long.valueOf(2), c1, "Sweet and relaxed, friendly towards everyone.");
-        //Reply rp2 = createReply(Long.valueOf(3), c1, "Amazing!");
+        Reply rp1 = createReply("alakovic1", c, "Sweet and relaxed, friendly towards everyone.");
+
 
     }
 
@@ -62,12 +61,12 @@ public class DatabaseSeeder {
         return comment;
     }
 
-    private Reply createReply(Long userID, Comment comment, String content) {
+    private Reply createReply(String username, Comment comment, String content) {
         Reply reply = new Reply();
-        reply.setUserID(userID);
+        reply.setUsername(username);
         reply.setComment(comment);
         reply.setContent(content);
-        replyService.addReply(reply, comment.getId());
+        replyService.saveReply(reply);
         return reply;
     }
 

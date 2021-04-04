@@ -36,7 +36,6 @@ class ReplyServiceTests {
         Long commentId = 1L;
 
         String newReply = "{\n" +
-                "    \"userID\": 1,\n" +
                 "    \"content\": \"Pet care\"\n" +
                 "}\n";
 
@@ -59,7 +58,6 @@ class ReplyServiceTests {
         Long commentId = 1L;
 
         String newReply = "{\n" +
-                "    \"userID\": 1,\n" +
                 "    \"content\": \"P\"\n" +
                 "}\n";
 
@@ -77,7 +75,6 @@ class ReplyServiceTests {
         Long commentId = 1L;
 
         String newReply = "{\n" +
-                "    \"userID\": 1,\n" +
                 "    \"content\": \"\"\n" +
                 "}\n";
 

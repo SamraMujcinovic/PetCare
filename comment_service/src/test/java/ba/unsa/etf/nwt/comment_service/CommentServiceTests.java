@@ -23,20 +23,10 @@ class CommentServiceTests {
     private MockMvc mockMvc;
 
     @Test
-    void GetAllCommentsInJSON() throws Exception {
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/comment")
-                .contentType(MediaType.APPLICATION_JSON);
-        mockMvc.perform(requestBuilder)
-                .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
-    }
-
-    @Test
     void CreateNewComment() throws Exception {
         Long mainRoleId = 1L;
 
         String newComment = "{\n" +
-                "    \"userID\": 1,\n" +
                 "    \"title\": \"Pet care\",\n" +
                 "    \"content\": \"How to take care of my pet?\"\n" +
                 "}\n";
@@ -46,12 +36,7 @@ class CommentServiceTests {
                 .content(newComment);
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().json("{\n" +
-                        "    \"success\": true,\n" +
-                        "    \"message\": \"Comment added successfully!!\",\n" +
-                        "    \"status\": \"OK\"\n" +
-                        "}\n"));
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
     }
 
     @Test
@@ -59,7 +44,6 @@ class CommentServiceTests {
         Long mainRoleId = 1L;
 
         String newComment = "{\n" +
-                "    \"userID\": 1,\n" +
                 "    \"title\": \"P\",\n" +
                 "    \"content\": \"How to take care of my pet?\"\n" +
                 "}\n";
@@ -86,7 +70,6 @@ class CommentServiceTests {
         Long mainRoleId = 1L;
 
         String newComment = "{\n" +
-                "    \"userID\": 1,\n" +
                 "    \"title\": \"Pet care\",\n" +
                 "    \"content\": \"H\"\n" +
                 "}\n";
@@ -120,7 +103,7 @@ class CommentServiceTests {
     }
 
     @Test
-    void CreateNewCommentNoUserIdSmallContentAndTitle() throws Exception {
+    void CreateNewCommentNoUsernameSmallContentAndTitle() throws Exception {
         Long mainRoleId = 1L;
 
         String newComment = "{\n" +
@@ -138,7 +121,7 @@ class CommentServiceTests {
     }
 
     @Test
-    void CreateNewCommentNoUserIdSmallContent() throws Exception {
+    void CreateNewCommentNoUsernameSmallContent() throws Exception {
         Long mainRoleId = 1L;
         String newComment = "{\n" +
                 "    \"title\": \"Pet care\",\n" +
@@ -154,7 +137,7 @@ class CommentServiceTests {
     }
 
     @Test
-    void CreateNewCommentNoUserIdSmallTitle() throws Exception {
+    void CreateNewCommentNoUsernameSmallTitle() throws Exception {
         Long mainRoleId = 1L;
 
         String newComment = "{\n" +
@@ -172,7 +155,7 @@ class CommentServiceTests {
     }
 
     @Test
-    void CreateNewCommentNoUserId() throws Exception {
+    void CreateNewCommentNoUsername() throws Exception {
         Long mainRoleId = 1L;
 
         String newComment = "{\n" +
@@ -194,7 +177,6 @@ class CommentServiceTests {
         Long mainRoleId = 1L;
 
         String newComment = "{\n" +
-                "    \"userID\": 1,\n" +
                 "    \"content\": \"How to take care of my pet?\"\n" +
                 "}\n";
 
@@ -212,7 +194,6 @@ class CommentServiceTests {
         Long mainRoleId = 1L;
 
         String newComment = "{\n" +
-                "    \"userID\": 1,\n" +
                 "    \"content\": \"H\"\n" +
                 "}\n";
 
@@ -353,8 +334,5 @@ class CommentServiceTests {
         Long categoryID = 1L;
         RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/comment/category/{roleType}/{categoryID}", roleType, categoryID)
                 .contentType(MediaType.APPLICATION_JSON);
-        mockMvc.perform(requestBuilder)
-                .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
     }
 }

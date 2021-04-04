@@ -49,15 +49,15 @@ public class CommentService {
             return new ResponseMessage(true, HttpStatus.OK,"Comment added successfully!!");
         }
         catch (RuntimeException e){
-            throw new WrongInputException("Notification isn't added!!");
+            throw new WrongInputException("Comment isn't added!!");
         }
     }
 
-    public List<Comment> getUserComments(String userID) {
+    public List<Comment> getUserComments(String username) {
         return commentRepository
                 .findAll()
                 .stream()
-                .filter(c -> c.getUsername().equals(userID))
+                .filter(c -> c.getUsername().equals(username))
                 .collect(Collectors.toList());
     }
 

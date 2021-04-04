@@ -29,7 +29,7 @@ public class CommentController {
         return commentService.getOneComment(commentID);
     }
 
-    @GetMapping("/comment/user/{userID}")
+    @GetMapping("/comment/user/{username}")
     public List<Comment> getUserComments(@PathVariable String username){
         return commentService.getUserComments(username);
     }
