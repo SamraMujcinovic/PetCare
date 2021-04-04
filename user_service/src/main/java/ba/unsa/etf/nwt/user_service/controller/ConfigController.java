@@ -8,10 +8,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RefreshScope
-@ConfigurationProperties("variable")
 public class ConfigController {
     //Value and GetMapping for config server
-    //@Value("${variable}")
+    @Value("${my.variable: default value}")
     private String variable;
 
     @GetMapping("/configserver/test")

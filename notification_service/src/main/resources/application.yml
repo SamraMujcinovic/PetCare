@@ -13,10 +13,13 @@ spring:
     name: notification_service
   config:
     import: optional:configserver:http://localhost:8888
-  security:
-    user:
-       name: user
-       password: password
+  cloud:
+    config:
+      username: user
+      password: password
+
+encrypt:
+  key: ruhdghu36878DTFGYuy7eu9heihGDYUHhduehfuieriro009238usG
 
 management:
   endpoints:
