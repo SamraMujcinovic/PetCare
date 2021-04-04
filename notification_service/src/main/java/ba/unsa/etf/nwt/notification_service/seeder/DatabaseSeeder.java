@@ -32,7 +32,7 @@ public class DatabaseSeeder {
         notification.setUserID(userID);
         notification.setRead(read);
         notification.setCreatedAt(date);
-        notificationService.addNotification(notification);
+        notificationService.saveNotification(notification);
         return notification;
     }
 }

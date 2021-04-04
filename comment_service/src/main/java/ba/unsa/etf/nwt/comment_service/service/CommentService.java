@@ -23,14 +23,19 @@ public class CommentService {
     private final MainRoleService mainRoleService;
 
     public List<Comment> getComment() {
-        RestTemplate restTemplate = new RestTemplate();
-        List<Comment> comments = commentRepository.findAll();
-        for(Comment comment : comments){
-            String username = restTemplate.getForObject("http://localhost:8080/user/" + comment.getUsername(), String.class);
-            comment.setUsername(username);
-            commentRepository.save(comment);
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            List<Comment> comments = commentRepository.findAll();
+            for(Comment comment : comments){
+                String username = restTemplate.getForObject("http://localhost:8080/user/" + comment.getUsername(), String.class);
+                comment.setUsername(username);
+                commentRepository.save(comment);
+            }
+            return comments;
         }
-        return comments;
+        catch (RuntimeException e){
+            throw new ResourceNotFoundException ("Not found!!");
+        }
     }
 
     public ResponseMessage addComment(Comment comment, Long mainRoleId) {
@@ -96,14 +101,32 @@ public class CommentService {
     }
 
     public List<Comment> getCategoryComment(Long roleType, Long categoryID) {
+        RestTemplate restTemplate = new RestTemplate();
+
         SectionRoleName roleName = SectionRoleName.ROLE_PET;
         if (roleType == 1L) roleName = SectionRoleName.ROLE_CATEGORY;
+
         SectionRoleName finalRoleName = roleName;
-        return commentRepository
+        List<Comment> comments = commentRepository
                 .findAll()
                 .stream()
                 .filter(c -> c.getMainRole().getName().equals(finalRoleName) && c.getCategoryID().equals(categoryID))
                 .collect(Collectors.toList());
+
+        for(Comment comment : comments){
+            String username = restTemplate.getForObject("http://localhost:8080/user/" + comment.getUsername(), String.class);
+            comment.setUsername(username);
+            if (roleName == SectionRoleName.ROLE_PET) {
+                Long categoryId = restTemplate.getForObject("http://localhost:8084/current/pet/petID/" + comment.getCategoryID(), Long.class);
+                comment.setCategoryID(categoryId);
+            }
+            else {
+                Long categoryId = restTemplate.getForObject("http://localhost:8084/current/rase/raseID/" + comment.getCategoryID(), Long.class);
+                comment.setCategoryID(categoryId);
+            }
+            commentRepository.save(comment);
+        }
+        return comments;
     }
 
     public Comment saveComment(Comment c){

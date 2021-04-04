@@ -27,9 +27,9 @@ public class NotificationController {
         return notificationService.addNotification(notification);
     }
 
-    @GetMapping("/notifications/user/{userID}")
-    public List<Notification> getAllUserNotifications(@PathVariable Long userID){
-        return notificationService.getUserNotification(userID);
+    @GetMapping("/notifications/user")
+    public List<Notification> getAllUserNotifications(){
+        return notificationService.getUserNotification();
     }
 
     @GetMapping("/notifications/{notificationID}")
@@ -37,9 +37,9 @@ public class NotificationController {
         return notificationService.findById(notificationID);
     }
 
-    @GetMapping("/notifications/unread/user/{userID}")
-    public List<Notification> getUnreadUserNotification(@PathVariable Long userID){
-        return notificationService.getUnreadUserNotification(userID);
+    @GetMapping("/notifications/unread/user")
+    public List<Notification> getUnreadUserNotification(){
+        return notificationService.getUnreadUserNotification();
     }
 
     @DeleteMapping("/notifications/{notificationID}")
