@@ -59,4 +59,12 @@ public class CommunicationsController {
             return "UNKNOWN";
         }
     }
+
+    //POPRAVITI NAKON AUTORIZACIJE
+    @GetMapping("/user/me/id")
+    public Long getCurrentUsersId(/*@CurrentUser UserPrincipal currentUser*/){
+        User user = new User();
+        user.setId(1L);
+        return user.getId();
+    }
 }
