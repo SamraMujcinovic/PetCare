@@ -37,7 +37,7 @@ public class PetTests {
 
         Long id = 10L;
 
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/pet?id={id}", id)
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/pet/{id}", id)
                 .contentType(MediaType.APPLICATION_JSON);
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk())
@@ -261,7 +261,7 @@ public class PetTests {
 
         Long id = 50L;
 
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/pet?id={id}", id)
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/pet/{id}", id)
                 .contentType(MediaType.APPLICATION_JSON);
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isNotFound())
