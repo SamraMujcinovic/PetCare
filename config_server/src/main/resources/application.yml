@@ -6,8 +6,11 @@ spring:
     config:
       server:
         git:
-          uri: https://github.com/alakovic1/config.git
+          uri: https://github.com/alakovic1/config
   security:
     user:
       name: user
       password: password
+
+encrypt:
+  key: ruhdghu36878DTFGYuy7eu9heihGDYUHhduehfuieriro009238usG
