@@ -45,7 +45,7 @@ class ValidationCommentServiceTests {
     @Test
     public void CreateCommentWithOnlyUserId() {
         Comment comment = new Comment();
-        comment.setUserID(1L);
+        comment.setUsername("alakovic1");
         Set<ConstraintViolation<Comment>> violations = validator.validate(comment);
         assertFalse(violations.isEmpty());
     }
@@ -77,7 +77,7 @@ class ValidationCommentServiceTests {
     @Test
     public void CreateCommentWithUserIdAndContent() {
         Comment comment = new Comment();
-        comment.setUserID(1L);
+        comment.setUsername("alakovic1");
         comment.setContent("Content 1");
         Set<ConstraintViolation<Comment>> violations = validator.validate(comment);
         assertFalse(violations.isEmpty());
@@ -86,7 +86,7 @@ class ValidationCommentServiceTests {
     @Test
     public void CreateCommentWithUserIdAndShortContent() {
         Comment comment = new Comment();
-        comment.setUserID(1L);
+        comment.setUsername("alakovic1");
         comment.setContent("C");
         Set<ConstraintViolation<Comment>> violations = validator.validate(comment);
         assertFalse(violations.isEmpty());
@@ -95,7 +95,7 @@ class ValidationCommentServiceTests {
     @Test
     public void CreateCommentWithUserIdAndTitle() {
         Comment comment = new Comment();
-        comment.setUserID(1L);
+        comment.setUsername("alakovic1");
         comment.setTitle("Title");
         Set<ConstraintViolation<Comment>> violations = validator.validate(comment);
         assertFalse(violations.isEmpty());
@@ -104,7 +104,7 @@ class ValidationCommentServiceTests {
     @Test
     public void CreateCommentWithUserIdAndShortTitle() {
         Comment comment = new Comment();
-        comment.setUserID(1L);
+        comment.setUsername("alakovic1");
         comment.setTitle("Title");
         Set<ConstraintViolation<Comment>> violations = validator.validate(comment);
         assertFalse(violations.isEmpty());
@@ -113,7 +113,7 @@ class ValidationCommentServiceTests {
     @Test
     public void CreateCommentWithUserIdContentAndTitle() {
         Comment comment = new Comment();
-        comment.setUserID(1L);
+        comment.setUsername("alakovic1");
         comment.setTitle("Title");
         comment.setContent("Content 1");
         Set<ConstraintViolation<Comment>> violations = validator.validate(comment);
@@ -123,7 +123,7 @@ class ValidationCommentServiceTests {
     @Test
     public void CreateCommentWithUserIdShortContentAndTitle() {
         Comment comment = new Comment();
-        comment.setUserID(1L);
+        comment.setUsername("alakovic1");
         comment.setTitle("Title");
         comment.setContent("C");
         Set<ConstraintViolation<Comment>> violations = validator.validate(comment);
@@ -133,7 +133,7 @@ class ValidationCommentServiceTests {
     @Test
     public void CreateCommentWithUserIdContentAndShortTitle() {
         Comment comment = new Comment();
-        comment.setUserID(1L);
+        comment.setUsername("alakovic1");
         comment.setTitle("T");
         comment.setContent("Content");
         Set<ConstraintViolation<Comment>> violations = validator.validate(comment);
@@ -143,7 +143,7 @@ class ValidationCommentServiceTests {
     @Test
     public void CreateCommentWithUserIdShortContentAndShortTitle() {
         Comment comment = new Comment();
-        comment.setUserID(1L);
+        comment.setUsername("alakovic1");
         comment.setTitle("T");
         comment.setContent("C");
         Set<ConstraintViolation<Comment>> violations = validator.validate(comment);
@@ -154,7 +154,7 @@ class ValidationCommentServiceTests {
     public void CreateCommentWithUserIdContentTitleAndRole() {
         Comment comment = new Comment();
         MainRole r2 = new MainRole(SectionRoleName.ROLE_CATEGORY);
-        comment.setUserID(1L);
+        comment.setUsername("alakovic1");
         comment.setTitle("Title");
         comment.setContent("Content");
         comment.setRoles(r2);
@@ -166,7 +166,7 @@ class ValidationCommentServiceTests {
     public void CreateCommentWithUserIdContentTitleAndRole2() {
         Comment comment = new Comment();
         MainRole r2 = new MainRole(SectionRoleName.ROLE_PET);
-        comment.setUserID(1L);
+        comment.setUsername("alakovic1");
         comment.setTitle("Title");
         comment.setContent("Content");
         comment.setRoles(r2);
@@ -178,7 +178,7 @@ class ValidationCommentServiceTests {
     public void CreateCommentWithUserIdShortContentTitleAndRole2() {
         Comment comment = new Comment();
         MainRole r2 = new MainRole(SectionRoleName.ROLE_PET);
-        comment.setUserID(1L);
+        comment.setUsername("alakovic1");
         comment.setTitle("Title");
         comment.setContent("C");
         comment.setRoles(r2);
@@ -190,7 +190,7 @@ class ValidationCommentServiceTests {
     public void CreateCommentWithUserIdContentShortTitleAndRole2() {
         Comment comment = new Comment();
         MainRole r2 = new MainRole(SectionRoleName.ROLE_PET);
-        comment.setUserID(1L);
+        comment.setUsername("alakovic1");
         comment.setTitle("T");
         comment.setContent("Content");
         comment.setRoles(r2);
@@ -202,7 +202,7 @@ class ValidationCommentServiceTests {
     public void CreateCommentWithUserIdShortContentShortTitleAndRole2() {
         Comment comment = new Comment();
         MainRole r2 = new MainRole(SectionRoleName.ROLE_PET);
-        comment.setUserID(1L);
+        comment.setUsername("alakovic1");
         comment.setTitle("T");
         comment.setContent("C");
         comment.setRoles(r2);
@@ -214,7 +214,7 @@ class ValidationCommentServiceTests {
     public void CreateCommentWithUserIdShortContentTitleAndRole() {
         Comment comment = new Comment();
         MainRole r2 = new MainRole(SectionRoleName.ROLE_CATEGORY);
-        comment.setUserID(1L);
+        comment.setUsername("alakovic1");
         comment.setTitle("Title");
         comment.setContent("C");
         comment.setRoles(r2);
@@ -226,7 +226,7 @@ class ValidationCommentServiceTests {
     public void CreateCommentWithUserIdContentShortTitleAndRole() {
         Comment comment = new Comment();
         MainRole r2 = new MainRole(SectionRoleName.ROLE_CATEGORY);
-        comment.setUserID(1L);
+        comment.setUsername("alakovic1");
         comment.setTitle("T");
         comment.setContent("Content");
         comment.setRoles(r2);
@@ -238,7 +238,7 @@ class ValidationCommentServiceTests {
     public void CreateCommentWithUserIdShortContentShortTitleAndRole() {
         Comment comment = new Comment();
         MainRole r2 = new MainRole(SectionRoleName.ROLE_CATEGORY);
-        comment.setUserID(1L);
+        comment.setUsername("alakovic1");
         comment.setTitle("T");
         comment.setContent("C");
         comment.setRoles(r2);
@@ -250,7 +250,7 @@ class ValidationCommentServiceTests {
     public void CreateCommentWithUserIdContentTitleRoleAndCategoryId() {
         Comment comment = new Comment();
         MainRole r2 = new MainRole(SectionRoleName.ROLE_PET);
-        comment.setUserID(1L);
+        comment.setUsername("alakovic1");
         comment.setTitle("Title");
         comment.setContent("Content");
         comment.setRoles(r2);
@@ -283,7 +283,7 @@ class ValidationCommentServiceTests {
     public void TitleShort() {
         Comment comment = new Comment();
         MainRole r2 = new MainRole(SectionRoleName.ROLE_CATEGORY);
-        comment.setUserID(1L);
+        comment.setUsername("alakovic1");
         comment.setTitle("Q");
         comment.setContent( "Favorite animal?");
         comment.setRoles(r2);
@@ -305,7 +305,7 @@ class ValidationCommentServiceTests {
     @Test
     public void TitleShortNoRole() {
         Comment comment = new Comment();
-        comment.setUserID(1L);
+        comment.setUsername("alakovic1");
         comment.setTitle("Q");
         comment.setContent( "Favorite animal?");
         Set<ConstraintViolation<Comment>> violations = validator.validate(comment);
@@ -316,7 +316,7 @@ class ValidationCommentServiceTests {
     public void ContentShort() {
         Comment comment = new Comment();
         MainRole r2 = new MainRole(SectionRoleName.ROLE_CATEGORY);
-        comment.setUserID(1L);
+        comment.setUsername("alakovic1");
         comment.setTitle("Question 13");
         comment.setContent( "O");
         comment.setRoles(r2);
@@ -338,7 +338,7 @@ class ValidationCommentServiceTests {
     @Test
     public void ContentShortNoRole() {
         Comment comment = new Comment();
-        comment.setUserID(1L);
+        comment.setUsername("alakovic1");
         comment.setTitle("Question 13");
         comment.setContent( "O");
         Set<ConstraintViolation<Comment>> violations = validator.validate(comment);
@@ -366,7 +366,7 @@ class ValidationCommentServiceTests {
     public void CorrectComment() {
         Comment comment = new Comment();
         MainRole r2 = new MainRole(SectionRoleName.ROLE_CATEGORY);
-        comment.setUserID(1L);
+        comment.setUsername("alakovic1");
         comment.setTitle("Question 13");
         comment.setContent( "Favorite animal?");
         comment.setRoles(r2);
@@ -428,7 +428,7 @@ class ValidationCommentServiceTests {
     public void ShortContent() {
         Comment comment = new Comment();
         MainRole r2 = new MainRole(SectionRoleName.ROLE_CATEGORY);
-        comment.setUserID(1L);
+        comment.setUsername("alakovic1");
         comment.setTitle("Question 13");
         comment.setContent( "Favorite animal?");
         comment.setRoles(r2);
@@ -441,7 +441,7 @@ class ValidationCommentServiceTests {
     public void ShortContentAndNoUser() {
         Comment comment = new Comment();
         MainRole r2 = new MainRole(SectionRoleName.ROLE_CATEGORY);
-        comment.setUserID(1L);
+        comment.setUsername("alakovic1");
         comment.setTitle("Question 13");
         comment.setContent( "Favorite animal?");
         comment.setRoles(r2);
@@ -456,7 +456,7 @@ class ValidationCommentServiceTests {
     public void contentAndNoUser() {
         Comment comment = new Comment();
         MainRole r2 = new MainRole(SectionRoleName.ROLE_CATEGORY);
-        comment.setUserID(1L);
+        comment.setUsername("alakovic1");
         comment.setTitle("Question 13");
         comment.setContent( "Favorite animal?");
         comment.setRoles(r2);
@@ -471,7 +471,7 @@ class ValidationCommentServiceTests {
     public void onlyComment() {
         Comment comment = new Comment();
         MainRole r2 = new MainRole(SectionRoleName.ROLE_CATEGORY);
-        comment.setUserID(1L);
+        comment.setUsername("alakovic1");
         comment.setTitle("Question 13");
         comment.setContent( "Favorite animal?");
         comment.setRoles(r2);
@@ -485,7 +485,7 @@ class ValidationCommentServiceTests {
     public void CorrectReply() {
         Comment comment = new Comment();
         MainRole r2 = new MainRole(SectionRoleName.ROLE_CATEGORY);
-        comment.setUserID(1L);
+        comment.setUsername("alakovic1");
         comment.setTitle("Question 13");
         comment.setContent( "Favorite animal?");
         comment.setRoles(r2);

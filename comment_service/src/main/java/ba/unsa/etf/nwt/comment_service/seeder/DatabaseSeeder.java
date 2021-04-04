@@ -1,16 +1,20 @@
 package ba.unsa.etf.nwt.comment_service.seeder;
 
+import ba.unsa.etf.nwt.comment_service.exception.WrongInputException;
 import ba.unsa.etf.nwt.comment_service.model.Comment;
 import ba.unsa.etf.nwt.comment_service.model.Reply;
 import ba.unsa.etf.nwt.comment_service.model.sectionRole.MainRole;
 import ba.unsa.etf.nwt.comment_service.model.sectionRole.SectionRoleName;
+import ba.unsa.etf.nwt.comment_service.response.ResponseMessage;
 import ba.unsa.etf.nwt.comment_service.service.CommentService;
 import ba.unsa.etf.nwt.comment_service.service.MainRoleService;
 import ba.unsa.etf.nwt.comment_service.service.ReplyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
 @Component
 public class DatabaseSeeder {
@@ -33,9 +37,11 @@ public class DatabaseSeeder {
         MainRole r1 = createRole(SectionRoleName.ROLE_CATEGORY);
         MainRole r2 = createRole(SectionRoleName.ROLE_PET);
 
-        Comment c1 = createComment( Long.valueOf(1), Long.valueOf(1),"Question", "What kind of dog do you want?", r2);
-        Reply rp1 = createReply(Long.valueOf(2), c1, "Sweet and relaxed, friendly towards everyone.");
-        Reply rp2 = createReply(Long.valueOf(3), c1, "Amazing!");
+        Comment c = createComment("user", 1L,"Question", "What kind of dog do you want?", r2);
+
+        //Comment c1 = createComment( Long.valueOf(1), Long.valueOf(1),"Question", "What kind of dog do you want?", r2);
+        //Reply rp1 = createReply(Long.valueOf(2), c1, "Sweet and relaxed, friendly towards everyone.");
+        //Reply rp2 = createReply(Long.valueOf(3), c1, "Amazing!");
 
     }
 
@@ -45,14 +51,14 @@ public class DatabaseSeeder {
         return r;
     }
 
-    private Comment createComment(Long UserID, Long CategoryID,String title, String content, MainRole role) {
+    private Comment createComment(String username, Long CategoryID,String title, String content, MainRole role) {
         Comment comment = new Comment();
-        comment.setUserID(UserID);
+        comment.setUsername(username);
         comment.setCategoryID(CategoryID);
         comment.setTitle(title);
         comment.setContent(content);
         comment.setRoles(role);
-        commentService.addComment(comment, 2L);
+        commentService.saveComment(comment);
         return comment;
     }
 

@@ -30,8 +30,8 @@ public class CommentController {
     }
 
     @GetMapping("/comment/user/{userID}")
-    public List<Comment> getUserComments(@PathVariable Long userID){
-        return commentService.getUserComments(userID);
+    public List<Comment> getUserComments(@PathVariable String username){
+        return commentService.getUserComments(username);
     }
 
     @GetMapping("/comment/category/{roleType}/{categoryID}")
