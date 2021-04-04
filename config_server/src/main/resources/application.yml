@@ -11,3 +11,6 @@ spring:
     user:
       name: user
       password: password
+
+encrypt:
+  key: ruhdghu36878DTFGYuy7eu9heihGDYUHhduehfuieriro009238usG

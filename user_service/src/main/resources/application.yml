@@ -11,12 +11,14 @@ spring:
       ddl-auto: update
   application:
     name: user_service
-  config:
-    import: optional:configserver:http://localhost:8888
   security:
     user:
       name: user
       password: password
+  cloud:
+    config:
+      uri: http://localhost:8888
+      enabled: false
 
 management:
   endpoints:
