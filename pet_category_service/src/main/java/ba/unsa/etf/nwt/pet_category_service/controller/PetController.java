@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import javax.ws.rs.Path;
 import java.util.List;
 
 @AllArgsConstructor
@@ -22,8 +23,8 @@ public class PetController {
         return petService.getPets();
     }
 
-    @GetMapping("/pet")
-    public Pet getPet(@NotNull @RequestParam Long id){
+    @GetMapping("/pet/{id}")
+    public Pet getPet(@NotNull @PathVariable Long id){
         return petService.getPet(id);
     }
 
@@ -50,6 +51,12 @@ public class PetController {
     @GetMapping("/pets/rase/contains")
     public List<Pet> getPetsRaseContainsString(@NotNull @RequestParam String substring){
         return petService.getPetsRaseContainsString(substring);
+    }
+
+    @GetMapping("/petID/{id}")
+    public Long getCurrentPetID(@NotNull @PathVariable Long id){
+        Pet pet = petService.getPetById(id);
+        return pet.getId();
     }
 
     @PostMapping("/pet")
