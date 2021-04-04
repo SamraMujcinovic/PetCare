@@ -10,6 +10,7 @@ import ba.unsa.etf.nwt.comment_service.response.ResponseMessage;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,8 +27,13 @@ public class ReplyService {
     }
 
     public ResponseMessage addReply(Reply reply, Long commentId) {
+
+        RestTemplate restTemplate = new RestTemplate();
+
         try {
             reply.setComment(new Comment(commentService.getOneComment(commentId)));
+            String username = restTemplate.getForObject("http://localhost:8080/user/me/username", String.class);
+            reply.setUsername(username);
             replyRepository.save(reply);
             return new ResponseMessage(true, HttpStatus.OK,"Reply added successfully!!");
         }
@@ -67,5 +73,9 @@ public class ReplyService {
         } catch (Exception e) {
             throw  new ResourceNotFoundException( "Reply isn't deleted!!");
         }
+    }
+
+    public Reply saveReply(Reply r){
+        return replyRepository.save(r);
     }
 }

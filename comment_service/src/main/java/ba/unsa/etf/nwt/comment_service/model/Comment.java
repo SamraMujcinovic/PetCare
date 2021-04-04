@@ -23,7 +23,7 @@ public class Comment {
     @JsonIgnore
     private Long id;
 
-    private Long userID;
+    private String username;
 
     private Long categoryID;
 
@@ -46,7 +46,7 @@ public class Comment {
     public Comment(Comment comment) {
         this.mainRole = comment.mainRole;
         this.content = comment.content;
-        this.userID = comment.userID;
+        this.username = comment.username;
         this.categoryID = comment.categoryID;
         this.id = comment.id;
         this.title = comment.title;
@@ -60,12 +60,12 @@ public class Comment {
         this.id = id;
     }
 
-    public Long getUserID() {
-        return userID;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUserID(Long userID) {
-        this.userID = userID;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public Long getCategoryID() {

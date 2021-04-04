@@ -29,7 +29,7 @@ public class Reply {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Comment comment;
 
-    private Long userID;
+    private String username;
 
     @NotNull(message = "Content can't be blank!!")
     @Size(min = 2, max = 1000, message
@@ -37,9 +37,9 @@ public class Reply {
     @Column(columnDefinition = "text")
     private String content;
 
-    public Reply(Comment comment, Long userID, String content) {
+    public Reply(Comment comment, String username, String content) {
         this.comment = comment;
-        this.userID = userID;
+        this.username = username;
         this.content = content;
     }
 
@@ -59,12 +59,12 @@ public class Reply {
         this.comment = comment;
     }
 
-    public Long getUserID() {
-        return userID;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUserID(Long userID) {
-        this.userID = userID;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getContent() {

@@ -10,6 +10,7 @@ import ba.unsa.etf.nwt.comment_service.response.ResponseMessage;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,10 +23,19 @@ public class CommentService {
     private final MainRoleService mainRoleService;
 
     public List<Comment> getComment() {
-        return commentRepository.findAll();
+        RestTemplate restTemplate = new RestTemplate();
+        List<Comment> comments = commentRepository.findAll();
+        for(Comment comment : comments){
+            String username = restTemplate.getForObject("http://localhost:8080/user/" + comment.getUsername(), String.class);
+            comment.setUsername(username);
+            commentRepository.save(comment);
+        }
+        return comments;
     }
 
     public ResponseMessage addComment(Comment comment, Long mainRoleId) {
+
+        RestTemplate restTemplate = new RestTemplate();
 
         if(mainRoleId != 1L && mainRoleId != 2L)  return new ResponseMessage(true, HttpStatus.OK,"Notification isn't added!!");
         try {
@@ -33,19 +43,21 @@ public class CommentService {
                 comment.setRoles(mainRoleService.getRoleByName(SectionRoleName.ROLE_CATEGORY));
             }
             else comment.setRoles(mainRoleService.getRoleByName(SectionRoleName.ROLE_PET));
+            String username = restTemplate.getForObject("http://localhost:8080/user/me/username", String.class);
+            comment.setUsername(username);
             commentRepository.save(comment);
             return new ResponseMessage(true, HttpStatus.OK,"Comment added successfully!!");
         }
         catch (RuntimeException e){
-            throw new WrongInputException("Notification isn't added!!");
+            throw new WrongInputException("Comment isn't added!!");
         }
     }
 
-    public List<Comment> getUserComments(Long userID) {
+    public List<Comment> getUserComments(String username) {
         return commentRepository
                 .findAll()
                 .stream()
-                .filter(c -> c.getUserID().equals(userID))
+                .filter(c -> c.getUsername().equals(username))
                 .collect(Collectors.toList());
     }
 
@@ -92,5 +104,9 @@ public class CommentService {
                 .stream()
                 .filter(c -> c.getMainRole().getName().equals(finalRoleName) && c.getCategoryID().equals(categoryID))
                 .collect(Collectors.toList());
+    }
+
+    public Comment saveComment(Comment c){
+        return commentRepository.save(c);
     }
 }

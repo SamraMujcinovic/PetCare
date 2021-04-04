@@ -29,9 +29,9 @@ public class CommentController {
         return commentService.getOneComment(commentID);
     }
 
-    @GetMapping("/comment/user/{userID}")
-    public List<Comment> getUserComments(@PathVariable Long userID){
-        return commentService.getUserComments(userID);
+    @GetMapping("/comment/user/{username}")
+    public List<Comment> getUserComments(@PathVariable String username){
+        return commentService.getUserComments(username);
     }
 
     @GetMapping("/comment/category/{roleType}/{categoryID}")
