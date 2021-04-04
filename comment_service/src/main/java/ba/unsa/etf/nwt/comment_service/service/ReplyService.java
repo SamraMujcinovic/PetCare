@@ -23,7 +23,14 @@ public class ReplyService {
     private final CommentService commentService;
 
     public List<Reply> getReply() {
-        return replyRepository.findAll();
+        RestTemplate restTemplate = new RestTemplate();
+        List<Reply> replies = replyRepository.findAll();
+        for(Reply reply : replies){
+            String username = restTemplate.getForObject("http://localhost:8080/user/" + reply.getUsername(), String.class);
+            reply.setUsername(username);
+            replyRepository.save(reply);
+        }
+        return replies;
     }
 
     public ResponseMessage addReply(Reply reply, Long commentId) {
