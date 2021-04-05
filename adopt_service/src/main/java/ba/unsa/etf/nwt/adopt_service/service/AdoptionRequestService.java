@@ -1,11 +1,13 @@
 package ba.unsa.etf.nwt.adopt_service.service;
 
+import ba.unsa.etf.nwt.adopt_service.exception.ResourceNotFoundException;
 import ba.unsa.etf.nwt.adopt_service.model.AdoptionRequest;
 import ba.unsa.etf.nwt.adopt_service.repository.AdoptionRequestRepository;
 import ba.unsa.etf.nwt.adopt_service.response.ResponseMessage;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,8 +22,24 @@ public class AdoptionRequestService {
     }
 
     public ResponseMessage addAdoptionRequest(AdoptionRequest adoptionRequest) {
-        adoptionRequestRepository.save(adoptionRequest);
-        return new ResponseMessage(true, HttpStatus.OK, "Request to adopt a pet with ID=" + adoptionRequest.getPetID() + " added successfully!");
+
+        //try {
+            RestTemplate restTemplate = new RestTemplate();
+            //ovo bi trebalo baciti izuzetak ako nema usera
+            Long userID = restTemplate.getForObject("http://localhost:8080/user/me/id", Long.class);
+            adoptionRequest.setUserID(userID);
+
+            //i ovo bi trebalo baciti izuzetak ako nema peta
+            Long petID = restTemplate.getForObject("http://localhost:8084/current/pet/petID/" + adoptionRequest.getPetID(), Long.class);
+            adoptionRequest.setPetID(petID);
+
+            adoptionRequestRepository.save(adoptionRequest);
+            return new ResponseMessage(true, HttpStatus.OK, "Request to adopt a pet with ID=" + adoptionRequest.getPetID() + " added successfully!");
+
+       /* }
+        catch (RuntimeException e){
+            throw new ResourceNotFoundException("Not found!!");
+        }*/
 
     }
 

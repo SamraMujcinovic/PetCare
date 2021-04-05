@@ -2,6 +2,8 @@ package ba.unsa.etf.nwt.adopt_service.seeder;
 
 import ba.unsa.etf.nwt.adopt_service.model.AddPetRequest;
 import ba.unsa.etf.nwt.adopt_service.model.AdoptionRequest;
+import ba.unsa.etf.nwt.adopt_service.repository.AddPetRequestRepository;
+import ba.unsa.etf.nwt.adopt_service.repository.AdoptionRequestRepository;
 import ba.unsa.etf.nwt.adopt_service.service.AddPetRequestService;
 import ba.unsa.etf.nwt.adopt_service.service.AdoptionRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,14 @@ public class DatabaseSeeder {
 
     @Autowired
     private AdoptionRequestService adoptionRequestService;
+
+    @Autowired
+    private AddPetRequestRepository addPetRequestRepository;
+
+    @Autowired
+    private AdoptionRequestRepository adoptionRequestRepository;
+
+
 
     @EventListener
     public void seed(ContextRefreshedEvent event) {
@@ -41,7 +51,7 @@ public class DatabaseSeeder {
         addPetRequest.setNewPetID(newPetID);
         addPetRequest.setMessage(message);
         addPetRequest.setApproved(approved);
-        addPetRequestService.addAddPetRequest(addPetRequest);
+        addPetRequestRepository.save(addPetRequest);
     }
 
     private void createAdoptionRequest(Long userID, Long PetID, String message, boolean approved) {
@@ -50,6 +60,6 @@ public class DatabaseSeeder {
         adoptionRequest.setPetID(PetID);
         adoptionRequest.setMessage(message);
         adoptionRequest.setApproved(approved);
-        adoptionRequestService.addAdoptionRequest(adoptionRequest);
+        adoptionRequestRepository.save(adoptionRequest);
     }
 }

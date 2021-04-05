@@ -2,10 +2,12 @@ package ba.unsa.etf.nwt.adopt_service.service;
 
 import ba.unsa.etf.nwt.adopt_service.model.AddPetRequest;
 import ba.unsa.etf.nwt.adopt_service.repository.AddPetRequestRepository;
+import ba.unsa.etf.nwt.adopt_service.request.PetForAdoptRequest;
 import ba.unsa.etf.nwt.adopt_service.response.ResponseMessage;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,8 +21,22 @@ public class AddPetRequestService {
         return addPetRequestRepository.findAll();
     }
 
-    public ResponseMessage addAddPetRequest(AddPetRequest addPetRequest) {
-        addPetRequestRepository.save(addPetRequest);
+    public ResponseMessage addAddPetRequest(PetForAdoptRequest addPetRequest) {
+        RestTemplate restTemplate = new RestTemplate();
+
+        AddPetRequest newRequest = new AddPetRequest();
+
+        //prvo provjerimo usera
+        Long userID = restTemplate.getForObject("http://localhost:8080/user/me/id", Long.class);
+        newRequest.setUserID(userID);
+
+        //sada prvo moramo dodati poslani pet u bazu preko rute POST u pet servisu
+        Long petID = restTemplate.postForObject("http://localhost:8084/petID/forAdopt", addPetRequest.getPetForAdopt(),Long.class);
+        newRequest.setNewPetID(petID);
+
+        newRequest.setMessage(addPetRequest.getMessage());
+
+        addPetRequestRepository.save(newRequest);
         return new ResponseMessage(true, HttpStatus.OK, "Request to add a new pet added successfully!");
 
     }

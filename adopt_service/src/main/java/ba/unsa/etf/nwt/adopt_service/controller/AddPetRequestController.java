@@ -1,6 +1,7 @@
 package ba.unsa.etf.nwt.adopt_service.controller;
 
 import ba.unsa.etf.nwt.adopt_service.model.AddPetRequest;
+import ba.unsa.etf.nwt.adopt_service.request.PetForAdoptRequest;
 import ba.unsa.etf.nwt.adopt_service.response.ResponseMessage;
 import ba.unsa.etf.nwt.adopt_service.service.AddPetRequestService;
 import lombok.AllArgsConstructor;
@@ -19,11 +20,15 @@ public class AddPetRequestController {
         return addPetRequestService.getAddPetRequest();
     }
 
-    @PostMapping("/add-pet-request")
+   /* @PostMapping("/add-pet-request")
     public ResponseMessage addAddPetRequest(@Valid @RequestBody AddPetRequest addPetRequest) {
         return addPetRequestService.addAddPetRequest(addPetRequest);
-    }
-
+    }*/
+    //izmijenjeni oblik post metode
+   @PostMapping("/add-pet-request")
+   public ResponseMessage addAddPetRequest(@Valid @RequestBody PetForAdoptRequest addPetRequest) {
+       return addPetRequestService.addAddPetRequest(addPetRequest);
+   }
     @GetMapping("/add-pet-request/user/{userID}")
     public List<AddPetRequest> getAddPetRequestByUserID(@PathVariable Long userID) {
         return addPetRequestService.getAddPetRequestByUserID(userID);
