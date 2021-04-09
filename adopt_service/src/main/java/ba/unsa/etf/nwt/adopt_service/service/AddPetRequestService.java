@@ -1,9 +1,13 @@
 package ba.unsa.etf.nwt.adopt_service.service;
 
+import ba.unsa.etf.nwt.adopt_service.exception.ResourceNotFoundException;
+import ba.unsa.etf.nwt.adopt_service.exception.WrongInputException;
 import ba.unsa.etf.nwt.adopt_service.model.AddPetRequest;
 import ba.unsa.etf.nwt.adopt_service.repository.AddPetRequestRepository;
 import ba.unsa.etf.nwt.adopt_service.request.PetForAdoptRequest;
+import ba.unsa.etf.nwt.adopt_service.response.ErrorResponse;
 import ba.unsa.etf.nwt.adopt_service.response.ResponseMessage;
+import com.google.inject.internal.ErrorsException;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -22,23 +26,26 @@ public class AddPetRequestService {
     }
 
     public ResponseMessage addAddPetRequest(PetForAdoptRequest addPetRequest) {
-        RestTemplate restTemplate = new RestTemplate();
+        try {
+            RestTemplate restTemplate = new RestTemplate();
 
-        AddPetRequest newRequest = new AddPetRequest();
+            AddPetRequest newRequest = new AddPetRequest();
 
-        //prvo provjerimo usera
-        Long userID = restTemplate.getForObject("http://localhost:8080/user/me/id", Long.class);
-        newRequest.setUserID(userID);
+            //prvo provjerimo usera
+            Long userID = restTemplate.getForObject("http://localhost:8080/user/me/id", Long.class);
+            newRequest.setUserID(userID);
 
-        //sada prvo moramo dodati poslani pet u bazu preko rute POST u pet servisu
-        Long petID = restTemplate.postForObject("http://localhost:8084/petID/forAdopt", addPetRequest.getPetForAdopt(),Long.class);
-        newRequest.setNewPetID(petID);
+            //sada prvo moramo dodati poslani pet u bazu preko rute POST u pet servisu
+            Long petID = restTemplate.postForObject("http://localhost:8084/petID/forAdopt", addPetRequest.getPetForAdopt(), Long.class);
+            newRequest.setNewPetID(petID);
 
-        newRequest.setMessage(addPetRequest.getMessage());
+            newRequest.setMessage(addPetRequest.getMessage());
 
-        addPetRequestRepository.save(newRequest);
+            addPetRequestRepository.save(newRequest);
+        }catch (RuntimeException e){
+            throw new ResourceNotFoundException(e.getMessage());
+        }
         return new ResponseMessage(true, HttpStatus.OK, "Request to add a new pet added successfully!");
-
     }
 
     public List<AddPetRequest> getAddPetRequestByUserID(Long userID) {

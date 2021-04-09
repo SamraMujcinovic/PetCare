@@ -1,6 +1,7 @@
 package ba.unsa.etf.nwt.adopt_service.service;
 
 import ba.unsa.etf.nwt.adopt_service.exception.ResourceNotFoundException;
+import ba.unsa.etf.nwt.adopt_service.exception.WrongInputException;
 import ba.unsa.etf.nwt.adopt_service.model.AdoptionRequest;
 import ba.unsa.etf.nwt.adopt_service.repository.AdoptionRequestRepository;
 import ba.unsa.etf.nwt.adopt_service.response.ResponseMessage;
@@ -23,7 +24,7 @@ public class AdoptionRequestService {
 
     public ResponseMessage addAdoptionRequest(AdoptionRequest adoptionRequest) {
 
-        //try {
+        try {
             RestTemplate restTemplate = new RestTemplate();
             //ovo bi trebalo baciti izuzetak ako nema usera
             Long userID = restTemplate.getForObject("http://localhost:8080/user/me/id", Long.class);
@@ -34,12 +35,12 @@ public class AdoptionRequestService {
             adoptionRequest.setPetID(petID);
 
             adoptionRequestRepository.save(adoptionRequest);
-            return new ResponseMessage(true, HttpStatus.OK, "Request to adopt a pet with ID=" + adoptionRequest.getPetID() + " added successfully!");
 
-       /* }
+        }
         catch (RuntimeException e){
-            throw new ResourceNotFoundException("Not found!!");
-        }*/
+            throw new ResourceNotFoundException(e.getMessage());
+        }
+        return new ResponseMessage(true, HttpStatus.OK, "Request to adopt a pet with ID=" + adoptionRequest.getPetID() + " added successfully!");
 
     }
 
