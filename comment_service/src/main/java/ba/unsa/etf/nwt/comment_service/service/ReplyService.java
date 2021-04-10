@@ -35,7 +35,7 @@ public class ReplyService {
             return replies;
         }
         catch (Exception e){
-            throw new ResourceNotFoundException ("Can't connect to another service!");
+            throw new ResourceNotFoundException ("Can't connect to user_service!");
         }
     }
 
@@ -52,7 +52,7 @@ public class ReplyService {
         }
         catch (Exception e){
             //throw new WrongInputException("Reply isn't added!!");
-            throw new ResourceNotFoundException("Can't connect to another service, reply not added!");
+            throw new ResourceNotFoundException("Can't connect to  user_service, reply not added!");
         }
     }
 

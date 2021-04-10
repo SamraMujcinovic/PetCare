@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 @Service
 public class AddPetRequestService {
     private final AddPetRequestRepository addPetRequestRepository;
+    private final CommunicationsService communicationsService;
 
     public List<AddPetRequest> getAddPetRequest() {
         return addPetRequestRepository.findAll();
@@ -31,18 +32,31 @@ public class AddPetRequestService {
 
             AddPetRequest newRequest = new AddPetRequest();
 
-            //prvo provjerimo usera
-            Long userID = restTemplate.getForObject("http://localhost:8080/user/me/id", Long.class);
-            newRequest.setUserID(userID);
+            try {
+                //prvo provjerimo usera
+                Long userID = restTemplate.getForObject(communicationsService.getUri("user_service")
+                        + "/user/me/id", Long.class);
+                newRequest.setUserID(userID);
+            }
+            catch (Exception e){
+                throw new ResourceNotFoundException("Can't connect to user_service!!");
+            }
 
-            //sada prvo moramo dodati poslani pet u bazu preko rute POST u pet servisu
-            Long petID = restTemplate.postForObject("http://localhost:8084/petID/forAdopt", addPetRequest.getPetForAdopt(), Long.class);
-            newRequest.setNewPetID(petID);
+            try {
+                //sada prvo moramo dodati poslani pet u bazu preko rute POST u pet servisu
+                Long petID = restTemplate.postForObject(communicationsService.getUri("pet_category_service")
+                        + "/petID/forAdopt", addPetRequest.getPetForAdopt(), Long.class);
+                newRequest.setNewPetID(petID);
 
-            newRequest.setMessage(addPetRequest.getMessage());
+                newRequest.setMessage(addPetRequest.getMessage());
 
-            addPetRequestRepository.save(newRequest);
-        }catch (RuntimeException e){
+                addPetRequestRepository.save(newRequest);
+            }
+            catch (Exception e){
+                throw new ResourceNotFoundException("Can't connect to pet_category_service!!");
+            }
+        }
+        catch (ResourceNotFoundException e){
             throw new ResourceNotFoundException(e.getMessage());
         }
         return new ResponseMessage(true, HttpStatus.OK, "Request to add a new pet added successfully!");

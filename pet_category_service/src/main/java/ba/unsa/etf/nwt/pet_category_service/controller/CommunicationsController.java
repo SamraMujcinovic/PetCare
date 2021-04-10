@@ -5,6 +5,7 @@ import ba.unsa.etf.nwt.pet_category_service.model.Rase;
 import ba.unsa.etf.nwt.pet_category_service.request.PetRequest;
 import ba.unsa.etf.nwt.pet_category_service.response.EurekaResponse;
 import ba.unsa.etf.nwt.pet_category_service.response.ResponseMessage;
+import ba.unsa.etf.nwt.pet_category_service.service.CommunicationsService;
 import ba.unsa.etf.nwt.pet_category_service.service.PetService;
 import ba.unsa.etf.nwt.pet_category_service.service.RaseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,9 @@ public class CommunicationsController {
     private RaseService raseService;
 
     @Autowired
+    private CommunicationsService communicationsService;
+
+    @Autowired
     private DiscoveryClient discoveryClient;
 
     @GetMapping("/eureka/service-instances/{applicationName}")
@@ -44,6 +48,11 @@ public class CommunicationsController {
             eurekaResponse.setPort(instance.getPort());
         }
         return eurekaResponse;
+    }
+
+    @GetMapping("/eureka/uri/{applicationName}")
+    public String getURIfromService(@PathVariable String applicationName) {
+        return communicationsService.getUri(applicationName);
     }
 
     //vraca id trenutnog peta

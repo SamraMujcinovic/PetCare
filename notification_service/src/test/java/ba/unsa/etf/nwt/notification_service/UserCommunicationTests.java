@@ -26,8 +26,8 @@ public class UserCommunicationTests {
     @Mock
     private NotificationRepository notificationRepository;
 
-    @InjectMocks
-    private final NotificationService commentService = new NotificationService(notificationRepository);
+    //@InjectMocks
+    //private final NotificationService commentService = new NotificationService(notificationRepository);
 
     @Test
     public void getCurrentUserId() {

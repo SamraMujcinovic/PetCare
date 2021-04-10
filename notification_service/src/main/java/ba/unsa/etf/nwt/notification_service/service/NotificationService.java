@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 public class NotificationService {
 
     private final NotificationRepository notificationRepository;
+    private final CommunicationsService communicationsService;
 
     public List<Notification> getNotification() {
         return notificationRepository.findAll();
@@ -29,13 +30,14 @@ public class NotificationService {
         notification.setCreatedAt(new Date());
         try {
             RestTemplate restTemplate = new RestTemplate();
-            Long userId = restTemplate.getForObject("http://localhost:8080/user/me/id", Long.class);
+            Long userId = restTemplate.getForObject(communicationsService.getUri("user_service") + "/user/me/id", Long.class);
             notification.setUserID(userId);
             notificationRepository.save(notification);
             return new ResponseMessage(true, HttpStatus.OK,"Notification added successfully!!");
         }
         catch (Exception e) {
-            throw new WrongInputException("Notification isn't added!!");
+            //throw new WrongInputException("Notification isn't added!!");
+            throw new ResourceNotFoundException("Can't connect to user_service!!");
         }
     }
 
@@ -53,26 +55,36 @@ public class NotificationService {
     public List<Notification> getUserNotification() {
         try {
             RestTemplate restTemplate = new RestTemplate();
-            Long userId = restTemplate.getForObject("http://localhost:8080/user/me/id", Long.class);
-            List<Notification> notifications = notificationRepository.findAllByUserID(userId);
-            return notifications;
+            Long userId = restTemplate.getForObject(communicationsService.getUri("user_service") + "/user/me/id", Long.class);
+            try {
+                List<Notification> notifications = notificationRepository.findAllByUserID(userId);
+                return notifications;
+            }
+            catch (Exception ex){
+                List<Notification> notifications = new ArrayList<>();
+                return notifications;
+            }
         }
         catch (Exception e) {
-            List<Notification> notifications = new ArrayList<>();
-            return notifications;
+            throw new ResourceNotFoundException("Can't connect to user_service!!");
         }
     }
 
     public List<Notification> getUnreadUserNotification() {
         try {
             RestTemplate restTemplate = new RestTemplate();
-            Long userId = restTemplate.getForObject("http://localhost:8080/user/me/id", Long.class);
-            List<Notification> notifications = notificationRepository.findAllByUserIDAndRead(userId, false);
-            return notifications;
+            Long userId = restTemplate.getForObject(communicationsService.getUri("user_service") + "/user/me/id", Long.class);
+            try {
+                List<Notification> notifications = notificationRepository.findAllByUserIDAndRead(userId, false);
+                return notifications;
+            }
+            catch (Exception e){
+                List<Notification> notifications = new ArrayList<>();
+                return notifications;
+            }
         }
         catch (Exception e) {
-            List<Notification> notifications = new ArrayList<>();
-            return notifications;
+            throw new ResourceNotFoundException("Can't connect to user_service!!");
         }
     }
 

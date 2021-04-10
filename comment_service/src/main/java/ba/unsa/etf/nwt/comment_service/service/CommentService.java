@@ -37,7 +37,7 @@ public class CommentService {
             return comments;
         }
         catch (Exception e){
-            throw new ResourceNotFoundException ("Can't connect to another service!");
+            throw new ResourceNotFoundException ("Can't connect to user_service!");
         }
     }
 
@@ -58,8 +58,8 @@ public class CommentService {
             return new ResponseMessage(true, HttpStatus.OK,"Comment added successfully!!");
         }
         catch (Exception e){
-            //throw new WrongInputException("Comment isn't added!!");??
-            throw new ResourceNotFoundException("Can't connect to another service, comment not added!");
+            //throw new WrongInputException("Comment isn't added!!");
+            throw new ResourceNotFoundException("Can't connect to  user_service, comment not added!");
         }
     }
 

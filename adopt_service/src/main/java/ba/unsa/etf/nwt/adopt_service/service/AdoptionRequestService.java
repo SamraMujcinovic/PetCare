@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 @Service
 public class AdoptionRequestService {
     private final AdoptionRequestRepository adoptionRequestRepository;
+    private final CommunicationsService communicationsService;
 
     public List<AdoptionRequest> getAdoptionRequest() {
         return adoptionRequestRepository.findAll();
@@ -26,18 +27,28 @@ public class AdoptionRequestService {
 
         try {
             RestTemplate restTemplate = new RestTemplate();
-            //ovo bi trebalo baciti izuzetak ako nema usera
-            Long userID = restTemplate.getForObject("http://localhost:8080/user/me/id", Long.class);
-            adoptionRequest.setUserID(userID);
+            try {
+                //ovo bi trebalo baciti izuzetak ako nema usera
+                Long userID = restTemplate.getForObject(communicationsService.getUri("user_service") + "/user/me/id", Long.class);
+                adoptionRequest.setUserID(userID);
+            }
+            catch (Exception e){
+                throw new ResourceNotFoundException("Can't connect to user_service!!");
+            }
 
-            //i ovo bi trebalo baciti izuzetak ako nema peta
-            Long petID = restTemplate.getForObject("http://localhost:8084/current/pet/petID/" + adoptionRequest.getPetID(), Long.class);
-            adoptionRequest.setPetID(petID);
+            try {
+                //i ovo bi trebalo baciti izuzetak ako nema peta
+                Long petID = restTemplate.getForObject(communicationsService.getUri("pet_category_service") + "/current/pet/petID/" + adoptionRequest.getPetID(), Long.class);
+                adoptionRequest.setPetID(petID);
 
-            adoptionRequestRepository.save(adoptionRequest);
+                adoptionRequestRepository.save(adoptionRequest);
+            }
+            catch (Exception e){
+                throw new ResourceNotFoundException("Can't connect to pet_category_service!!");
+            }
 
         }
-        catch (RuntimeException e){
+        catch (ResourceNotFoundException e){
             throw new ResourceNotFoundException(e.getMessage());
         }
         return new ResponseMessage(true, HttpStatus.OK, "Request to adopt a pet with ID=" + adoptionRequest.getPetID() + " added successfully!");
