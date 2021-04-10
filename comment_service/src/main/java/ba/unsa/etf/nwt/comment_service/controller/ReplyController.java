@@ -26,7 +26,7 @@ public class ReplyController {
     }
 
     @GetMapping("/reply/comment/{commentID}")
-    public List<Reply> getOneNotification(@PathVariable Long commentID){
+    public List<Reply> getRepliesForComment(@PathVariable Long commentID){
         return replyService.getAllReplyForComment(commentID);
     }
 

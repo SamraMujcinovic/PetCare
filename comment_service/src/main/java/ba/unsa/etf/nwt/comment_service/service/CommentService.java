@@ -111,6 +111,8 @@ public class CommentService {
         SectionRoleName roleName = SectionRoleName.ROLE_PET;
         if (roleType == 1L) roleName = SectionRoleName.ROLE_CATEGORY;
 
+        if (roleType != 1L && roleType != 2L) throw new WrongInputException("Wrong role!!");
+
         SectionRoleName finalRoleName = roleName;
         List<Comment> comments = commentRepository
                 .findAll()

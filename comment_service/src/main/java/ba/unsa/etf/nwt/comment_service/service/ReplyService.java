@@ -21,16 +21,22 @@ public class ReplyService {
 
     private final ReplyRepository replyRepository;
     private final CommentService commentService;
+    private final CommunicationsService communicationsService;
 
     public List<Reply> getReply() {
-        RestTemplate restTemplate = new RestTemplate();
-        List<Reply> replies = replyRepository.findAll();
-        for(Reply reply : replies){
-            String username = restTemplate.getForObject("http://localhost:8080/user/" + reply.getUsername(), String.class);
-            reply.setUsername(username);
-            replyRepository.save(reply);
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            List<Reply> replies = replyRepository.findAll();
+            for (Reply reply : replies) {
+                String username = restTemplate.getForObject(communicationsService.getUri("user_service") + "/user/" + reply.getUsername(), String.class);
+                reply.setUsername(username);
+                replyRepository.save(reply);
+            }
+            return replies;
         }
-        return replies;
+        catch (Exception e){
+            throw new ResourceNotFoundException ("Can't connect to another service!");
+        }
     }
 
     public ResponseMessage addReply(Reply reply, Long commentId) {
@@ -39,13 +45,14 @@ public class ReplyService {
 
         try {
             reply.setComment(new Comment(commentService.getOneComment(commentId)));
-            String username = restTemplate.getForObject("http://localhost:8080/user/me/username", String.class);
+            String username = restTemplate.getForObject(communicationsService.getUri("user_service") + "/user/me/username", String.class);
             reply.setUsername(username);
             replyRepository.save(reply);
             return new ResponseMessage(true, HttpStatus.OK,"Reply added successfully!!");
         }
-        catch (RuntimeException e){
-            throw new WrongInputException("Reply isn't added!!");
+        catch (Exception e){
+            //throw new WrongInputException("Reply isn't added!!");
+            throw new ResourceNotFoundException("Can't connect to another service, reply not added!");
         }
     }
 
@@ -78,7 +85,7 @@ public class ReplyService {
             replyRepository.deleteById(replyID);
             return new ResponseMessage(true, HttpStatus.OK,"Reply deleted successfully!!");
         } catch (Exception e) {
-            throw  new ResourceNotFoundException( "Reply isn't deleted!!");
+            throw new ResourceNotFoundException( "Reply isn't deleted!!");
         }
     }
 
