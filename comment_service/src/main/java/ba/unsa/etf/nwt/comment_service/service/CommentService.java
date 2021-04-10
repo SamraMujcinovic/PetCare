@@ -8,6 +8,7 @@ import ba.unsa.etf.nwt.comment_service.model.sectionRole.SectionRoleName;
 import ba.unsa.etf.nwt.comment_service.repository.CommentRepository;
 import ba.unsa.etf.nwt.comment_service.response.ResponseMessage;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -21,20 +22,22 @@ public class CommentService {
 
     private final CommentRepository commentRepository;
     private final MainRoleService mainRoleService;
+    private final CommunicationsService communicationsService;
 
     public List<Comment> getComment() {
         try {
             RestTemplate restTemplate = new RestTemplate();
             List<Comment> comments = commentRepository.findAll();
             for(Comment comment : comments){
-                String username = restTemplate.getForObject("http://localhost:8080/user/" + comment.getUsername(), String.class);
+                String username = restTemplate.getForObject(communicationsService.getUri("user_service")
+                        + "/user/" + comment.getUsername(), String.class);
                 comment.setUsername(username);
                 commentRepository.save(comment);
             }
             return comments;
         }
-        catch (RuntimeException e){
-            throw new ResourceNotFoundException ("Not found!!");
+        catch (Exception e){
+            throw new ResourceNotFoundException ("Can't connect to another service!");
         }
     }
 
@@ -42,19 +45,21 @@ public class CommentService {
 
         RestTemplate restTemplate = new RestTemplate();
 
-        if(mainRoleId != 1L && mainRoleId != 2L)  return new ResponseMessage(true, HttpStatus.OK,"Notification isn't added!!");
+        if(mainRoleId != 1L && mainRoleId != 2L) throw new WrongInputException("Comment isn't added, wrong role!!");
         try {
             if(mainRoleId == 1L) {
                 comment.setRoles(mainRoleService.getRoleByName(SectionRoleName.ROLE_CATEGORY));
             }
             else comment.setRoles(mainRoleService.getRoleByName(SectionRoleName.ROLE_PET));
-            String username = restTemplate.getForObject("http://localhost:8080/user/me/username", String.class);
+            String username = restTemplate.getForObject(communicationsService.getUri("user_service")
+                    + "/user/me/username", String.class);
             comment.setUsername(username);
             commentRepository.save(comment);
             return new ResponseMessage(true, HttpStatus.OK,"Comment added successfully!!");
         }
-        catch (RuntimeException e){
-            throw new WrongInputException("Comment isn't added!!");
+        catch (Exception e){
+            //throw new WrongInputException("Comment isn't added!!");??
+            throw new ResourceNotFoundException("Can't connect to another service, comment not added!");
         }
     }
 
@@ -114,17 +119,29 @@ public class CommentService {
                 .collect(Collectors.toList());
 
         for(Comment comment : comments){
-            String username = restTemplate.getForObject("http://localhost:8080/user/" + comment.getUsername(), String.class);
-            comment.setUsername(username);
-            if (roleName == SectionRoleName.ROLE_PET) {
-                Long categoryId = restTemplate.getForObject("http://localhost:8084/current/pet/petID/" + comment.getCategoryID(), Long.class);
-                comment.setCategoryID(categoryId);
+            try {
+                String username = restTemplate.getForObject(communicationsService.getUri("user_service")
+                        + "/user/" + comment.getUsername(), String.class);
+                comment.setUsername(username);
             }
-            else {
-                Long categoryId = restTemplate.getForObject("http://localhost:8084/current/rase/raseID/" + comment.getCategoryID(), Long.class);
-                comment.setCategoryID(categoryId);
+            catch (Exception e){
+                throw new ResourceNotFoundException("Can't connect to user_service!!");
             }
-            commentRepository.save(comment);
+            try {
+                if (roleName == SectionRoleName.ROLE_PET) {
+                    Long categoryId = restTemplate.getForObject(communicationsService.getUri("pet_category_service")
+                            + "/current/pet/petID/" + comment.getCategoryID(), Long.class);
+                    comment.setCategoryID(categoryId);
+                } else {
+                    Long categoryId = restTemplate.getForObject(communicationsService.getUri("pet_category_service")
+                            + "/current/rase/raseID/" + comment.getCategoryID(), Long.class);
+                    comment.setCategoryID(categoryId);
+                }
+                commentRepository.save(comment);
+            }
+            catch (Exception e){
+                throw new ResourceNotFoundException("Can't connect to pet_category_service!!");
+            }
         }
         return comments;
     }

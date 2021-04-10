@@ -70,7 +70,7 @@ public class UserCommunicationTests {
         //mockServer = MockRestServiceServer.createServer(restTemplate);
     //}
 
-    @InjectMocks
+    /*@InjectMocks
     private final CommentService commentService = new CommentService(commentRepository, mainRoleService);
 
     @Test
@@ -100,7 +100,7 @@ public class UserCommunicationTests {
                         .contentType(MediaType.APPLICATION_JSON)
                         .body(mapper.writeValueAsString(username))
                 );*/
-    }
+    //}
 
     @Test
     public void getCategoryByPetId(){

@@ -1,6 +1,7 @@
 package ba.unsa.etf.nwt.comment_service.controller;
 
 import ba.unsa.etf.nwt.comment_service.response.EurekaResponse;
+import ba.unsa.etf.nwt.comment_service.service.CommunicationsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
@@ -12,6 +13,9 @@ import java.util.List;
 
 @RestController
 public class CommunicationsController {
+
+    @Autowired
+    private CommunicationsService communicationsService;
 
     @Autowired
     private DiscoveryClient discoveryClient;
@@ -32,4 +36,10 @@ public class CommunicationsController {
         }
         return eurekaResponse;
     }
+
+    @GetMapping("/eureka/uri/{applicationName}")
+    public String getURIfromService(@PathVariable String applicationName) {
+        return communicationsService.getUri(applicationName);
+    }
+
 }

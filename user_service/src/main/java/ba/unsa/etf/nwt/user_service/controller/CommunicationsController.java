@@ -5,6 +5,7 @@ import java.util.List;
 import ba.unsa.etf.nwt.user_service.exception.ResourceNotFoundException;
 import ba.unsa.etf.nwt.user_service.model.User;
 import ba.unsa.etf.nwt.user_service.response.EurekaResponse;
+import ba.unsa.etf.nwt.user_service.service.CommunicationsService;
 import ba.unsa.etf.nwt.user_service.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
@@ -18,6 +19,9 @@ public class CommunicationsController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private CommunicationsService communicationsService;
 
     @Autowired
     private DiscoveryClient discoveryClient;
@@ -37,6 +41,11 @@ public class CommunicationsController {
             eurekaResponse.setPort(instance.getPort());
         }
         return eurekaResponse;
+    }
+
+    @GetMapping("/eureka/uri/{applicationName}")
+    public String getURIfromService(@PathVariable String applicationName) {
+        return communicationsService.getUri(applicationName);
     }
 
     //POPRAVITI NAKON AUTORIZACIJE
