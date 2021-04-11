@@ -43,6 +43,7 @@ public class AdoptionRequestService {
                 Long petID = restTemplate.getForObject(communicationsService.getUri("pet_category_service") + "/current/pet/petID/" + adoptionRequest.getPetID(), Long.class);
                 adoptionRequest.setPetID(petID);
 
+
                 adoptionRequestRepository.save(adoptionRequest);
             }
             catch (Exception e){
@@ -54,6 +55,16 @@ public class AdoptionRequestService {
                 throw new ResourceNotFoundException("No pet with ID " + adoptionRequest.getPetID());
             }
 
+        return new ResponseMessage(true, HttpStatus.OK, "Request to adopt a pet with ID=" + adoptionRequest.getPetID() + " added successfully!");
+
+    }
+
+    public ResponseMessage addAdoptionRequestLocal(AdoptionRequest adoptionRequest) {
+        AdoptionRequest novi = new AdoptionRequest();
+        novi.setUserID(adoptionRequest.getUserID());
+        novi.setPetID(adoptionRequest.getPetID());
+        novi.setMessage(adoptionRequest.getMessage());
+        adoptionRequestRepository.save(novi);
         return new ResponseMessage(true, HttpStatus.OK, "Request to adopt a pet with ID=" + adoptionRequest.getPetID() + " added successfully!");
 
     }
@@ -149,4 +160,6 @@ public class AdoptionRequestService {
             return new ResponseMessage(false, HttpStatus.NOT_FOUND, "There are no adoption requests with pet id=" + petID + "!");
         }
     }
+
+
 }

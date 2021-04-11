@@ -19,9 +19,14 @@ public class AdoptionRequestController {
         return adoptionRequestService.getAdoptionRequest();
     }
 
-    @PostMapping("/adoption-request")
+    @PostMapping("/eureka/adoption-request")
     public ResponseMessage addAdoptionRequest(@Valid @RequestBody AdoptionRequest adoptionRequest) {
         return adoptionRequestService.addAdoptionRequest(adoptionRequest);
+    }
+
+    @PostMapping("/adoption-request")
+    public ResponseMessage addAdoptionRequestLocal(@Valid @RequestBody AdoptionRequest adoptionRequest) {
+        return adoptionRequestService.addAdoptionRequestLocal(adoptionRequest);
     }
 
     @GetMapping("/adoption-request/user/{userID}")

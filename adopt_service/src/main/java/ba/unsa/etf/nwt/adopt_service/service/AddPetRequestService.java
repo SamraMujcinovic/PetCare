@@ -71,6 +71,15 @@ public class AddPetRequestService {
         return new ResponseMessage(true, HttpStatus.OK, "Request to add a new pet added successfully!");
     }
 
+    public ResponseMessage addAddPetRequestLocal(AddPetRequest addPetRequest) {
+        AddPetRequest novi = new AddPetRequest();
+        novi.setNewPetID(addPetRequest.getNewPetID());
+        novi.setUserID(addPetRequest.getUserID());
+        novi.setMessage(addPetRequest.getMessage());
+        addPetRequestRepository.save(novi);
+        return new ResponseMessage(true, HttpStatus.OK, "Request to add a new pet added successfully!");
+    }
+
     public List<AddPetRequest> getAddPetRequestByUserID(Long userID) {
         return addPetRequestRepository
                 .findAll()
@@ -162,4 +171,6 @@ public class AddPetRequestService {
             return new ResponseMessage(false, HttpStatus.NOT_FOUND, "There are no requests to add a pet with pet id=" + newPetID + "!");
         }
     }
+
+
 }
