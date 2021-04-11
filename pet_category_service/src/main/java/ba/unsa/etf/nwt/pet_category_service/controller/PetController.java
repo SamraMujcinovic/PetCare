@@ -58,11 +58,6 @@ public class PetController {
         return petService.addPet(petRequest);
     }
 
-    @PostMapping("/pet/proba")
-    public Long addPetProba(@Valid @RequestBody PetRequest petRequest){
-        return petService.addPetProba(petRequest);
-    }
-
     //brisanje peta po id-u
     @DeleteMapping("/pet")
     public ResponseMessage deletePet(@NotNull @RequestParam Long id){

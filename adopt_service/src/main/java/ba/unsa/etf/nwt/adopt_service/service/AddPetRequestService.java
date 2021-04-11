@@ -27,7 +27,7 @@ public class AddPetRequestService {
     }
 
     public ResponseMessage addAddPetRequest(PetForAdoptRequest addPetRequest) {
-        try {
+
             RestTemplate restTemplate = new RestTemplate();
 
             AddPetRequest newRequest = new AddPetRequest();
@@ -53,12 +53,30 @@ public class AddPetRequestService {
                 addPetRequestRepository.save(newRequest);
             }
             catch (Exception e){
-                throw new ResourceNotFoundException("Can't connect to pet_category_service!!");
+                System.out.println(e.getMessage());
+                //ako se ne moze spojiti na pet service
+                if(e.getMessage().equals("URI is not absolute")) {//ova message se vrati ako nije podignut neki servis
+                    throw new ResourceNotFoundException("Can't connect to pet_category_service!!");
+                }
+                //kad se tamo hendla onaj exception vratit ce nesto bla bla
+                //i onda bih trebala provjeriti jel wrong input ili resource not found
+                if(e.getMessage().contains("rase")){//ako zadana rasa ne postoji u bazi
+                    throw new ResourceNotFoundException("No rase with id " + addPetRequest.getPetForAdopt().getRase_id());
+                }
+                //ako nije dodalo novog peta uopce
+                throw new ResourceNotFoundException("Pet is not added!");
+
             }
-        }
-        catch (ResourceNotFoundException e){
-            throw new ResourceNotFoundException(e.getMessage());
-        }
+
+        return new ResponseMessage(true, HttpStatus.OK, "Request to add a new pet added successfully!");
+    }
+
+    public ResponseMessage addAddPetRequestLocal(AddPetRequest addPetRequest) {
+        AddPetRequest novi = new AddPetRequest();
+        novi.setNewPetID(addPetRequest.getNewPetID());
+        novi.setUserID(addPetRequest.getUserID());
+        novi.setMessage(addPetRequest.getMessage());
+        addPetRequestRepository.save(novi);
         return new ResponseMessage(true, HttpStatus.OK, "Request to add a new pet added successfully!");
     }
 
@@ -153,4 +171,6 @@ public class AddPetRequestService {
             return new ResponseMessage(false, HttpStatus.NOT_FOUND, "There are no requests to add a pet with pet id=" + newPetID + "!");
         }
     }
+
+
 }

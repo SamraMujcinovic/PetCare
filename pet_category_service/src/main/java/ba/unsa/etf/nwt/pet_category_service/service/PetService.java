@@ -73,30 +73,6 @@ public class PetService {
 
     }
 
-    public Long addPetProba(PetRequest petRequest) {
-        // try{
-        Integer age = petRequest.getAge();
-        Pet pet = new Pet();
-        pet.setName(petRequest.getName());
-        pet.setLocation(petRequest.getLocation());
-        pet.setImage(petRequest.getImage());
-        pet.setAge(petRequest.getAge());
-        pet.setAdopted(petRequest.isAdopted());
-        pet.setDescription(petRequest.getDescription());
-
-        Rase r = raseService.getRaseById(petRequest.getRase_id());
-        pet.setRase(r);
-        petRepository.save(pet);
-
-        return pet.getId();
-/*
-        }catch (NullPointerException e){
-            return new Response(false, "Add the age of the pet!", HttpStatus.BAD_REQUEST);
-
-        }*/
-
-    }
-
 
     public void savePet(Pet p) {
         petRepository.save(p);

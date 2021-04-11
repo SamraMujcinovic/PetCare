@@ -25,10 +25,14 @@ public class AddPetRequestController {
         return addPetRequestService.addAddPetRequest(addPetRequest);
     }*/
     //izmijenjeni oblik post metode
-   @PostMapping("/add-pet-request")
+   @PostMapping("/eureka/add-pet-request")
    public ResponseMessage addAddPetRequest(@Valid @RequestBody PetForAdoptRequest addPetRequest) {
        return addPetRequestService.addAddPetRequest(addPetRequest);
    }
+    @PostMapping("/add-pet-request")
+    public ResponseMessage addAddPetRequestLocal(@Valid @RequestBody AddPetRequest addPetRequest) {
+        return addPetRequestService.addAddPetRequestLocal(addPetRequest);
+    }
     @GetMapping("/add-pet-request/user/{userID}")
     public List<AddPetRequest> getAddPetRequestByUserID(@PathVariable Long userID) {
         return addPetRequestService.getAddPetRequestByUserID(userID);

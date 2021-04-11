@@ -82,5 +82,6 @@ public class Seeder {
         p.setAdopted(adopted);
         p.setRase(rase);
         petService.savePet(p);
+        //p.setId(1L);
     }
 }

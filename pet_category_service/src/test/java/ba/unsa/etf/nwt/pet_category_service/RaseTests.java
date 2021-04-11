@@ -48,7 +48,7 @@ public class RaseTests {
     @Test
     void GetRaseByIDTest() throws Exception{
 
-        Long id = 5L;
+        Long id = 1L;
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/rase/{id}", id)
                 .contentType(MediaType.APPLICATION_JSON);
@@ -99,7 +99,7 @@ public class RaseTests {
     @Test
     void DeleteRaseTest() throws Exception{
 
-        Long raseID = 7L;
+        Long raseID = 3L;
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/rase?id={raseID}", raseID)
                 .contentType(MediaType.APPLICATION_JSON);
@@ -117,7 +117,7 @@ public class RaseTests {
     @Test
     void UpdateRaseTest() throws Exception{
 
-        Long id = 6L;
+        Long id = 2L;
 
         String novaRase = "{\"name\": \"novaRasaa\",\"description\": \"nova\",\"category_id\": 1}";
 
@@ -246,7 +246,7 @@ public class RaseTests {
     @Test
     void UpdateRaseNotFound2() throws Exception{
 
-        Long id = 5L;
+        Long id = 1L;
 
         String novaRase = "{\"name\": \"gdfgd\",\"description\": \"nova\",\"category_id\": 50}";
 

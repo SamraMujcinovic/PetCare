@@ -135,7 +135,7 @@ class NotificationServiceTests {
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().json("{\"responseMessage\":{\"success\":false,\"status\":\"BAD_REQUEST\",\"message\":\"Validation Failed\"},\"details\":[\"Content can't be blank!!\",\"UserID can't be null\"]}"));
+                .andExpect(content().json("{\"responseMessage\":{\"success\":false,\"status\":\"BAD_REQUEST\",\"message\":\"Validation Failed\"},\"details\":[\"Content can't be blank!!\"]}"));
     }
 
     @Test
@@ -167,7 +167,7 @@ class NotificationServiceTests {
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().json("{\"responseMessage\":{\"success\":false,\"status\":\"BAD_REQUEST\",\"message\":\"Validation Failed\"},\"details\":[\"Content must be between 2 and 150 characters!!\",\"UserID can't be null\"]}"));
+                .andExpect(content().json("{\"responseMessage\":{\"success\":false,\"status\":\"BAD_REQUEST\",\"message\":\"Validation Failed\"},\"details\":[\"Content must be between 2 and 150 characters!!\"]}"));
     }
 
     @Test
@@ -216,9 +216,9 @@ class NotificationServiceTests {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(newNotification);
         mockMvc.perform(requestBuilder)
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().json("{\"responseMessage\":{\"success\":false,\"status\":\"BAD_REQUEST\",\"message\":\"Validation Failed\"},\"details\":[\"UserID can't be null\"]}"));
+                .andExpect(content().json("{\"success\":true,\"status\":\"OK\",\"message\":\"Notification added successfully!!\"}"));
     }
 
     @Test
@@ -231,23 +231,12 @@ class NotificationServiceTests {
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().json("{\n" +
-                        "    \"responseMessage\": {\n" +
-                        "        \"success\": false,\n" +
-                        "        \"status\": \"BAD_REQUEST\",\n" +
-                        "        \"message\": \"Validation Failed\"\n" +
-                        "    },\n" +
-                        "    \"details\": [\n" +
-                        "        \"UserID can't be null\",\n" +
-                        "        \"Content can't be blank!!\"\n" +
-                        "    ]\n" +
-                        "}"));
+                .andExpect(content().json("{\"responseMessage\":{\"success\":false,\"status\":\"BAD_REQUEST\",\"message\":\"Validation Failed\"},\"details\":[\"Content can't be blank!!\"]}"));
     }
 
     @Test
     void GetAllUserNotificationsInJSON() throws Exception {
-        Long userID = 1L;
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/notifications/user/{userID}", userID)
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/notifications/user")
                 .contentType(MediaType.APPLICATION_JSON);
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk())
@@ -256,8 +245,7 @@ class NotificationServiceTests {
 
     @Test
     void GetAllUnreadUserNotificationsInJSON() throws Exception {
-        Long userID = 2L;
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/notifications/unread/user/{userID}", userID)
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/notifications/unread/user")
                 .contentType(MediaType.APPLICATION_JSON);
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk())

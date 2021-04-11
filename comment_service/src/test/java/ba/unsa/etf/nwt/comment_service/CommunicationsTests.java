@@ -82,6 +82,7 @@ public class CommunicationsTests {
         Long mainRoleId = 1L;
 
         String newComment = "{\n" +
+                "    \"categoryID\": 1,\n" +
                 "    \"title\": \"Pet care\",\n" +
                 "    \"content\": \"How to take care of my pet?\"\n" +
                 "}\n";

@@ -33,6 +33,7 @@ public class AddPetRequestRoutesTest {
 
     @Test
     void CreateNewValidAddPetRequest() throws Exception {
+        //TODO PREPRAVITI TIJELO ZAHTJEVA
         String newRequest = "{\n" +
                 "    \"userID\": 1,\n" +
                 "    \"newPetID\": 1,\n" +
@@ -55,6 +56,7 @@ public class AddPetRequestRoutesTest {
 
     @Test
     void CreateNewAddPetRequestMessageTooLong() throws Exception {
+        //TODO PREPRAVITI TIJELO ZAHTJEVA
         String newRequest = "{\n" +
                 "    \"userID\": 1,\n" +
                 "    \"newPetID\": 1,\n" +
@@ -83,6 +85,7 @@ public class AddPetRequestRoutesTest {
 
     @Test
     void CreateNewAddPetRequestUserIDNull() throws Exception {
+        //TODO PREPRAVITI TIJELO ZAHTJEVA
         String newRequest = "{\n" +
                 "    \"userID\": null,\n" +
                 "    \"newPetID\": 1,\n" +
@@ -110,6 +113,7 @@ public class AddPetRequestRoutesTest {
 
     @Test
     void CreateNewAddPetRequestUserIDMissing() throws Exception {
+        //TODO PREPRAVITI TIJELO ZAHTJEVA
         String newRequest = "{\n" +
                 "    \"newPetID\": 1,\n" +
                 "    \"message\": \"Pet care\",\n" +
@@ -136,6 +140,7 @@ public class AddPetRequestRoutesTest {
 
     @Test
     void CreateNewAddPetRequestNewPetIDNull() throws Exception {
+        //TODO PREPRAVITI TIJELO ZAHTJEVA
         String newRequest = "{\n" +
                 "    \"userID\": 1,\n" +
                 "    \"petID\": null,\n" +
@@ -163,6 +168,7 @@ public class AddPetRequestRoutesTest {
 
     @Test
     void CreateNewAddPetRequestPetIDMissing() throws Exception {
+        //TODO PREPRAVITI TIJELO ZAHTJEVA
         String newRequest = "{\n" +
                 "    \"userID\": 1,\n" +
                 "    \"message\": \"Pet care\",\n" +

@@ -44,6 +44,9 @@ public class CommentService {
     public ResponseMessage addComment(Comment comment, Long mainRoleId) {
 
         RestTemplate restTemplate = new RestTemplate();
+        SectionRoleName roleName = SectionRoleName.ROLE_PET;
+        if (mainRoleId == 1L) roleName = SectionRoleName.ROLE_CATEGORY;
+        SectionRoleName finalRoleName = roleName;
 
         if(mainRoleId != 1L && mainRoleId != 2L) throw new WrongInputException("Comment isn't added, wrong role!!");
         try {
@@ -54,14 +57,35 @@ public class CommentService {
             String username = restTemplate.getForObject(communicationsService.getUri("user_service")
                     + "/user/me/username", String.class);
             comment.setUsername(username);
-            commentRepository.save(comment);
-            return new ResponseMessage(true, HttpStatus.OK,"Comment added successfully!!");
         }
         catch (RuntimeException re){
             throw new WrongInputException("Comment isn't added!!");
         }
         catch (Exception e){
             throw new ResourceNotFoundException("Can't connect to user_service!!");
+        }
+        try {
+            if (roleName == SectionRoleName.ROLE_PET) {
+                Long categoryId = restTemplate.getForObject(communicationsService.getUri("pet_category_service")
+                        + "/current/pet/petID/" + comment.getCategoryID(), Long.class);
+                comment.setCategoryID(categoryId);
+            } else {
+                Long categoryId = restTemplate.getForObject(communicationsService.getUri("pet_category_service")
+                        + "/current/rase/raseID/" + comment.getCategoryID(), Long.class);
+                comment.setCategoryID(categoryId);
+            }
+            commentRepository.save(comment);
+            return new ResponseMessage(true, HttpStatus.OK,"Comment added successfully!!");
+
+        }
+        catch (Exception e){
+            if(e.getMessage().equals("URI is not absolute")) {
+                throw new ResourceNotFoundException("Can't connect to pet_category_service!!");
+            }
+            if(e.getMessage().contains("pet")) {
+                throw new ResourceNotFoundException("No pet with ID " + comment.getCategoryID());
+            }
+            throw new ResourceNotFoundException("No rase with ID " + comment.getCategoryID());
         }
     }
 
@@ -144,7 +168,15 @@ public class CommentService {
                 commentRepository.save(comment);
             }
             catch (Exception e){
-                throw new ResourceNotFoundException("Can't connect to pet_category_service!!");
+                //ako se ne moze spojiti na pet service
+                if(e.getMessage().equals("URI is not absolute")) {//ovo je poruka koja se vraca kada nije pokrenut pet service
+                    throw new ResourceNotFoundException("Can't connect to pet_category_service!!");
+                }
+                //u suprotnom provjerimo da li rasa ne postoji ili pet ne postoji
+                if(e.getMessage().contains("pet")) {
+                    throw new ResourceNotFoundException("No pet with ID " + comment.getCategoryID());
+                }
+                throw new ResourceNotFoundException("No rase with ID " + comment.getCategoryID());
             }
         }
         return comments;
