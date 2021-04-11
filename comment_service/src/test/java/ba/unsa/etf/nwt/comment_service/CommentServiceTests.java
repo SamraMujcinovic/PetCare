@@ -27,6 +27,7 @@ class CommentServiceTests {
         Long mainRoleId = 1L;
 
         String newComment = "{\n" +
+                "    \"categoryID\": 1,\n" +
                 "    \"title\": \"Pet care\",\n" +
                 "    \"content\": \"How to take care of my pet?\"\n" +
                 "}\n";
@@ -159,6 +160,7 @@ class CommentServiceTests {
         Long mainRoleId = 1L;
 
         String newComment = "{\n" +
+                "    \"categoryID\": 1,\n" +
                 "    \"title\": \"Pet care\",\n" +
                 "    \"content\": \"Content\"\n" +
                 "}\n";

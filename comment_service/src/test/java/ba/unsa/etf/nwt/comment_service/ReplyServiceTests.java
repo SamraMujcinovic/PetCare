@@ -108,7 +108,7 @@ class ReplyServiceTests {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(newReply);
         mockMvc.perform(requestBuilder)
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
     }
 
