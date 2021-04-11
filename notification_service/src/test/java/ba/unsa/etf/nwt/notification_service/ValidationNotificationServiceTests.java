@@ -60,7 +60,7 @@ class ValidationNotificationServiceTests {
         Notification notification = new Notification();
         notification.setContent("Error");
         Set<ConstraintViolation<Notification>> violations = validator.validate(notification);
-        assertFalse(violations.isEmpty());
+        assertTrue(violations.isEmpty());
     }
 
     @Test
@@ -153,7 +153,7 @@ class ValidationNotificationServiceTests {
         notification.setContent("Notification");
         notification.setRead(false);
         Set<ConstraintViolation<Notification>> violations = validator.validate(notification);
-        assertFalse(violations.isEmpty());
+        assertTrue(violations.isEmpty());
     }
 
     @Test
@@ -162,7 +162,7 @@ class ValidationNotificationServiceTests {
         notification.setContent("Notification");
         notification.setRead(true);
         Set<ConstraintViolation<Notification>> violations = validator.validate(notification);
-        assertFalse(violations.isEmpty());
+        assertTrue(violations.isEmpty());
     }
 
     @Test
@@ -183,7 +183,7 @@ class ValidationNotificationServiceTests {
         notification.setRead(false);
         notification.setCreatedAt(new Date());
         Set<ConstraintViolation<Notification>> violations = validator.validate(notification);
-        assertFalse(violations.isEmpty());
+        assertTrue(violations.isEmpty());
     }
 
     @Test

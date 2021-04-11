@@ -36,7 +36,6 @@ public class NotificationService {
             return new ResponseMessage(true, HttpStatus.OK,"Notification added successfully!!");
         }
         catch (Exception e) {
-            //throw new WrongInputException("Notification isn't added!!");
             throw new ResourceNotFoundException("Can't connect to user_service!!");
         }
     }
