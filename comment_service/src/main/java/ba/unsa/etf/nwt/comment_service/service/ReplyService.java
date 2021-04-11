@@ -50,9 +50,11 @@ public class ReplyService {
             replyRepository.save(reply);
             return new ResponseMessage(true, HttpStatus.OK,"Reply added successfully!!");
         }
+        catch (RuntimeException re){
+            throw new WrongInputException("Reply isn't added!!");
+        }
         catch (Exception e){
-            //throw new WrongInputException("Reply isn't added!!");
-            throw new ResourceNotFoundException("Can't connect to  user_service, reply not added!");
+            throw new ResourceNotFoundException("Can't connect to user_service!!");
         }
     }
 

@@ -57,9 +57,11 @@ public class CommentService {
             commentRepository.save(comment);
             return new ResponseMessage(true, HttpStatus.OK,"Comment added successfully!!");
         }
+        catch (RuntimeException re){
+            throw new WrongInputException("Comment isn't added!!");
+        }
         catch (Exception e){
-            //throw new WrongInputException("Comment isn't added!!");
-            throw new ResourceNotFoundException("Can't connect to  user_service, comment not added!");
+            throw new ResourceNotFoundException("Can't connect to user_service!!");
         }
     }
 
