@@ -21,11 +21,10 @@ public class AddPetRequest {
     @JsonIgnore
     private Long id;
 
-    //zakomentarisano not null zbog swaggera za pokazivanje
-   // @NotNull(message = "User ID can't be null.")
+    @NotNull(message = "User ID can't be null.")
     private Long userID;
 
-    //@NotNull(message = "New pet ID can't be null.")
+    @NotNull(message = "New pet ID can't be null.")
     private Long newPetID;
 
     @Size(max = 1000, message = "Request message can't have more than 1000 characters.")

@@ -35,6 +35,7 @@ public class AdoptServiceRoutingTests {
 
     @Test
     void CreateNewValidAdoptionRequest() throws Exception {
+        //TODO BAZA
         String newRequest = "{\n" +
                 "    \"userID\": 1,\n" +
                 "    \"petID\": 1,\n" +
@@ -202,6 +203,7 @@ public class AdoptServiceRoutingTests {
 
     @Test
     void CreateNewValidAddPetRequest() throws Exception {
+        //TODO TIJELO ZAHTJEVA
         String newRequest = "{\n" +
                 "    \"userID\": 1,\n" +
                 "    \"newPetID\": 1,\n" +
@@ -224,6 +226,7 @@ public class AdoptServiceRoutingTests {
 
     @Test
     void CreateNewAddPetRequestMessageTooLong() throws Exception {
+        //TODO TIJELO ZAHTJEVA
         String newRequest = "{\n" +
                 "    \"userID\": 1,\n" +
                 "    \"newPetID\": 1,\n" +
@@ -252,6 +255,7 @@ public class AdoptServiceRoutingTests {
 
     @Test
     void CreateNewAddPetRequestUserIDNull() throws Exception {
+        //TODO TIJELO ZAHTJEVA
         String newRequest = "{\n" +
                 "    \"userID\": null,\n" +
                 "    \"newPetID\": 1,\n" +
@@ -279,6 +283,7 @@ public class AdoptServiceRoutingTests {
 
     @Test
     void CreateNewAddPetRequestUserIDMissing() throws Exception {
+        //TODO TIJELO ZAHTJEVA
         String newRequest = "{\n" +
                 "    \"newPetID\": 1,\n" +
                 "    \"message\": \"Pet care\",\n" +
@@ -305,6 +310,7 @@ public class AdoptServiceRoutingTests {
 
     @Test
     void CreateNewAddPetRequestNewPetIDNull() throws Exception {
+        //TODO PREPRAVITI TIJELO ZAHTJEVA
         String newRequest = "{\n" +
                 "    \"userID\": 1,\n" +
                 "    \"petID\": null,\n" +
@@ -331,7 +337,8 @@ public class AdoptServiceRoutingTests {
     }
 
     @Test
-    void CreateNewAddPetnRequestPetIDMissing() throws Exception {
+    void CreateNewAddPetRequestPetIDMissing() throws Exception {
+        //TODO TIJELO ZAHTJEVA
         String newRequest = "{\n" +
                 "    \"userID\": 1,\n" +
                 "    \"message\": \"Pet care\",\n" +
@@ -376,7 +383,7 @@ public class AdoptServiceRoutingTests {
 
     @Test
     void GetAdoptionRequestsByUserIDInJSON() throws Exception {
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/adoption-request/{userID}", 1)
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/adoption-request/user/{userID}", 1)
                 .contentType(MediaType.APPLICATION_JSON);
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk())

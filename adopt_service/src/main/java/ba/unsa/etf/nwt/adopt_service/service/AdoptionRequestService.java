@@ -33,7 +33,7 @@ public class AdoptionRequestService {
                 adoptionRequest.setUserID(userID);
             } catch (Exception e) {
                 if(e.getMessage().equals("URI is not absolute")) {
-                    throw new ResourceNotFoundException("Can't connect to pet_category_service!!");
+                    throw new ResourceNotFoundException("Can't connect to user_service!");
                 }
                 throw new ResourceNotFoundException("No user with ID " + adoptionRequest.getUserID());
             }

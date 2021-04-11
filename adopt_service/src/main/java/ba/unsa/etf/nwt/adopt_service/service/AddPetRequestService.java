@@ -64,7 +64,7 @@ public class AddPetRequestService {
                     throw new ResourceNotFoundException("No rase with id " + addPetRequest.getPetForAdopt().getRase_id());
                 }
                 //ako nije dodalo novog peta uopce
-                throw new ResourceNotFoundException("Pet is not added because of wrong input!");
+                throw new ResourceNotFoundException("Pet is not added!");
 
             }
 
