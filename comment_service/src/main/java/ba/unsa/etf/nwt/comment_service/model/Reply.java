@@ -20,7 +20,7 @@ import javax.persistence.*;
 @Table(name = "reply")
 public class Reply {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonIgnore
     private Long id;
 

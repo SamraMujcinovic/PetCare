@@ -35,7 +35,7 @@ public class PetTests {
     @Test
     void GetPetByIDTest() throws Exception{
 
-        Long id = 10L;
+        Long id = 1L;
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/pet/{id}", id)
                 .contentType(MediaType.APPLICATION_JSON);
@@ -63,7 +63,7 @@ public class PetTests {
     @Test
     void GetPetsInRaseTest() throws Exception{
 
-        Long id = 5L;
+        Long id = 1L;
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/pets/inRase?id={id}", id)
                 .contentType(MediaType.APPLICATION_JSON);
@@ -182,7 +182,7 @@ public class PetTests {
                 "  \"description\": \"string\",\n" +
                 "  \"age\": 5,\n" +
                 "  \"adopted\": true,\n" +
-                "  \"rase_id\": 5\n" +
+                "  \"rase_id\": 1\n" +
                 "}";
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/pet")
@@ -201,7 +201,7 @@ public class PetTests {
     @Test
     void DeletePetTest() throws Exception{
 
-        Long petID = 13L;
+        Long petID = 4L;
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/pet?id={petID}", petID)
                 .contentType(MediaType.APPLICATION_JSON);
@@ -218,7 +218,7 @@ public class PetTests {
     @Test
     void UpdatePetTest() throws Exception{
 
-        Long id = 11L;
+        Long id = 2L;
 
         String noviPet = "{\n" +
                 "  \"name\": \"noviPet\",\n" +
@@ -227,7 +227,7 @@ public class PetTests {
                 "  \"description\": \"string\",\n" +
                 "  \"age\": 5,\n" +
                 "  \"adopted\": true,\n" +
-                "  \"rase_id\": 5\n" +
+                "  \"rase_id\": 1\n" +
                 "}";
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/pet/update/{id}", id)
@@ -374,7 +374,7 @@ public class PetTests {
     @Test
     void UpdatePetRaseNotFound() throws Exception{
 
-        Long id = 10L;
+        Long id = 1L;
 
         String noviPet = "{\n" +
                 "  \"name\": \"noviPet\",\n" +
