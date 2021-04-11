@@ -144,7 +144,15 @@ public class CommentService {
                 commentRepository.save(comment);
             }
             catch (Exception e){
-                throw new ResourceNotFoundException("Can't connect to pet_category_service!!");
+                //ako se ne moze spojiti na pet service
+                if(e.getMessage().equals("URI is not absolute")) {//ovo je poruka koja se vraca kada nije pokrenut pet service
+                    throw new ResourceNotFoundException("Can't connect to pet_category_service!!");
+                }
+                //u suprotnom provjerimo da li rasa ne postoji ili pet ne postoji
+                if(e.getMessage().contains("pet")) {
+                    throw new ResourceNotFoundException("No pet with ID " + comment.getCategoryID());
+                }
+                throw new ResourceNotFoundException("No rase with ID " + comment.getCategoryID());
             }
         }
         return comments;

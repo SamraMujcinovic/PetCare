@@ -1,5 +1,7 @@
 package ba.unsa.etf.nwt.pet_category_service.controller;
 
+import ba.unsa.etf.nwt.pet_category_service.exception.ResourceNotFoundException;
+import ba.unsa.etf.nwt.pet_category_service.exception.WrongInputException;
 import ba.unsa.etf.nwt.pet_category_service.model.Pet;
 import ba.unsa.etf.nwt.pet_category_service.model.Rase;
 import ba.unsa.etf.nwt.pet_category_service.request.PetRequest;
@@ -58,7 +60,12 @@ public class CommunicationsController {
     //vraca id trenutnog peta
     @GetMapping("/current/pet/petID/{id}")
     public Long getCurrentPetID(@NotNull @PathVariable Long id){
-        Pet pet = petService.getPetById(id);
+        Pet pet = new Pet();
+        try {
+            pet = petService.getPetById(id);
+        }catch (ResourceNotFoundException e){
+            throw new ResourceNotFoundException(e.getMessage());
+        }
         return pet.getId();
     }
 
@@ -66,8 +73,13 @@ public class CommunicationsController {
     //vraca id rase trenutnog peta
     @GetMapping("/current/pet/raseID/{id}")
     public Long getCurrentPetRaseID(@NotNull @PathVariable Long id){
-        //argument je id peta trenutnog
-        Pet pet = petService.getPetById(id);
+        Pet pet = new Pet();
+        try {
+            //argument je id peta trenutnog
+            pet = petService.getPetById(id);
+        }catch (ResourceNotFoundException e){
+            throw new ResourceNotFoundException(e.getMessage());
+        }
         //vraceni id je id rase trenutnog peta
         return pet.getRase().getId();
     }
@@ -75,13 +87,27 @@ public class CommunicationsController {
     //vraca id trenutne rase
     @GetMapping("/current/rase/raseID/{id}")
     public Long getCurrentRaseID(@NotNull @PathVariable Long id){
-        Rase rase = raseService.getRaseById(id);
+        Rase rase = new Rase();
+        try {
+            rase = raseService.getRaseById(id);
+        }catch (ResourceNotFoundException e){
+            throw new ResourceNotFoundException(e.getMessage());
+        }
         return rase.getId();
     }
 
     @PostMapping("/petID/forAdopt")
     public Long addPetForAdopt(@Valid @RequestBody PetRequest petRequest){
-        return petService.addPetForAdopt(petRequest);
+        Long petID;
+        try{
+            petID = petService.addPetForAdopt(petRequest);
+        }catch (ResourceNotFoundException e){
+            throw new ResourceNotFoundException(e.getMessage());
+        }
+        catch (WrongInputException ee){
+            throw new WrongInputException(ee.getMessage());
+        }
+        return petID;
     }
 
 

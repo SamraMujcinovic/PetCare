@@ -4,6 +4,7 @@ import ba.unsa.etf.nwt.adopt_service.exception.ResourceNotFoundException;
 import ba.unsa.etf.nwt.adopt_service.exception.WrongInputException;
 import ba.unsa.etf.nwt.adopt_service.model.AdoptionRequest;
 import ba.unsa.etf.nwt.adopt_service.repository.AdoptionRequestRepository;
+import ba.unsa.etf.nwt.adopt_service.response.ErrorResponse;
 import ba.unsa.etf.nwt.adopt_service.response.ResponseMessage;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -25,15 +26,16 @@ public class AdoptionRequestService {
 
     public ResponseMessage addAdoptionRequest(AdoptionRequest adoptionRequest) {
 
-        try {
             RestTemplate restTemplate = new RestTemplate();
             try {
                 //ovo bi trebalo baciti izuzetak ako nema usera
                 Long userID = restTemplate.getForObject(communicationsService.getUri("user_service") + "/user/me/id", Long.class);
                 adoptionRequest.setUserID(userID);
-            }
-            catch (Exception e){
-                throw new ResourceNotFoundException("Can't connect to user_service!!");
+            } catch (Exception e) {
+                if(e.getMessage().equals("URI is not absolute")) {
+                    throw new ResourceNotFoundException("Can't connect to pet_category_service!!");
+                }
+                throw new ResourceNotFoundException("No user with ID " + adoptionRequest.getUserID());
             }
 
             try {
@@ -44,13 +46,14 @@ public class AdoptionRequestService {
                 adoptionRequestRepository.save(adoptionRequest);
             }
             catch (Exception e){
-                throw new ResourceNotFoundException("Can't connect to pet_category_service!!");
+                //ako se ne moze spojiti na pet service
+                if(e.getMessage().equals("URI is not absolute")) {
+                    throw new ResourceNotFoundException("Can't connect to pet_category_service!!");
+                }
+                //u suprotnom znaci da nije pronadjen pet sa tim id-em
+                throw new ResourceNotFoundException("No pet with ID " + adoptionRequest.getPetID());
             }
 
-        }
-        catch (ResourceNotFoundException e){
-            throw new ResourceNotFoundException(e.getMessage());
-        }
         return new ResponseMessage(true, HttpStatus.OK, "Request to adopt a pet with ID=" + adoptionRequest.getPetID() + " added successfully!");
 
     }
