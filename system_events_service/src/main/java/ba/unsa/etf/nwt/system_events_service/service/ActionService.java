@@ -18,7 +18,7 @@ public class ActionService extends ActionsServiceGrpc.ActionsServiceImplBase {
     @Override
     public void save(ActionsRequest request, StreamObserver<ActionsResponse> responseObserver){
         Action action = new Action();
-        action.setTimestamp(request.getTimestamp().toString());
+        action.setTimestamp(request.getTimestamp());
         action.setMicroservice(request.getMicroservice());
         action.setActionType(request.getActionType());
         action.setResourceName(request.getResourceName());

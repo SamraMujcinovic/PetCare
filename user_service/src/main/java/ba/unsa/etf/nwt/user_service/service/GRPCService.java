@@ -7,6 +7,9 @@ import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import static com.google.protobuf.util.Timestamps.fromMillis;
 import static java.lang.System.currentTimeMillis;
 
@@ -20,7 +23,7 @@ public class GRPCService {
         ActionsServiceGrpc.ActionsServiceBlockingStub stub
                 = ActionsServiceGrpc.newBlockingStub(channel);
         ActionsResponse response = stub.save(ActionsRequest.newBuilder()
-                .setTimestamp(fromMillis(currentTimeMillis()))
+                .setTimestamp(new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date()))
                 .setMicroservice("user_service")
                 .setActionType(actionType)
                 .setResourceName(resourceName)
