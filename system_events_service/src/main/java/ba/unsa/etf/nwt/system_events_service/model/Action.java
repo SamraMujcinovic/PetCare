@@ -15,7 +15,6 @@ public class Action {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Temporal(TemporalType.TIMESTAMP)
     @JsonFormat(timezone="Europe/Sarajevo")
     @Column(name = "timestamp", nullable = true, updatable = false)
     private Timestamp timestamp;
