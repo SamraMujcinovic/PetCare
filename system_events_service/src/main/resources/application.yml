@@ -13,3 +13,6 @@ spring:
     name: system_events_service
 server:
   port: 8085
+grpc:
+  server:
+    port: 9090

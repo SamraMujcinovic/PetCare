@@ -1,6 +1,7 @@
 package ba.unsa.etf.nwt.system_events_service.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.google.protobuf.Timestamp;
 import com.sun.istack.NotNull;
 import javax.validation.constraints.NotBlank;
 
@@ -17,7 +18,7 @@ public class Action {
     @Temporal(TemporalType.TIMESTAMP)
     @JsonFormat(timezone="Europe/Sarajevo")
     @Column(name = "timestamp", nullable = true, updatable = false)
-    private Date timestamp;
+    private Timestamp timestamp;
 
     @NotNull
     @NotBlank
@@ -46,11 +47,11 @@ public class Action {
         this.id = id;
     }
 
-    public Date getTimestamp() {
+    public Timestamp getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(Date timestamp) {
+    public void setTimestamp(Timestamp timestamp) {
         this.timestamp = timestamp;
     }
 
