@@ -15,9 +15,8 @@ public class Action {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JsonFormat(timezone="Europe/Sarajevo")
     @Column(name = "timestamp", nullable = true, updatable = false)
-    private Timestamp timestamp;
+    private String timestamp;
 
     @NotNull
     @NotBlank
@@ -46,11 +45,11 @@ public class Action {
         this.id = id;
     }
 
-    public Timestamp getTimestamp() {
+    public String getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(Timestamp timestamp) {
+    public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
     }
 

@@ -18,11 +18,18 @@ public class ActionService extends ActionsServiceGrpc.ActionsServiceImplBase {
     @Override
     public void save(ActionsRequest request, StreamObserver<ActionsResponse> responseObserver){
         Action action = new Action();
-        action.setTimestamp(request.getTimestamp());
+        action.setTimestamp(request.getTimestamp().toString());
         action.setMicroservice(request.getMicroservice());
         action.setActionType(request.getActionType());
         action.setResourceName(request.getResourceName());
         action.setResponseType(request.getResponseType());
         actionRepository.save(action);
+
+        ActionsResponse response = ActionsResponse.newBuilder()
+                .setStatus("OK")
+                .build();
+
+        responseObserver.onNext(response);
+        responseObserver.onCompleted();
     }
 }

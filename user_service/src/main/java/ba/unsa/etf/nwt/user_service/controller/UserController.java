@@ -8,6 +8,7 @@ import ba.unsa.etf.nwt.user_service.request.UserRequest;
 import ba.unsa.etf.nwt.user_service.response.AvailabilityResponse;
 import ba.unsa.etf.nwt.user_service.response.ResponseMessage;
 import ba.unsa.etf.nwt.user_service.response.UserProfileResponse;
+import ba.unsa.etf.nwt.user_service.service.GRPCService;
 import ba.unsa.etf.nwt.user_service.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,9 +22,13 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private GRPCService grpcService;
+
     //admin
     @GetMapping("/users")
     public List<User> getUsers() {
+        String string = grpcService.save("GET", "Users", "OK");
         return userService.findAll();
     }
 
