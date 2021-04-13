@@ -1,12 +1,9 @@
 package ba.unsa.etf.nwt.system_events_service.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.google.protobuf.Timestamp;
 import com.sun.istack.NotNull;
 import javax.validation.constraints.NotBlank;
 
 import javax.persistence.*;
-import java.util.Date;
 
 @Entity
 @Table(name="actions")
@@ -15,6 +12,8 @@ public class Action {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
+    @NotBlank
     @Column(name = "timestamp", nullable = true, updatable = false)
     private String timestamp;
 

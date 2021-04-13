@@ -2,6 +2,8 @@ package ba.unsa.etf.nwt.user_service.exception;
 
 import ba.unsa.etf.nwt.user_service.response.ErrorResponse;
 import ba.unsa.etf.nwt.user_service.response.ResponseMessage;
+import ba.unsa.etf.nwt.user_service.service.GRPCService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +19,9 @@ import java.util.List;
 
 @ControllerAdvice
 public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
+
+    @Autowired
+    private GRPCService grpcService;
 
     public ResponseEntity<Object> tempHandler(String exceptionMessage, String message, HttpStatus status){
         List<String> details = new ArrayList<>();
@@ -41,6 +46,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         for(ObjectError error : ex.getBindingResult().getAllErrors()) {
             details.add(error.getDefaultMessage());
         }
+        grpcService.save("POST/PUT/DELETE", "PetCareDatabase", "ERROR - ValidationFailed");
         ErrorResponse error = new ErrorResponse(new ResponseMessage(false, HttpStatus.BAD_REQUEST,"Validation Failed"), details);
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }

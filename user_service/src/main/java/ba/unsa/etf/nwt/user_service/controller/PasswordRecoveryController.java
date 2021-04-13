@@ -8,6 +8,7 @@ import ba.unsa.etf.nwt.user_service.request.password_requests.PasswordRecoveryRe
 import ba.unsa.etf.nwt.user_service.request.password_requests.PasswordQuestionRequest;
 import ba.unsa.etf.nwt.user_service.response.QuestionResponse;
 import ba.unsa.etf.nwt.user_service.response.ResponseMessage;
+import ba.unsa.etf.nwt.user_service.service.GRPCService;
 import ba.unsa.etf.nwt.user_service.service.PasswordService;
 import ba.unsa.etf.nwt.user_service.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,9 @@ public class PasswordRecoveryController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private GRPCService grpcService;
+
     @PostMapping("/securityquestion")
     public QuestionResponse getSecurityQuestion(@Valid @RequestBody PasswordQuestionRequest passwordQuestionRequest){
         return passwordService.getQuestion(passwordQuestionRequest);
@@ -40,16 +44,23 @@ public class PasswordRecoveryController {
 
     @PostMapping("/newPassword")
     public ResponseMessage getNewPassword(@Valid @RequestBody PasswordRecoveryRequest passwordRecoveryRequest) {
-        User user = userService.findByEmail(passwordRecoveryRequest.getEmail())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found!"));
+        try {
+            User user = userService.findByEmail(passwordRecoveryRequest.getEmail())
+                    .orElseThrow(() -> new ResourceNotFoundException("User not found!"));
 
-        if(passwordRecoveryRequest.getAnswer().getText().equals(user.getAnswer().getText())){
-            user.setPassword(passwordRecoveryRequest.getNewPassword());
-            userService.save(user);
-            return new ResponseMessage(true, HttpStatus.OK,"You have successfully recovered your password.");
+            if (passwordRecoveryRequest.getAnswer().getText().equals(user.getAnswer().getText())) {
+                user.setPassword(passwordRecoveryRequest.getNewPassword());
+                userService.save(user);
+                grpcService.save("POST", "Users", "OK");
+                return new ResponseMessage(true, HttpStatus.OK, "You have successfully recovered your password.");
+            } else {
+                grpcService.save("POST", "Users", "ERROR - WrongInput");
+                throw new WrongInputException("Wrong answer!");
+            }
         }
-        else {
-            throw new WrongInputException("Wrong answer!");
+        catch(ResourceNotFoundException e){
+            grpcService.save("POST", "Users", "ERROR - ResourceNotFound");
+            throw new ResourceNotFoundException(e.getMessage());
         }
     }
 }
