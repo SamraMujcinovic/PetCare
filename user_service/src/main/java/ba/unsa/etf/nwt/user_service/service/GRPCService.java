@@ -32,7 +32,8 @@ public class GRPCService {
             //return response.getStatus();
         }
         catch(Exception e){
-            throw new ResourceNotFoundException("Can't connect to system_events_service to store action!");
+            System.out.println("Can't connect to system_events_service to store action!");
+            //throw new ResourceNotFoundException("Can't connect to system_events_service to store action!");
         }
     }
 }
