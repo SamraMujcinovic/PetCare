@@ -1,11 +1,9 @@
 package ba.unsa.etf.nwt.system_events_service.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.sun.istack.NotNull;
 import javax.validation.constraints.NotBlank;
 
 import javax.persistence.*;
-import java.util.Date;
 
 @Entity
 @Table(name="actions")
@@ -14,10 +12,10 @@ public class Action {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @JsonFormat(timezone="Europe/Sarajevo")
+    @NotNull
+    @NotBlank
     @Column(name = "timestamp", nullable = true, updatable = false)
-    private Date timestamp;
+    private String timestamp;
 
     @NotNull
     @NotBlank
@@ -46,11 +44,11 @@ public class Action {
         this.id = id;
     }
 
-    public Date getTimestamp() {
+    public String getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(Date timestamp) {
+    public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
     }
 

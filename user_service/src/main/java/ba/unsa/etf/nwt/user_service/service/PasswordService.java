@@ -16,22 +16,40 @@ public class PasswordService {
     @Autowired
     private UserService userService;
 
-    public QuestionResponse getQuestion(PasswordQuestionRequest passwordQuestionRequest){
-        User user = userService.findByEmail(passwordQuestionRequest.getEmail())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found!"));
+    @Autowired
+    private GRPCService grpcService;
 
-        return new QuestionResponse(new ResponseMessage(true, HttpStatus.OK,"Valid email, question found."), user.getAnswer().getQuestion());
+    public QuestionResponse getQuestion(PasswordQuestionRequest passwordQuestionRequest){
+        try {
+            User user = userService.findByEmail(passwordQuestionRequest.getEmail())
+                    .orElseThrow(() -> new ResourceNotFoundException("User not found!"));
+
+            grpcService.save("POST", "Users", "OK");
+
+            return new QuestionResponse(new ResponseMessage(true, HttpStatus.OK, "Valid email, question found."), user.getAnswer().getQuestion());
+        }
+        catch (ResourceNotFoundException e){
+            grpcService.save("POST", "Users", "ERROR - ResourceNotFound");
+            throw new ResourceNotFoundException(e.getMessage());
+        }
     }
 
     public ResponseMessage getAnswerOfQuestion(PasswordAnswerRequest passwordAnswerRequest){
-        User user = userService.findByEmail(passwordAnswerRequest.getEmail())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found!"));
+        try {
+            User user = userService.findByEmail(passwordAnswerRequest.getEmail())
+                    .orElseThrow(() -> new ResourceNotFoundException("User not found!"));
 
-        if(passwordAnswerRequest.getAnswer().getText().equals(user.getAnswer().getText())){
-            return new ResponseMessage(true, HttpStatus.OK,"You have successfully answered the question.");
+            if (passwordAnswerRequest.getAnswer().getText().equals(user.getAnswer().getText())) {
+                grpcService.save("POST", "Users", "OK");
+                return new ResponseMessage(true, HttpStatus.OK, "You have successfully answered the question.");
+            } else {
+                grpcService.save("POST", "Users", "ERROR - WrongInput");
+                throw new WrongInputException("Wrong answer!");
+            }
         }
-        else {
-            throw new WrongInputException("Wrong answer!");
+        catch (ResourceNotFoundException e){
+            grpcService.save("POST", "Users", "ERROR - ResourceNotFound");
+            throw new ResourceNotFoundException(e.getMessage());
         }
     }
 }

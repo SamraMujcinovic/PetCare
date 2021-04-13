@@ -32,58 +32,79 @@ public class AuthController {
     @Autowired
     private AnswerService answerService;
 
+    @Autowired
+    private GRPCService grpcService;
+
     //private final PasswordEncoder passwordEncoder;
 
     @PostMapping("/register/{questionId}")
     public ResponseMessage registration(@PathVariable Long questionId, @Valid @RequestBody RegistrationRequest registrationRequest) {
 
         if(userService.existsByUsername(registrationRequest.getUsername())) {
+            grpcService.save("POST", "Users", "ERROR - WrongInput");
             throw new WrongInputException("Username is already taken!");
         }
 
         if(userService.existsByEmail(registrationRequest.getEmail())) {
+            grpcService.save("POST", "Users", "ERROR - WrongInput");
             throw new WrongInputException("Email Address already in use!");
         }
 
         if(registrationRequest.getAnswer()==null || registrationRequest.getAnswer().getText().isEmpty()){
+            grpcService.save("POST", "Users", "ERROR - WrongInput");
             throw new WrongInputException("Answer text must not be empty!");
         }
 
-        User user = new User(registrationRequest.getName(),registrationRequest.getSurname(),
-                registrationRequest.getEmail(), registrationRequest.getUsername(),
-                registrationRequest.getPassword(), registrationRequest.getAnswer());
+        try {
+            User user = new User(registrationRequest.getName(), registrationRequest.getSurname(),
+                    registrationRequest.getEmail(), registrationRequest.getUsername(),
+                    registrationRequest.getPassword(), registrationRequest.getAnswer());
 
-        //user.setPassword(passwordEncoder.encode(user.getPassword()));
+            //user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-        Role userRole = roleService.findByName(RoleName.ROLE_USER)
-                .orElseThrow(() -> new ResourceNotFoundException("Roles are not set!!"));
+            Role userRole = roleService.findByName(RoleName.ROLE_USER)
+                    .orElseThrow(() -> new ResourceNotFoundException("Roles are not set!!"));
 
-        user.setRoles(Collections.singleton(userRole));
+            user.setRoles(Collections.singleton(userRole));
 
-        if(!questionService.existsById(questionId)) {
-            throw new ResourceNotFoundException("Question with given id does not exist!");
+            if (!questionService.existsById(questionId)) {
+                grpcService.save("POST", "Users", "ERROR - ResourceNotFound");
+                throw new ResourceNotFoundException("Question with given id does not exist!");
+            }
+
+            Question question = questionService.findById(questionId).get();
+            user.getAnswer().setQuestion(question);
+            answerService.save(user.getAnswer());
+            userService.save(user);
+
+            grpcService.save("POST", "Users", "OK");
+
+            return new ResponseMessage(true, HttpStatus.OK,
+                    "User registered successfully");
         }
-
-        Question question = questionService.findById(questionId).get();
-        user.getAnswer().setQuestion(question);
-        answerService.save(user.getAnswer());
-        userService.save(user);
-
-        return new ResponseMessage(true, HttpStatus.OK,
-                "User registered successfully");
+        catch (ResourceNotFoundException e){
+            grpcService.save("POST", "Users", "ERROR - ResourceNotFound");
+            throw new ResourceNotFoundException(e.getMessage());
+        }
     }
 
     @PostMapping("/login")
     public ResponseMessage login(@Valid @RequestBody LoginRequest loginRequest) {
+        try {
+            User user = userService.findBuUsernameOrEmail(loginRequest.getUsernameOrEmail(), loginRequest.getUsernameOrEmail())
+                    .orElseThrow(() -> new ResourceNotFoundException("User not found!"));
 
-        User user = userService.findBuUsernameOrEmail(loginRequest.getUsernameOrEmail(), loginRequest.getUsernameOrEmail())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found!"));
-
-        if (user.getPassword().equals(loginRequest.getPassword())) {
-            return new ResponseMessage(true, HttpStatus.OK, "Login successfull.");
+            if (user.getPassword().equals(loginRequest.getPassword())) {
+                grpcService.save("POST", "Users", "OK");
+                return new ResponseMessage(true, HttpStatus.OK, "Login successfull.");
+            } else {
+                grpcService.save("POST", "Users", "ERROR - WrongInput");
+                throw new WrongInputException("Wrong password!");
+            }
         }
-        else {
-            throw new WrongInputException("Wrong password!");
+        catch (ResourceNotFoundException e){
+            grpcService.save("POST", "Users", "ERROR - ResourceNotFound");
+            throw new ResourceNotFoundException(e.getMessage());
         }
     }
 }
