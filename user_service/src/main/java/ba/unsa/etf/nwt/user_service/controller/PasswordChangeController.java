@@ -8,7 +8,6 @@ import ba.unsa.etf.nwt.user_service.request.password_requests.PasswordChangeRequ
 import ba.unsa.etf.nwt.user_service.request.password_requests.PasswordQuestionRequest;
 import ba.unsa.etf.nwt.user_service.response.QuestionResponse;
 import ba.unsa.etf.nwt.user_service.response.ResponseMessage;
-import ba.unsa.etf.nwt.user_service.service.GRPCService;
 import ba.unsa.etf.nwt.user_service.service.PasswordService;
 import ba.unsa.etf.nwt.user_service.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,9 +28,6 @@ public class PasswordChangeController {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private GRPCService grpcService;
-
     @PostMapping("/securityquestion")
     public QuestionResponse getSecurityQuestion(@Valid @RequestBody PasswordQuestionRequest passwordQuestionRequest){
         return passwordService.getQuestion(passwordQuestionRequest);
@@ -44,29 +40,20 @@ public class PasswordChangeController {
 
     @PostMapping("/newPassword")
     public ResponseMessage getNewPassword(@Valid @RequestBody PasswordChangeRequest passwordChangeRequest) {
-        try {
-            User user = userService.findByEmail(passwordChangeRequest.getEmail())
-                    .orElseThrow(() -> new ResourceNotFoundException("User not found!"));
+        User user = userService.findByEmail(passwordChangeRequest.getEmail())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found!"));
 
-            if (passwordChangeRequest.getAnswer().getText().equals(user.getAnswer().getText())) {
+        if (passwordChangeRequest.getAnswer().getText().equals(user.getAnswer().getText())) {
 
-                if (!passwordChangeRequest.getOldPassword().equals(user.getPassword())) {
-                    grpcService.save("POST", "Users", "ERROR - WrongInput");
-                    throw new WrongInputException("Old password is not a match!");
-                }
-
-                user.setPassword(passwordChangeRequest.getNewPassword());
-                userService.save(user);
-                grpcService.save("POST", "Users", "OK");
-                return new ResponseMessage(true, HttpStatus.OK, "You have successfully changed your password.");
-            } else {
-                grpcService.save("POST", "Users", "ERROR - WrongInput");
-                throw new WrongInputException("Wrong answer!");
+            if (!passwordChangeRequest.getOldPassword().equals(user.getPassword())) {
+                throw new WrongInputException("Old password is not a match!");
             }
-        }
-        catch(ResourceNotFoundException e){
-            grpcService.save("POST", "Users", "ERROR - ResourceNotFound");
-            throw new ResourceNotFoundException(e.getMessage());
+
+            user.setPassword(passwordChangeRequest.getNewPassword());
+            userService.save(user);
+            return new ResponseMessage(true, HttpStatus.OK, "You have successfully changed your password.");
+        } else {
+            throw new WrongInputException("Wrong answer!");
         }
     }
 }
