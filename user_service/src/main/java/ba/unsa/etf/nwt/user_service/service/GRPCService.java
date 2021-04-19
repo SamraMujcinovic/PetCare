@@ -3,20 +3,28 @@ package ba.unsa.etf.nwt.user_service.service;
 import ba.unsa.etf.nwt.system_events_service.actions.grpc.ActionsRequest;
 import ba.unsa.etf.nwt.system_events_service.actions.grpc.ActionsResponse;
 import ba.unsa.etf.nwt.system_events_service.actions.grpc.ActionsServiceGrpc;
-import ba.unsa.etf.nwt.user_service.exception.ResourceNotFoundException;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Service
+@RefreshScope
 public class GRPCService {
+
+    @Value("${address: default value}")
+    private String address;
+
+    @Value("${port: 0}")
+    private int port;
 
     public void save(String actionType, String resourceName, String responseType) {
         try {
-            ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 9090)
+            ManagedChannel channel = ManagedChannelBuilder.forAddress(address, port)
                     .usePlaintext()
                     .build();
             ActionsServiceGrpc.ActionsServiceBlockingStub stub
