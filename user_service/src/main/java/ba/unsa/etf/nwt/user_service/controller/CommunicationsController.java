@@ -1,14 +1,14 @@
 package ba.unsa.etf.nwt.user_service.controller;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import ba.unsa.etf.nwt.user_service.exception.ResourceNotFoundException;
 import ba.unsa.etf.nwt.user_service.model.User;
 import ba.unsa.etf.nwt.user_service.model.roles.Role;
 import ba.unsa.etf.nwt.user_service.response.EurekaResponse;
+import ba.unsa.etf.nwt.user_service.security.CurrentUser;
+import ba.unsa.etf.nwt.user_service.security.UserPrincipal;
 import ba.unsa.etf.nwt.user_service.service.CommunicationsService;
 import ba.unsa.etf.nwt.user_service.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,13 +52,11 @@ public class CommunicationsController {
         return communicationsService.getUri(applicationName);
     }
 
-    //POPRAVITI NAKON AUTORIZACIJE
-    //vrati username za dodavanje komentara
+    //rute za ostale servise
+
     @GetMapping("/user/me/username")
-    public String getCurrentUsersUsername(/*@CurrentUser UserPrincipal currentUser*/){
-        User user = new User();
-        user.setUsername("alakovic1");
-        return user.getUsername();
+    public String getCurrentUsersUsername(@CurrentUser UserPrincipal currentUser){
+        return currentUser.getUsername();
     }
 
     @GetMapping("/user/{username}")
@@ -73,20 +71,15 @@ public class CommunicationsController {
         }
     }
 
-    //POPRAVITI NAKON AUTORIZACIJE
     @GetMapping("/user/me/id")
-    public Long getCurrentUsersId(/*@CurrentUser UserPrincipal currentUser*/){
-        User user = new User();
-        user.setId(1L);
-        return user.getId();
+    public Long getCurrentUsersId(@CurrentUser UserPrincipal currentUser){
+        return currentUser.getId();
     }
 
-    //vrati rolu trenutnog usera
-    //POPRAVITI NAKON AUTORIZACIJE
     @GetMapping("/user/me/role")
-    public List<String> getCurrentRole(/*@CurrentUser UserPrincipal currentUser*/){
+    public List<String> getCurrentRole(@CurrentUser UserPrincipal currentUser){
         try {
-            User user = userService.findByUsername("alakovic1")
+            User user = userService.findByUsername(currentUser.getUsername())
                     .orElseThrow(() -> new ResourceNotFoundException("User not found!"));
 
             List<String> roles = new ArrayList<>();
