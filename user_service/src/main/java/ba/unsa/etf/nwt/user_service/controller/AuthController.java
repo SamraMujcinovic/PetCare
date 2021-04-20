@@ -121,4 +121,9 @@ public class AuthController {
             throw new WrongInputException("Wrong password!");
         }
     }
+
+    @GetMapping("/accessDenied")
+    public void accessDenied(){
+        throw new ResourceNotFoundException("User with this role is not authorized to access this route!");
+    }
 }

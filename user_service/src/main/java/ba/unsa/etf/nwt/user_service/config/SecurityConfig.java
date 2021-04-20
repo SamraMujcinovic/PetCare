@@ -1,5 +1,6 @@
 package ba.unsa.etf.nwt.user_service.config;
 
+import ba.unsa.etf.nwt.user_service.exception.CustomAccessDeniedHandler;
 import ba.unsa.etf.nwt.user_service.security.CustomUserDetailsService;
 import ba.unsa.etf.nwt.user_service.security.JwtAuthenticationEntryPoint;
 import ba.unsa.etf.nwt.user_service.security.JwtAuthenticationFilter;
@@ -17,6 +18,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
@@ -52,6 +54,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
+    public AccessDeniedHandler accessDeniedHandler() {
+        return new CustomAccessDeniedHandler();
+    }
+
+    @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
@@ -65,6 +72,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .disable()
                 .exceptionHandling()
                 .authenticationEntryPoint(unauthorizedHandler)
+                .and()
+                .exceptionHandling()
+                .accessDeniedHandler(accessDeniedHandler())
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
