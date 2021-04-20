@@ -8,13 +8,23 @@ import ba.unsa.etf.nwt.user_service.model.roles.Role;
 import ba.unsa.etf.nwt.user_service.model.roles.RoleName;
 import ba.unsa.etf.nwt.user_service.request.LoginRequest;
 import ba.unsa.etf.nwt.user_service.request.RegistrationRequest;
+import ba.unsa.etf.nwt.user_service.response.JwtAuthenticationResponse;
 import ba.unsa.etf.nwt.user_service.response.ResponseMessage;
+import ba.unsa.etf.nwt.user_service.security.JwtTokenProvider;
 import ba.unsa.etf.nwt.user_service.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
+import java.net.URI;
 import java.util.Collections;
 
 @RestController
@@ -32,10 +42,27 @@ public class AuthController {
     @Autowired
     private AnswerService answerService;
 
-    //private final PasswordEncoder passwordEncoder;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private JwtTokenProvider tokenProvider;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    public AuthController(AuthenticationManager authenticationManager, UserService userService, RoleService roleService, PasswordEncoder passwordEncoder, JwtTokenProvider tokenProvider, QuestionService questionService, AnswerService answerService) {
+        this.authenticationManager = authenticationManager;
+        this.userService = userService;
+        this.roleService = roleService;
+        this.passwordEncoder = passwordEncoder;
+        this.tokenProvider = tokenProvider;
+        this.questionService = questionService;
+        this.answerService = answerService;
+    }
 
     @PostMapping("/register/{questionId}")
-    public ResponseMessage registration(@PathVariable Long questionId, @Valid @RequestBody RegistrationRequest registrationRequest) {
+    public ResponseEntity<?> registration(@PathVariable Long questionId, @Valid @RequestBody RegistrationRequest registrationRequest) {
 
         if(userService.existsByUsername(registrationRequest.getUsername())) {
             throw new WrongInputException("Username is already taken!");
@@ -53,7 +80,7 @@ public class AuthController {
                 registrationRequest.getEmail(), registrationRequest.getUsername(),
                 registrationRequest.getPassword(), registrationRequest.getAnswer());
 
-        //user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         Role userRole = roleService.findByName(RoleName.ROLE_USER)
                 .orElseThrow(() -> new ResourceNotFoundException("Roles are not set!!"));
@@ -67,21 +94,35 @@ public class AuthController {
         Question question = questionService.findById(questionId).get();
         user.getAnswer().setQuestion(question);
         answerService.save(user.getAnswer());
-        userService.save(user);
+        User result = userService.save(user);
 
-        return new ResponseMessage(true, HttpStatus.OK,
-                "User registered successfully");
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentContextPath().path("/api/users/{username}")
+                .buildAndExpand(result.getUsername()).toUri();
+        return ResponseEntity.created(location).body(new ResponseMessage(true, HttpStatus.OK, "User registered successfully"));
     }
 
     @PostMapping("/login")
-    public ResponseMessage login(@Valid @RequestBody LoginRequest loginRequest) {
-        User user = userService.findBuUsernameOrEmail(loginRequest.getUsernameOrEmail(), loginRequest.getUsernameOrEmail())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found!"));
+    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
+        //User user = userService.findBuUsernameOrEmail(loginRequest.getUsernameOrEmail(), loginRequest.getUsernameOrEmail())
+          //      .orElseThrow(() -> new ResourceNotFoundException("User not found!"));
 
-        if (user.getPassword().equals(loginRequest.getPassword())) {
-            return new ResponseMessage(true, HttpStatus.OK, "Login successfull.");
-        } else {
+        //if (user.getPassword().equals(passwordEncoder.encode(loginRequest.getPassword()))) {
+
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            loginRequest.getUsernameOrEmail(),
+                            loginRequest.getPassword()
+                    )
+            );
+
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            String jwt = tokenProvider.generateToken(authentication);
+            return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
+
+        /*} else {
             throw new WrongInputException("Wrong password!");
-        }
+        }*/
     }
 }

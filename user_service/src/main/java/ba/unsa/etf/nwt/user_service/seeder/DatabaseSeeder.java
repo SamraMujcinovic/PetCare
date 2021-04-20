@@ -12,6 +12,7 @@ import ba.unsa.etf.nwt.user_service.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
@@ -21,12 +22,18 @@ import java.util.Set;
 public class DatabaseSeeder {
     @Autowired
     private QuestionService questionService;
+
     @Autowired
     private RoleService roleService;
+
     @Autowired
     private AnswerService answerService;
+
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @EventListener
     public void seed(ContextRefreshedEvent event) {
@@ -72,7 +79,7 @@ public class DatabaseSeeder {
         u.setSurname(surname);
         u.setEmail(email);
         u.setUsername(username);
-        u.setPassword(password);
+        u.setPassword(passwordEncoder.encode(password));
         u.setAnswer(answer);
         u.setRoles(roles);
         userService.save(u);

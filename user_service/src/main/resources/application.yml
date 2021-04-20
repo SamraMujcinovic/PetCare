@@ -26,6 +26,7 @@ management:
     web:
       exposure:
         include: "*"
-grpc:
-  server:
-    port: 9091
+
+app:
+  jwtSecret: "SecretKeyForJWTs"
+  jwtExpirationInMs: 864_000_000
