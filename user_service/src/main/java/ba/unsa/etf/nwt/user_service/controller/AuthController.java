@@ -104,11 +104,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
-        //User user = userService.findBuUsernameOrEmail(loginRequest.getUsernameOrEmail(), loginRequest.getUsernameOrEmail())
-          //      .orElseThrow(() -> new ResourceNotFoundException("User not found!"));
-
-        //if (user.getPassword().equals(passwordEncoder.encode(loginRequest.getPassword()))) {
-
+        try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             loginRequest.getUsernameOrEmail(),
@@ -120,9 +116,9 @@ public class AuthController {
 
             String jwt = tokenProvider.generateToken(authentication);
             return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
-
-        /*} else {
+        }
+        catch (Exception e){
             throw new WrongInputException("Wrong password!");
-        }*/
+        }
     }
 }

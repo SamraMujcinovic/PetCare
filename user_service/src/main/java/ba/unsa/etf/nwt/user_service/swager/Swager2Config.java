@@ -17,7 +17,7 @@ import java.util.List;
 @EnableSwagger2
 public class Swager2Config {
     public static final String AUTHORIZATION_HEADER = "Authorization";
-    public static final String DEFAULT_INCLUDE_PATTERN = "/api/.*";
+    public static final String DEFAULT_INCLUDE_PATTERN = "/.*";
 
     @Bean
     public Docket api() {

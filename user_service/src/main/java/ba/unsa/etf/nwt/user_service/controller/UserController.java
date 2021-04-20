@@ -8,11 +8,14 @@ import ba.unsa.etf.nwt.user_service.request.UserRequest;
 import ba.unsa.etf.nwt.user_service.response.AvailabilityResponse;
 import ba.unsa.etf.nwt.user_service.response.ResponseMessage;
 import ba.unsa.etf.nwt.user_service.response.UserProfileResponse;
+import ba.unsa.etf.nwt.user_service.security.CurrentUser;
+import ba.unsa.etf.nwt.user_service.security.UserPrincipal;
 import ba.unsa.etf.nwt.user_service.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -21,13 +24,13 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    //admin
+    @RolesAllowed("ROLE_ADMIN")
     @GetMapping("/users")
     public List<User> getUsers() {
         return userService.findAll();
     }
 
-    //admin
+    @RolesAllowed("ROLE_ADMIN")
     @GetMapping("/users/{username}")
     public UserProfileResponse getUserProfile(@PathVariable(value = "username") String username) {
         User user = userService.findByUsername(username)
@@ -46,13 +49,13 @@ public class UserController {
         return new AvailabilityResponse(!userService.existsByEmail(email));
     }
 
-    //user
+    //user and admin
     @GetMapping("/user/me")
-    public UserProfileResponse getCurrentUser(/*@CurrentUser UserPrincipal currentUser*/){
-        return new UserProfileResponse("Amila", "Lakovic", "alakovic1", "alakovic1@etf.unsa.ba");
+    public UserProfileResponse getCurrentUser(@CurrentUser UserPrincipal currentUser){
+        return new UserProfileResponse(currentUser.getName(), currentUser.getSurname(), currentUser.getUsername(), currentUser.getEmail());
     }
 
-    //user
+    @RolesAllowed("ROLE_USER")
     @PostMapping("/user/update")
     public ResponseMessage updateUserProfile(@Valid @RequestBody UserProfileRequest userProfileRequest){
         User user = userService.findByEmail(userProfileRequest.getEmail())
@@ -65,6 +68,7 @@ public class UserController {
         return new ResponseMessage(true, HttpStatus.OK, "Profile successfully updated.");
     }
 
+    @RolesAllowed("ROLE_USER")
     @DeleteMapping("/user/delete")
     public ResponseMessage deleteUser(@Valid @RequestBody UserRequest userRequest){
         User user = userService.findByEmail(userRequest.getEmail())

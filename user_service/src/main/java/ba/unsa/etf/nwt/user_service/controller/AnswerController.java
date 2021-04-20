@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -24,13 +25,13 @@ public class AnswerController {
         this.answerService = answerService;
     }
 
-    //admin
+    @RolesAllowed("ROLE_ADMIN")
     @GetMapping("/questions/{questionId}/answers")
     public List<Answer> getAnswersByQuestionId(@PathVariable Long questionId) {
         return answerService.find(questionId);
     }
 
-    //admin
+    @RolesAllowed("ROLE_ADMIN")
     @PostMapping("/questions/{questionId}/answer")
     public ResponseMessage createAnswer(@PathVariable Long questionId, @Valid @RequestBody Answer answer) {
         questionService.findById(questionId).map(question -> {

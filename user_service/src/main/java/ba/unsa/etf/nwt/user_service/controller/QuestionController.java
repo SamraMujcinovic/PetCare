@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -23,7 +24,7 @@ public class QuestionController {
         return questionService.findAll();
     }
 
-    //admin
+    @RolesAllowed("ROLE_ADMIN")
     @PostMapping("/questions")
     public ResponseMessage createQuestion(@Valid @RequestBody Question question) {
         questionService.save(question);

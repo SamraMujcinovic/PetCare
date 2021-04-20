@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 
 @RestController
@@ -28,16 +29,19 @@ public class PasswordChangeController {
     @Autowired
     private UserService userService;
 
+    @RolesAllowed("ROLE_USER")
     @PostMapping("/securityquestion")
     public QuestionResponse getSecurityQuestion(@Valid @RequestBody PasswordQuestionRequest passwordQuestionRequest){
         return passwordService.getQuestion(passwordQuestionRequest);
     }
 
+    @RolesAllowed("ROLE_USER")
     @PostMapping("/answerQuestion")
     public ResponseMessage answerQuestion(@Valid @RequestBody PasswordAnswerRequest passwordAnswerRequest) {
         return passwordService.getAnswerOfQuestion(passwordAnswerRequest);
     }
 
+    @RolesAllowed("ROLE_USER")
     @PostMapping("/newPassword")
     public ResponseMessage getNewPassword(@Valid @RequestBody PasswordChangeRequest passwordChangeRequest) {
         User user = userService.findByEmail(passwordChangeRequest.getEmail())
