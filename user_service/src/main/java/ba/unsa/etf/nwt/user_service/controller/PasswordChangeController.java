@@ -12,6 +12,7 @@ import ba.unsa.etf.nwt.user_service.service.PasswordService;
 import ba.unsa.etf.nwt.user_service.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,6 +29,9 @@ public class PasswordChangeController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @RolesAllowed("ROLE_USER")
     @PostMapping("/securityquestion")
@@ -49,11 +53,15 @@ public class PasswordChangeController {
 
         if (passwordChangeRequest.getAnswer().getText().equals(user.getAnswer().getText())) {
 
-            if (!passwordChangeRequest.getOldPassword().equals(user.getPassword())) {
+            /*if (!passwordChangeRequest.getOldPassword().equals(user.getPassword())) {
+                throw new WrongInputException("Old password is not a match!");
+            }*/
+
+            if (!passwordEncoder.matches(passwordChangeRequest.getOldPassword(), user.getPassword())) {
                 throw new WrongInputException("Old password is not a match!");
             }
 
-            user.setPassword(passwordChangeRequest.getNewPassword());
+            user.setPassword(passwordEncoder.encode(passwordChangeRequest.getNewPassword()));
             userService.save(user);
             return new ResponseMessage(true, HttpStatus.OK, "You have successfully changed your password.");
         } else {

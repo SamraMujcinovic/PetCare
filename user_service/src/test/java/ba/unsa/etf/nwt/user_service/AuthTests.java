@@ -43,7 +43,7 @@ public class AuthTests {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(input);
         mockMvc.perform(requestBuilder)
-                .andExpect(status().isOk())
+                .andExpect(status().is2xxSuccessful())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(content().json("{\n" +
                         "  \"success\": true,\n" +
@@ -219,46 +219,6 @@ public class AuthTests {
                         "  \"details\": [\n" +
                         "    \"Answer text must not be empty!\"\n" +
                         "  ]\n" +
-                        "}"));
-    }
-
-    @Test
-    void CheckLoginWithUsernameSuccess() throws Exception{
-        String input = "{\n" +
-                "  \"password\": \"PASSword3!\",\n" +
-                "  \"usernameOrEmail\": \"epita1\"\n" +
-                "}";
-
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/api/auth/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(input);
-        mockMvc.perform(requestBuilder)
-                .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().json("{\n" +
-                        "  \"success\": true,\n" +
-                        "  \"status\": \"OK\",\n" +
-                        "  \"message\": \"Login successfull.\"\n" +
-                        "}"));
-    }
-
-    @Test
-    void CheckLoginWithEmailNotSuccess() throws Exception{
-        String input = "{\n" +
-                "  \"password\": \"PASSword3!\",\n" +
-                "  \"usernameOrEmail\": \"epita1@etf.unsa.ba\"\n" +
-                "}";
-
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/api/auth/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(input);
-        mockMvc.perform(requestBuilder)
-                .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().json("{\n" +
-                        "  \"success\": true,\n" +
-                        "  \"status\": \"OK\",\n" +
-                        "  \"message\": \"Login successfull.\"\n" +
                         "}"));
     }
 

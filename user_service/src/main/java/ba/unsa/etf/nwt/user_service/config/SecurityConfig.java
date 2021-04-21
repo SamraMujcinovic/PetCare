@@ -30,7 +30,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 )
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
-    CustomUserDetailsService customUserDetailsService;
+    private CustomUserDetailsService customUserDetailsService;
 
     @Autowired
     private JwtAuthenticationEntryPoint unauthorizedHandler;
@@ -94,9 +94,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/user/usernameCheck", "/user/emailCheck")
                 .permitAll()
-                .antMatchers(HttpMethod.GET, "/api/users/**", "/questions", "/eureka/**")
+                .antMatchers(HttpMethod.GET, "/questions", "/eureka/**")
                 .permitAll()
-                .antMatchers(HttpMethod.POST, "/questions")
+                .antMatchers(HttpMethod.POST)
                 .permitAll()
                 .anyRequest()
                 .authenticated();
