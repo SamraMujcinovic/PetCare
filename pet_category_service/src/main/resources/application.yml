@@ -28,7 +28,3 @@ management:
         include: "*"
 server:
   port: 8084
-
-grpc:
-  server:
-    port: 9095
