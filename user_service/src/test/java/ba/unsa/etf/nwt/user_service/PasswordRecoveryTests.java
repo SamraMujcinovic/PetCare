@@ -186,7 +186,7 @@ public class PasswordRecoveryTests {
                 "  \"answer\": {\n" +
                 "    \"text\": \"odgovor\"\n" +
                 "  },\n" +
-                "  \"email\": \"email@etf.unsa.ba\"\n" +
+                "  \"email\": \"email00000@etf.unsa.ba\"\n" +
                 "}";
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/recovery/answerQuestion")
@@ -296,7 +296,7 @@ public class PasswordRecoveryTests {
                 "  \"answer\": {\n" +
                 "    \"text\": \"odgovor\"\n" +
                 "  },\n" +
-                "  \"email\": \"email@etf.unsa.ba\",\n" +
+                "  \"email\": \"email88888@etf.unsa.ba\",\n" +
                 "  \"newPassword\": \"newPassword1&\"\n" +
                 "}";
 

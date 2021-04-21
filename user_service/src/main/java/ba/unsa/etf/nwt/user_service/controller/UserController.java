@@ -55,9 +55,18 @@ public class UserController {
         return new UserProfileResponse(currentUser.getName(), currentUser.getSurname(), currentUser.getUsername(), currentUser.getEmail());
     }
 
-    @RolesAllowed("ROLE_USER")
+    //user and admin
     @PostMapping("/user/update")
-    public ResponseMessage updateUserProfile(@Valid @RequestBody UserProfileRequest userProfileRequest){
+    public ResponseMessage updateUserProfile(@Valid @RequestBody UserProfileRequest userProfileRequest, @CurrentUser UserPrincipal currentUser){
+
+        if(currentUser == null){
+            throw new ResourceNotFoundException("Current User not found!");
+        }
+
+        if(!currentUser.getEmail().equals(userProfileRequest.getEmail())){
+            throw new WrongInputException("Email not the same as current users!");
+        }
+
         User user = userService.findByEmail(userProfileRequest.getEmail())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found!"));
 
@@ -68,9 +77,18 @@ public class UserController {
         return new ResponseMessage(true, HttpStatus.OK, "Profile successfully updated.");
     }
 
-    @RolesAllowed("ROLE_USER")
+    //user and admin
     @DeleteMapping("/user/delete")
-    public ResponseMessage deleteUser(@Valid @RequestBody UserRequest userRequest){
+    public ResponseMessage deleteUser(@Valid @RequestBody UserRequest userRequest, @CurrentUser UserPrincipal currentUser){
+
+        if(currentUser == null){
+            throw new ResourceNotFoundException("Current User not found!");
+        }
+
+        if(!currentUser.getEmail().equals(userRequest.getEmail())){
+            throw new WrongInputException("Email not the same as current users!");
+        }
+
         User user = userService.findByEmail(userRequest.getEmail())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found!"));
 

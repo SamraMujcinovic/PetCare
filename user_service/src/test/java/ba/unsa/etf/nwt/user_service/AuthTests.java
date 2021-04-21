@@ -32,7 +32,7 @@ public class AuthTests {
                 "  \"answer\": {\n" +
                 "    \"text\": \"odgovor\"\n" +
                 "  },\n" +
-                "  \"email\": \"email@etf.unsa.ba\",\n" +
+                "  \"email\": \"email999999@etf.unsa.ba\",\n" +
                 "  \"name\": \"Name\",\n" +
                 "  \"password\": \"Password1234!\",\n" +
                 "  \"surname\": \"Surname\",\n" +
@@ -168,7 +168,7 @@ public class AuthTests {
                 "  \"name\": \"Name\",\n" +
                 "  \"password\": \"pass1A!\",\n" +
                 "  \"surname\": \"Surname\",\n" +
-                "  \"username\": \"username\"\n" +
+                "  \"username\": \"usernameeeeeeee\"\n" +
                 "}";
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/api/auth/register/{questionId}", questionId)
@@ -201,7 +201,7 @@ public class AuthTests {
                 "  \"name\": \"Name\",\n" +
                 "  \"password\": \"pass1A!\",\n" +
                 "  \"surname\": \"Surname\",\n" +
-                "  \"username\": \"username\"\n" +
+                "  \"username\": \"usernameyyyy\"\n" +
                 "}";
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/api/auth/register/{questionId}", questionId)

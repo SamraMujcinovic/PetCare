@@ -136,16 +136,16 @@ public class PasswordChangeTests {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(input);
         mockMvc.perform(requestBuilder)
-                .andExpect(status().isNotFound())
+                .andExpect(status().is4xxClientError())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(content().json("{\n" +
                         "  \"responseMessage\": {\n" +
                         "    \"success\": false,\n" +
-                        "    \"status\": \"NOT_FOUND\",\n" +
-                        "    \"message\": \"Exception for NOT_FOUND was thrown\"\n" +
+                        "    \"status\": \"BAD_REQUEST\",\n" +
+                        "    \"message\": \"Exception for wrong input was thrown\"\n" +
                         "  },\n" +
                         "  \"details\": [\n" +
-                        "    \"User not found!\"\n" +
+                        "    \"Email not the same as current users!\"\n" +
                         "  ]\n" +
                         "}"));
     }
@@ -256,16 +256,16 @@ public class PasswordChangeTests {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(input);
         mockMvc.perform(requestBuilder)
-                .andExpect(status().isNotFound())
+                .andExpect(status().is4xxClientError())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(content().json("{\n" +
                         "  \"responseMessage\": {\n" +
                         "    \"success\": false,\n" +
-                        "    \"status\": \"NOT_FOUND\",\n" +
-                        "    \"message\": \"Exception for NOT_FOUND was thrown\"\n" +
+                        "    \"status\": \"BAD_REQUEST\",\n" +
+                        "    \"message\": \"Exception for wrong input was thrown\"\n" +
                         "  },\n" +
                         "  \"details\": [\n" +
-                        "    \"User not found!\"\n" +
+                        "    \"Email not the same as current users!\"\n" +
                         "  ]\n" +
                         "}"));
     }
@@ -384,16 +384,16 @@ public class PasswordChangeTests {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(input);
         mockMvc.perform(requestBuilder)
-                .andExpect(status().isNotFound())
+                .andExpect(status().is4xxClientError())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(content().json("{\n" +
                         "  \"responseMessage\": {\n" +
                         "    \"success\": false,\n" +
-                        "    \"status\": \"NOT_FOUND\",\n" +
-                        "    \"message\": \"Exception for NOT_FOUND was thrown\"\n" +
+                        "    \"status\": \"BAD_REQUEST\",\n" +
+                        "    \"message\": \"Exception for wrong input was thrown\"\n" +
                         "  },\n" +
                         "  \"details\": [\n" +
-                        "    \"User not found!\"\n" +
+                        "    \"Email not the same as current users!\"\n" +
                         "  ]\n" +
                         "}"));
     }
