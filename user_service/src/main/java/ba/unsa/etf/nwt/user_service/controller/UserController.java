@@ -13,6 +13,7 @@ import ba.unsa.etf.nwt.user_service.security.UserPrincipal;
 import ba.unsa.etf.nwt.user_service.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
@@ -23,6 +24,9 @@ import java.util.List;
 public class UserController {
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @RolesAllowed("ROLE_ADMIN")
     @GetMapping("/users")
@@ -92,7 +96,7 @@ public class UserController {
         User user = userService.findByEmail(userRequest.getEmail())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found!"));
 
-        if (user.getPassword().equals(userRequest.getPassword())) {
+        if (passwordEncoder.matches(userRequest.getPassword(), user.getPassword())) {
             userService.delete(user);
             return new ResponseMessage(true, HttpStatus.OK, "You have successfully deleted your account.");
         } else {
