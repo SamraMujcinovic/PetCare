@@ -46,7 +46,7 @@ public class DatabaseSeeder {
         Role r2 = createRole(RoleName.ROLE_USER);
         Set<Role> r = new HashSet<>();
         r.add(r1);
-        r.add(r2);
+        //r.add(r2);
 
         //unos pitanja
         Question q1 = createQuestion("What is the name of the town where you were born?", "Home town");
