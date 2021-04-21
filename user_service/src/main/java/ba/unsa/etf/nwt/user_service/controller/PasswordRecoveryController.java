@@ -12,6 +12,7 @@ import ba.unsa.etf.nwt.user_service.service.PasswordService;
 import ba.unsa.etf.nwt.user_service.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,6 +28,9 @@ public class PasswordRecoveryController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @PostMapping("/securityquestion")
     public QuestionResponse getSecurityQuestion(@Valid @RequestBody PasswordQuestionRequest passwordQuestionRequest){
@@ -44,7 +48,7 @@ public class PasswordRecoveryController {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found!"));
 
         if (passwordRecoveryRequest.getAnswer().getText().equals(user.getAnswer().getText())) {
-            user.setPassword(passwordRecoveryRequest.getNewPassword());
+            user.setPassword(passwordEncoder.encode(passwordRecoveryRequest.getNewPassword()));
             userService.save(user);
             return new ResponseMessage(true, HttpStatus.OK, "You have successfully recovered your password.");
         } else {

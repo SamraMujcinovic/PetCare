@@ -8,11 +8,14 @@ import ba.unsa.etf.nwt.user_service.request.UserRequest;
 import ba.unsa.etf.nwt.user_service.response.AvailabilityResponse;
 import ba.unsa.etf.nwt.user_service.response.ResponseMessage;
 import ba.unsa.etf.nwt.user_service.response.UserProfileResponse;
+import ba.unsa.etf.nwt.user_service.security.CurrentUser;
+import ba.unsa.etf.nwt.user_service.security.UserPrincipal;
 import ba.unsa.etf.nwt.user_service.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -21,13 +24,13 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    //admin
+    @RolesAllowed("ROLE_ADMIN")
     @GetMapping("/users")
     public List<User> getUsers() {
         return userService.findAll();
     }
 
-    //admin
+    @RolesAllowed("ROLE_ADMIN")
     @GetMapping("/users/{username}")
     public UserProfileResponse getUserProfile(@PathVariable(value = "username") String username) {
         User user = userService.findByUsername(username)
@@ -46,15 +49,24 @@ public class UserController {
         return new AvailabilityResponse(!userService.existsByEmail(email));
     }
 
-    //user
+    //user and admin
     @GetMapping("/user/me")
-    public UserProfileResponse getCurrentUser(/*@CurrentUser UserPrincipal currentUser*/){
-        return new UserProfileResponse("Amila", "Lakovic", "alakovic1", "alakovic1@etf.unsa.ba");
+    public UserProfileResponse getCurrentUser(@CurrentUser UserPrincipal currentUser){
+        return new UserProfileResponse(currentUser.getName(), currentUser.getSurname(), currentUser.getUsername(), currentUser.getEmail());
     }
 
-    //user
+    //user and admin
     @PostMapping("/user/update")
-    public ResponseMessage updateUserProfile(@Valid @RequestBody UserProfileRequest userProfileRequest){
+    public ResponseMessage updateUserProfile(@Valid @RequestBody UserProfileRequest userProfileRequest, @CurrentUser UserPrincipal currentUser){
+
+        if(currentUser == null){
+            throw new ResourceNotFoundException("Current User not found!");
+        }
+
+        if(!currentUser.getEmail().equals(userProfileRequest.getEmail())){
+            throw new WrongInputException("Email not the same as current users!");
+        }
+
         User user = userService.findByEmail(userProfileRequest.getEmail())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found!"));
 
@@ -65,8 +77,18 @@ public class UserController {
         return new ResponseMessage(true, HttpStatus.OK, "Profile successfully updated.");
     }
 
+    //user and admin
     @DeleteMapping("/user/delete")
-    public ResponseMessage deleteUser(@Valid @RequestBody UserRequest userRequest){
+    public ResponseMessage deleteUser(@Valid @RequestBody UserRequest userRequest, @CurrentUser UserPrincipal currentUser){
+
+        if(currentUser == null){
+            throw new ResourceNotFoundException("Current User not found!");
+        }
+
+        if(!currentUser.getEmail().equals(userRequest.getEmail())){
+            throw new WrongInputException("Email not the same as current users!");
+        }
+
         User user = userService.findByEmail(userRequest.getEmail())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found!"));
 

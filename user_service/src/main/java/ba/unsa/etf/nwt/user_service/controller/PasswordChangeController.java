@@ -8,10 +8,13 @@ import ba.unsa.etf.nwt.user_service.request.password_requests.PasswordChangeRequ
 import ba.unsa.etf.nwt.user_service.request.password_requests.PasswordQuestionRequest;
 import ba.unsa.etf.nwt.user_service.response.QuestionResponse;
 import ba.unsa.etf.nwt.user_service.response.ResponseMessage;
+import ba.unsa.etf.nwt.user_service.security.CurrentUser;
+import ba.unsa.etf.nwt.user_service.security.UserPrincipal;
 import ba.unsa.etf.nwt.user_service.service.PasswordService;
 import ba.unsa.etf.nwt.user_service.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,28 +31,61 @@ public class PasswordChangeController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @PostMapping("/securityquestion")
-    public QuestionResponse getSecurityQuestion(@Valid @RequestBody PasswordQuestionRequest passwordQuestionRequest){
+    public QuestionResponse getSecurityQuestion(@Valid @RequestBody PasswordQuestionRequest passwordQuestionRequest,
+                                                @CurrentUser UserPrincipal currentUser){
+
+        if(currentUser == null){
+            throw new ResourceNotFoundException("Current User not found!");
+        }
+
+        if(!currentUser.getEmail().equals(passwordQuestionRequest.getEmail())){
+            throw new WrongInputException("Email not the same as current users!");
+        }
+
         return passwordService.getQuestion(passwordQuestionRequest);
     }
 
     @PostMapping("/answerQuestion")
-    public ResponseMessage answerQuestion(@Valid @RequestBody PasswordAnswerRequest passwordAnswerRequest) {
+    public ResponseMessage answerQuestion(@Valid @RequestBody PasswordAnswerRequest passwordAnswerRequest,
+                                          @CurrentUser UserPrincipal currentUser) {
+
+        if(currentUser == null){
+            throw new ResourceNotFoundException("Current User not found!");
+        }
+
+        if(!currentUser.getEmail().equals(passwordAnswerRequest.getEmail())){
+            throw new WrongInputException("Email not the same as current users!");
+        }
+
         return passwordService.getAnswerOfQuestion(passwordAnswerRequest);
     }
 
     @PostMapping("/newPassword")
-    public ResponseMessage getNewPassword(@Valid @RequestBody PasswordChangeRequest passwordChangeRequest) {
+    public ResponseMessage getNewPassword(@Valid @RequestBody PasswordChangeRequest passwordChangeRequest,
+                                          @CurrentUser UserPrincipal currentUser) {
+
+        if(currentUser == null){
+            throw new ResourceNotFoundException("Current User not found!");
+        }
+
+        if(!currentUser.getEmail().equals(passwordChangeRequest.getEmail())){
+            throw new WrongInputException("Email not the same as current users!");
+        }
+
         User user = userService.findByEmail(passwordChangeRequest.getEmail())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found!"));
 
         if (passwordChangeRequest.getAnswer().getText().equals(user.getAnswer().getText())) {
 
-            if (!passwordChangeRequest.getOldPassword().equals(user.getPassword())) {
+            if (!passwordEncoder.matches(passwordChangeRequest.getOldPassword(), user.getPassword())) {
                 throw new WrongInputException("Old password is not a match!");
             }
 
-            user.setPassword(passwordChangeRequest.getNewPassword());
+            user.setPassword(passwordEncoder.encode(passwordChangeRequest.getNewPassword()));
             userService.save(user);
             return new ResponseMessage(true, HttpStatus.OK, "You have successfully changed your password.");
         } else {

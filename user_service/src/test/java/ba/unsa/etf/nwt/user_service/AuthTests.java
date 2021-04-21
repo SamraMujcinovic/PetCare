@@ -32,7 +32,7 @@ public class AuthTests {
                 "  \"answer\": {\n" +
                 "    \"text\": \"odgovor\"\n" +
                 "  },\n" +
-                "  \"email\": \"email@etf.unsa.ba\",\n" +
+                "  \"email\": \"email999999@etf.unsa.ba\",\n" +
                 "  \"name\": \"Name\",\n" +
                 "  \"password\": \"Password1234!\",\n" +
                 "  \"surname\": \"Surname\",\n" +
@@ -43,7 +43,7 @@ public class AuthTests {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(input);
         mockMvc.perform(requestBuilder)
-                .andExpect(status().isOk())
+                .andExpect(status().is2xxSuccessful())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(content().json("{\n" +
                         "  \"success\": true,\n" +
@@ -168,7 +168,7 @@ public class AuthTests {
                 "  \"name\": \"Name\",\n" +
                 "  \"password\": \"pass1A!\",\n" +
                 "  \"surname\": \"Surname\",\n" +
-                "  \"username\": \"username\"\n" +
+                "  \"username\": \"usernameeeeeeee\"\n" +
                 "}";
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/api/auth/register/{questionId}", questionId)
@@ -201,7 +201,7 @@ public class AuthTests {
                 "  \"name\": \"Name\",\n" +
                 "  \"password\": \"pass1A!\",\n" +
                 "  \"surname\": \"Surname\",\n" +
-                "  \"username\": \"username\"\n" +
+                "  \"username\": \"usernameyyyy\"\n" +
                 "}";
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/api/auth/register/{questionId}", questionId)
@@ -219,46 +219,6 @@ public class AuthTests {
                         "  \"details\": [\n" +
                         "    \"Answer text must not be empty!\"\n" +
                         "  ]\n" +
-                        "}"));
-    }
-
-    @Test
-    void CheckLoginWithUsernameSuccess() throws Exception{
-        String input = "{\n" +
-                "  \"password\": \"PASSword3!\",\n" +
-                "  \"usernameOrEmail\": \"epita1\"\n" +
-                "}";
-
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/api/auth/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(input);
-        mockMvc.perform(requestBuilder)
-                .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().json("{\n" +
-                        "  \"success\": true,\n" +
-                        "  \"status\": \"OK\",\n" +
-                        "  \"message\": \"Login successfull.\"\n" +
-                        "}"));
-    }
-
-    @Test
-    void CheckLoginWithEmailNotSuccess() throws Exception{
-        String input = "{\n" +
-                "  \"password\": \"PASSword3!\",\n" +
-                "  \"usernameOrEmail\": \"epita1@etf.unsa.ba\"\n" +
-                "}";
-
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/api/auth/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(input);
-        mockMvc.perform(requestBuilder)
-                .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().json("{\n" +
-                        "  \"success\": true,\n" +
-                        "  \"status\": \"OK\",\n" +
-                        "  \"message\": \"Login successfull.\"\n" +
                         "}"));
     }
 

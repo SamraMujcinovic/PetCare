@@ -2,13 +2,16 @@ package ba.unsa.etf.nwt.user_service;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.json.JacksonJsonParser;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -21,6 +24,23 @@ public class QuestionTests {
 
     @Autowired
     private MockMvc mockMvc;
+
+    private String getToken() throws Exception {
+        String input = "{\n" +
+                "  \"password\": \"Password123!\",\n" +
+                "  \"usernameOrEmail\": \"alakovic1\"\n" +
+                "}";
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/api/auth/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(input);
+        ResultActions result  = mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk());
+
+        String resultString = result.andReturn().getResponse().getContentAsString();
+        JacksonJsonParser jsonParser = new JacksonJsonParser();
+        return jsonParser.parseMap(resultString).get("accessToken").toString();
+    }
 
     @Test
     void GetAllQuestionsInJSON() throws Exception{
@@ -39,7 +59,10 @@ public class QuestionTests {
                 "  \"title\": \"string\"\n" +
                 "}";
 
+        String token = "Bearer " + getToken();
+
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/questions")
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(newQuestion);
         mockMvc.perform(requestBuilder)
@@ -60,7 +83,10 @@ public class QuestionTests {
                 "  \"title\": \"string\"\n" +
                 "}";
 
+        String token = "Bearer " + getToken();
+
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/questions")
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(newQuestion);
         mockMvc.perform(requestBuilder)
@@ -86,7 +112,10 @@ public class QuestionTests {
                 "  \"title\": \"\"\n" +
                 "}";
 
+        String token = "Bearer " + getToken();
+
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/questions")
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(newQuestion);
         mockMvc.perform(requestBuilder)
@@ -112,7 +141,10 @@ public class QuestionTests {
                 "  \"title\": \"\"\n" +
                 "}";
 
+        String token = "Bearer " + getToken();
+
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/questions")
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(newQuestion);
         mockMvc.perform(requestBuilder)

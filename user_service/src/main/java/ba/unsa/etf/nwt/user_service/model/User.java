@@ -37,7 +37,7 @@ public class User {
     private String username;
 
     @NotBlank(message = "Password can't be blank")
-    @Size(min = 6, max = 40, message = "Passwords min length is 6, max length is 40")
+    @Size(min = 6, message = "Passwords min length is 6")
     @PasswordValidation
     private String password;
 

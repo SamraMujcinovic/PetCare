@@ -12,6 +12,7 @@ import ba.unsa.etf.nwt.user_service.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
@@ -21,12 +22,18 @@ import java.util.Set;
 public class DatabaseSeeder {
     @Autowired
     private QuestionService questionService;
+
     @Autowired
     private RoleService roleService;
+
     @Autowired
     private AnswerService answerService;
+
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @EventListener
     public void seed(ContextRefreshedEvent event) {
@@ -38,8 +45,9 @@ public class DatabaseSeeder {
         Role r1 = createRole(RoleName.ROLE_ADMIN);
         Role r2 = createRole(RoleName.ROLE_USER);
         Set<Role> r = new HashSet<>();
+        Set<Role> roles = new HashSet<>();
         r.add(r1);
-        r.add(r2);
+        roles.add(r2);
 
         //unos pitanja
         Question q1 = createQuestion("What is the name of the town where you were born?", "Home town");
@@ -49,21 +57,25 @@ public class DatabaseSeeder {
         Question q5 = createQuestion("What is your mother's maiden name?", "Mother information");
         Question q6 = createQuestion("Who was your childhood hero?", "Childhood hero memory");
 
-        //prvi user
+        //prvi user - admin
         Answer a1 = createAnswer("Sarajevo", q1);
         createUser("Amila", "Lakovic", "alakovic1@etf.unsa.ba", "alakovic1", "Password123!", a1, r);
 
-        //drugi user
+        //drugi user - admin
         Answer a2 = createAnswer("Passat", q3);
         createUser("Samra", "Mujcinovic", "smujcinovi1@etf.unsa.ba", "smujcinovi1", "Password234?", a2, r);
 
-        //treci user
+        //treci user - admin
         Answer a3 = createAnswer("Spider-Man", q6);
         createUser("Emir", "Pita", "epita1@etf.unsa.ba", "epita1", "PASSword3!", a3, r);
 
-        //cetvrti user
+        //cetvrti user - admin
         Answer a4 = createAnswer("Zenica", q1);
         createUser("Amila", "Hrustic", "ahrustic2@etf.unsa.ba", "ahrustic2", "PASSWORDDd4?", a4, r);
+
+        //peti user - user
+        Answer a5 = createAnswer("Ella", q4);
+        createUser("Name", "Surname", "email@etf.unsa.ba", "username", "string123!A", a5, roles);
     }
 
     private void createUser(String name, String surname, String email, String username, String password, Answer answer, Set<Role> roles) {
@@ -72,7 +84,7 @@ public class DatabaseSeeder {
         u.setSurname(surname);
         u.setEmail(email);
         u.setUsername(username);
-        u.setPassword(password);
+        u.setPassword(passwordEncoder.encode(password));
         u.setAnswer(answer);
         u.setRoles(roles);
         userService.save(u);
