@@ -2,13 +2,16 @@ package ba.unsa.etf.nwt.user_service;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.json.JacksonJsonParser;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -23,9 +26,85 @@ public class UserTests {
     @Autowired
     private MockMvc mockMvc;
 
+    private void addUser() throws Exception{
+        Long questionId = 1L;
+
+        String input = "{\n" +
+                "  \"answer\": {\n" +
+                "    \"text\": \"odgg\"\n" +
+                "  },\n" +
+                "  \"email\": \"newmail@etf.unsa.ba\",\n" +
+                "  \"name\": \"nameee\",\n" +
+                "  \"password\": \"Password12345!!\",\n" +
+                "  \"surname\": \"surnameee\",\n" +
+                "  \"username\": \"usernameee\"\n" +
+                "}";
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/api/auth/register/{questionId}", questionId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(input);
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().is2xxSuccessful());
+    }
+
+    private String getUserToken() throws Exception {
+        String input = "{\n" +
+                "  \"password\": \"Password12345!!\",\n" +
+                "  \"usernameOrEmail\": \"usernameee\"\n" +
+                "}";
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/api/auth/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(input);
+        ResultActions result  = mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk());
+
+        String resultString = result.andReturn().getResponse().getContentAsString();
+        JacksonJsonParser jsonParser = new JacksonJsonParser();
+        return jsonParser.parseMap(resultString).get("accessToken").toString();
+    }
+
+    private String getUserChangedToken() throws Exception {
+        String input = "{\n" +
+                "  \"password\": \"Password12345!!\",\n" +
+                "  \"usernameOrEmail\": \"newusername\"\n" +
+                "}";
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/api/auth/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(input);
+        ResultActions result  = mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk());
+
+        String resultString = result.andReturn().getResponse().getContentAsString();
+        JacksonJsonParser jsonParser = new JacksonJsonParser();
+        return jsonParser.parseMap(resultString).get("accessToken").toString();
+    }
+
+    private String getToken() throws Exception {
+        String input = "{\n" +
+                "  \"password\": \"Password123!\",\n" +
+                "  \"usernameOrEmail\": \"alakovic1\"\n" +
+                "}";
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/api/auth/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(input);
+        ResultActions result  = mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk());
+
+        String resultString = result.andReturn().getResponse().getContentAsString();
+        JacksonJsonParser jsonParser = new JacksonJsonParser();
+        return jsonParser.parseMap(resultString).get("accessToken").toString();
+    }
+
     @Test
     void GetAllUsersInJSON() throws Exception{
+
+        String token = "Bearer " + getToken();
+
         RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/users")
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .contentType(MediaType.APPLICATION_JSON);
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk())
@@ -37,7 +116,10 @@ public class UserTests {
 
         String username = "alakovic1";
 
+        String token = "Bearer " + getToken();
+
         RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/users/{username}", username)
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .contentType(MediaType.APPLICATION_JSON);
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk())
@@ -55,7 +137,10 @@ public class UserTests {
 
         String username = "username";
 
+        String token = "Bearer " + getToken();
+
         RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/users/{username}", username)
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .contentType(MediaType.APPLICATION_JSON);
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isNotFound())
@@ -77,8 +162,12 @@ public class UserTests {
 
         String username = "username";
 
+        String token = "Bearer " + getToken();
+
         RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/users/usernameCheck/")
-                .param("username", username);
+                .header(HttpHeaders.AUTHORIZATION, token)
+                .param("username", username)
+                .contentType(MediaType.APPLICATION_JSON);
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isNotFound());
     }
@@ -88,7 +177,10 @@ public class UserTests {
 
         String email = "email@etf.unsa.ba";
 
+        String token = "Bearer " + getToken();
+
         RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/users/emailCheck/")
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .param("email", email)
                 .contentType(MediaType.APPLICATION_JSON);
         mockMvc.perform(requestBuilder)
@@ -99,13 +191,16 @@ public class UserTests {
     void UpdateUserProfileSuccess() throws Exception{
 
         String newUserInfo = "{\n" +
-                "  \"email\": \"alakovic1@etf.unsa.ba\",\n" +
+                "  \"email\": \"newmail@etf.unsa.ba\",\n" +
                 "  \"name\": \"amilaa\",\n" +
                 "  \"surname\": \"lakovic\",\n" +
                 "  \"username\": \"newusername\"\n" +
                 "}";
 
+        String token = "Bearer " + getUserToken();
+
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/user/update")
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(newUserInfo);
         mockMvc.perform(requestBuilder)
@@ -128,7 +223,10 @@ public class UserTests {
                 "  \"username\": \"newusername\"\n" +
                 "}";
 
+        String token = "Bearer " + getUserToken();
+
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/user/update")
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(newUserInfo);
         mockMvc.perform(requestBuilder)
@@ -156,7 +254,11 @@ public class UserTests {
                 "  \"username\": \"newusername\"\n" +
                 "}";
 
+        addUser();
+        String token = "Bearer " + getUserToken();
+
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/user/update")
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(newUserInfo);
         mockMvc.perform(requestBuilder)
@@ -178,13 +280,16 @@ public class UserTests {
     void UpdateUserProfileUsernameNotValid() throws Exception{
 
         String newUserInfo = "{\n" +
-                "  \"email\": \"alakovic1@etf.unsa.ba\",\n" +
+                "  \"email\": \"newmail@etf.unsa.ba\",\n" +
                 "  \"name\": \"amilaaa\",\n" +
                 "  \"surname\": \"lakovic\",\n" +
                 "  \"username\": \"\"\n" +
                 "}";
 
+        String token = "Bearer " + getUserToken();
+
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/user/update")
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(newUserInfo);
         mockMvc.perform(requestBuilder)
@@ -213,7 +318,10 @@ public class UserTests {
                 "  \"username\": \"username\"\n" +
                 "}";
 
+        String token = "Bearer " + getUserChangedToken();
+
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/user/update")
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(newUserInfo);
         mockMvc.perform(requestBuilder)
@@ -242,7 +350,10 @@ public class UserTests {
                 "  \"username\": \"username\"\n" +
                 "}";
 
+        String token = "Bearer " + getUserChangedToken();
+
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/user/update")
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(newUserInfo);
         mockMvc.perform(requestBuilder)

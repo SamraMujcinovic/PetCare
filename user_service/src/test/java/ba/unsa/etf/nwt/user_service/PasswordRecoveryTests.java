@@ -27,7 +27,7 @@ public class PasswordRecoveryTests {
     void GetSecurityQuestionForRecoveryPasswordSuccess() throws Exception{
 
         String input = "{\n" +
-                "  \"email\": \"alakovic1@etf.unsa.ba\"\n" +
+                "  \"email\": \"ahrustic2@etf.unsa.ba\"\n" +
                 "}";
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/recovery/securityquestion")
@@ -105,9 +105,9 @@ public class PasswordRecoveryTests {
 
         String input = "{\n" +
                 "  \"answer\": {\n" +
-                "    \"text\": \"Sarajevo\"\n" +
+                "    \"text\": \"Zenica\"\n" +
                 "  },\n" +
-                "  \"email\": \"alakovic1@etf.unsa.ba\"\n" +
+                "  \"email\": \"ahrustic2@etf.unsa.ba\"\n" +
                 "}";
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/recovery/answerQuestion")
@@ -130,7 +130,7 @@ public class PasswordRecoveryTests {
                 "  \"answer\": {\n" +
                 "    \"text\": \"odgovor\"\n" +
                 "  },\n" +
-                "  \"email\": \"alakovic1@etf.unsa.ba\"\n" +
+                "  \"email\": \"ahrustic2@etf.unsa.ba\"\n" +
                 "}";
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/recovery/answerQuestion")
@@ -212,9 +212,9 @@ public class PasswordRecoveryTests {
 
         String input = "{\n" +
                 "  \"answer\": {\n" +
-                "    \"text\": \"Sarajevo\"\n" +
+                "    \"text\": \"Zenica\"\n" +
                 "  },\n" +
-                "  \"email\": \"alakovic1@etf.unsa.ba\",\n" +
+                "  \"email\": \"ahrustic2@etf.unsa.ba\",\n" +
                 "  \"newPassword\": \"newPassword1&\"\n" +
                 "}";
 
@@ -238,7 +238,7 @@ public class PasswordRecoveryTests {
                 "  \"answer\": {\n" +
                 "    \"text\": \"odgovor\"\n" +
                 "  },\n" +
-                "  \"email\": \"alakovic1@etf.unsa.ba\",\n" +
+                "  \"email\": \"ahrustic2@etf.unsa.ba\",\n" +
                 "  \"newPassword\": \"newPassword1&\"\n" +
                 "}";
 

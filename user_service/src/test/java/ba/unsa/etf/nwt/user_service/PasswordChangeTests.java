@@ -2,13 +2,16 @@ package ba.unsa.etf.nwt.user_service;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.json.JacksonJsonParser;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -23,14 +26,55 @@ public class PasswordChangeTests {
     @Autowired
     private MockMvc mockMvc;
 
+    private void addUser() throws Exception{
+        Long questionId = 1L;
+
+        String input = "{\n" +
+                "  \"answer\": {\n" +
+                "    \"text\": \"odg\"\n" +
+                "  },\n" +
+                "  \"email\": \"newEMail@etf.unsa.ba\",\n" +
+                "  \"name\": \"FirstName\",\n" +
+                "  \"password\": \"Password1234!!\",\n" +
+                "  \"surname\": \"LastName\",\n" +
+                "  \"username\": \"newUsername\"\n" +
+                "}";
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/api/auth/register/{questionId}", questionId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(input);
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().is2xxSuccessful());
+    }
+
+    private String getToken() throws Exception {
+        String input = "{\n" +
+                "  \"password\": \"Password1234!!\",\n" +
+                "  \"usernameOrEmail\": \"newUsername\"\n" +
+                "}";
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/api/auth/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(input);
+        ResultActions result  = mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk());
+
+        String resultString = result.andReturn().getResponse().getContentAsString();
+        JacksonJsonParser jsonParser = new JacksonJsonParser();
+        return jsonParser.parseMap(resultString).get("accessToken").toString();
+    }
+
     @Test
     void GetSecurityQuestionForChangePasswordSuccess() throws Exception{
 
         String input = "{\n" +
-                "  \"email\": \"alakovic1@etf.unsa.ba\"\n" +
+                "  \"email\": \"newEMail@etf.unsa.ba\"\n" +
                 "}";
 
+        String token = "Bearer " + getToken();
+
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/change/securityquestion")
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(input);
         mockMvc.perform(requestBuilder)
@@ -57,7 +101,10 @@ public class PasswordChangeTests {
                 "  \"email\": \"alakovic1\"\n" +
                 "}";
 
+        String token = "Bearer " + getToken();
+
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/change/securityquestion")
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(input);
         mockMvc.perform(requestBuilder)
@@ -82,7 +129,10 @@ public class PasswordChangeTests {
                 "  \"email\": \"alakovic@etf.unsa.ba\"\n" +
                 "}";
 
+        String token = "Bearer " + getToken();
+
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/change/securityquestion")
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(input);
         mockMvc.perform(requestBuilder)
@@ -105,12 +155,15 @@ public class PasswordChangeTests {
 
         String input = "{\n" +
                 "  \"answer\": {\n" +
-                "    \"text\": \"Sarajevo\"\n" +
+                "    \"text\": \"odg\"\n" +
                 "  },\n" +
-                "  \"email\": \"alakovic1@etf.unsa.ba\"\n" +
+                "  \"email\": \"newEMail@etf.unsa.ba\"\n" +
                 "}";
 
+        String token = "Bearer " + getToken();
+
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/change/answerQuestion")
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(input);
         mockMvc.perform(requestBuilder)
@@ -130,10 +183,13 @@ public class PasswordChangeTests {
                 "  \"answer\": {\n" +
                 "    \"text\": \"odgovor\"\n" +
                 "  },\n" +
-                "  \"email\": \"alakovic1@etf.unsa.ba\"\n" +
+                "  \"email\": \"newEMail@etf.unsa.ba\"\n" +
                 "}";
 
+        String token = "Bearer " + getToken();
+
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/change/answerQuestion")
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(input);
         mockMvc.perform(requestBuilder)
@@ -161,7 +217,11 @@ public class PasswordChangeTests {
                 "  \"email\": \"alakovic1\"\n" +
                 "}";
 
+        addUser();
+        String token = "Bearer " + getToken();
+
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/change/answerQuestion")
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(input);
         mockMvc.perform(requestBuilder)
@@ -189,7 +249,10 @@ public class PasswordChangeTests {
                 "  \"email\": \"email3333@etf.unsa.ba\"\n" +
                 "}";
 
+        String token = "Bearer " + getToken();
+
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/change/answerQuestion")
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(input);
         mockMvc.perform(requestBuilder)
@@ -212,14 +275,17 @@ public class PasswordChangeTests {
 
         String input = "{\n" +
                 "  \"answer\": {\n" +
-                "    \"text\": \"Passat\"\n" +
+                "    \"text\": \"odg\"\n" +
                 "  },\n" +
-                "  \"email\": \"smujcinovi1@etf.unsa.ba\",\n" +
+                "  \"email\": \"newEMail@etf.unsa.ba\",\n" +
                 "  \"newPassword\": \"newPass111&\",\n" +
-                "  \"oldPassword\": \"Password234?\"\n" +
+                "  \"oldPassword\": \"Password1234!!\"\n" +
                 "}";
 
+        String token = "Bearer " + getToken();
+
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/change/newPassword")
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(input);
         mockMvc.perform(requestBuilder)
@@ -239,12 +305,15 @@ public class PasswordChangeTests {
                 "  \"answer\": {\n" +
                 "    \"text\": \"odgovor\"\n" +
                 "  },\n" +
-                "  \"email\": \"alakovic1@etf.unsa.ba\",\n" +
+                "  \"email\": \"newEMail@etf.unsa.ba\",\n" +
                 "  \"newPassword\": \"newPass1?\",\n" +
-                "  \"oldPassword\": \"Password123!?\"\n" +
+                "  \"oldPassword\": \"Password1234!!\"\n" +
                 "}";
 
+        String token = "Bearer " + getToken();
+
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/change/newPassword")
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(input);
         mockMvc.perform(requestBuilder)
@@ -274,7 +343,10 @@ public class PasswordChangeTests {
                 "  \"oldPassword\": \"password1\"\n" +
                 "}";
 
+        String token = "Bearer " + getToken();
+
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/change/newPassword")
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(input);
         mockMvc.perform(requestBuilder)
@@ -305,7 +377,10 @@ public class PasswordChangeTests {
                 "  \"oldPassword\": \"password1\"\n" +
                 "}";
 
+        String token = "Bearer " + getToken();
+
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/change/newPassword")
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(input);
         mockMvc.perform(requestBuilder)
@@ -328,14 +403,17 @@ public class PasswordChangeTests {
 
         String input = "{\n" +
                 "  \"answer\": {\n" +
-                "    \"text\": \"odgovor\"\n" +
+                "    \"text\": \"odg\"\n" +
                 "  },\n" +
-                "  \"email\": \"email@etf.unsa.ba\",\n" +
+                "  \"email\": \"newEMail@etf.unsa.ba\",\n" +
                 "  \"newPassword\": \"\",\n" +
                 "  \"oldPassword\": \"password1\"\n" +
                 "}";
 
+        String token = "Bearer " + getToken();
+
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/change/newPassword")
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(input);
         mockMvc.perform(requestBuilder)
@@ -360,14 +438,17 @@ public class PasswordChangeTests {
 
         String input = "{\n" +
                 "  \"answer\": {\n" +
-                "    \"text\": \"Sarajevo\"\n" +
+                "    \"text\": \"odg\"\n" +
                 "  },\n" +
-                "  \"email\": \"alakovic1@etf.unsa.ba\",\n" +
+                "  \"email\": \"newEMail@etf.unsa.ba\",\n" +
                 "  \"newPassword\": \"Pass123?\",\n" +
                 "  \"oldPassword\": \"password1\"\n" +
                 "}";
 
+        String token = "Bearer " + getToken();
+
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/change/newPassword")
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(input);
         mockMvc.perform(requestBuilder)
