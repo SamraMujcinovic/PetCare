@@ -1,0 +1,39 @@
+zuul:
+  routes:
+    user_service:
+      path: /user_service_api/**
+      serviceId: USER_SERVICE
+    comment_service:
+      path: /comment_service_api/**
+      serviceId: COMMENT_SERVICE
+    adopt_service:
+      path: /adopt_service_api/**
+      serviceId: ADOPT_SERVICE
+    notification_service:
+      path: /notification_service_api/**
+      serviceId: NOTIFICATION_SERVICE
+    pet_category_service:
+      path: /pet_category_service_api/**
+      serviceId: PET_CATEGORY_SERVICE
+
+server:
+  port: 8088
+
+spring:
+  application:
+    name: api_gateway
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+# Increase the Hystrix timeout to 10s (for all)
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 10000
