@@ -7,6 +7,8 @@ import ba.unsa.etf.nwt.comment_service.model.Comment;
 import ba.unsa.etf.nwt.comment_service.model.sectionRole.SectionRoleName;
 import ba.unsa.etf.nwt.comment_service.repository.CommentRepository;
 import ba.unsa.etf.nwt.comment_service.response.ResponseMessage;
+import ba.unsa.etf.nwt.comment_service.security.CurrentUser;
+import ba.unsa.etf.nwt.comment_service.security.UserPrincipal;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -41,7 +43,7 @@ public class CommentService {
         }
     }
 
-    public ResponseMessage addComment(Comment comment, Long mainRoleId) {
+    public ResponseMessage addComment(Comment comment, Long mainRoleId, @CurrentUser UserPrincipal currentUser) {
 
         RestTemplate restTemplate = new RestTemplate();
         SectionRoleName roleName = SectionRoleName.ROLE_PET;
@@ -54,9 +56,12 @@ public class CommentService {
                 comment.setRoles(mainRoleService.getRoleByName(SectionRoleName.ROLE_CATEGORY));
             }
             else comment.setRoles(mainRoleService.getRoleByName(SectionRoleName.ROLE_PET));
-            String username = restTemplate.getForObject(communicationsService.getUri("user_service")
-                    + "/user/me/username", String.class);
-            comment.setUsername(username);
+            /*String username = restTemplate.getForObject(communicationsService.getUri("user_service")
+                    + "/user/me/username", String.class);*/
+            //comment.setUsername(username);
+            comment.setUsername(currentUser.getUsername());
+
+            //System.out.println("USERNAMEEE " + currentUser.getUsername());
         }
         catch (RuntimeException re){
             throw new WrongInputException("Comment isn't added!!");

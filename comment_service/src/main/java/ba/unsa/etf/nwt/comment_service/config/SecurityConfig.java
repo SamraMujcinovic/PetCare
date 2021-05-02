@@ -1,9 +1,9 @@
-package ba.unsa.etf.nwt.user_service.config;
+package ba.unsa.etf.nwt.comment_service.config;
 
-import ba.unsa.etf.nwt.user_service.exception.CustomAccessDeniedHandler;
-import ba.unsa.etf.nwt.user_service.security.CustomUserDetailsService;
-import ba.unsa.etf.nwt.user_service.security.JwtAuthenticationEntryPoint;
-import ba.unsa.etf.nwt.user_service.security.JwtAuthenticationFilter;
+import ba.unsa.etf.nwt.comment_service.exception.CustomAccessDeniedHandler;
+import ba.unsa.etf.nwt.comment_service.security.CustomUserDetailsService;
+import ba.unsa.etf.nwt.comment_service.security.JwtAuthenticationEntryPoint;
+import ba.unsa.etf.nwt.comment_service.security.JwtAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -90,11 +90,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/**/*.css",
                         "/**/*.js")
                 .permitAll()
-                .antMatchers("/api/auth/**", "/swagger-ui.html", "/swagger-resources/**", "/v2/**", "/webjars/**", "/recovery/**")
+                .antMatchers("/swagger-ui.html", "/swagger-resources/**", "/v2/**", "/webjars/**")
                 .permitAll()
-                .antMatchers("/user/usernameCheck", "/user/emailCheck")
-                .permitAll()
-                .antMatchers(HttpMethod.GET, "/questions", "/eureka/**", "/user/me/username", "/user/{username}", "/user/me/id", "/user/me/role", "/user/me/role", "/auth/load/usernameEmail/{emailOrUsername}", "/auth/load/id/{id}")
+                .antMatchers(HttpMethod.GET, "/comment", "/eureka/**")
                 .permitAll()
                 .antMatchers(HttpMethod.POST)
                 .permitAll()

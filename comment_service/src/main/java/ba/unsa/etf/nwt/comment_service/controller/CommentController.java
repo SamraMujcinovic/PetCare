@@ -2,6 +2,8 @@ package ba.unsa.etf.nwt.comment_service.controller;
 
 import ba.unsa.etf.nwt.comment_service.model.Comment;
 import ba.unsa.etf.nwt.comment_service.response.ResponseMessage;
+import ba.unsa.etf.nwt.comment_service.security.CurrentUser;
+import ba.unsa.etf.nwt.comment_service.security.UserPrincipal;
 import ba.unsa.etf.nwt.comment_service.service.CommentService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -20,8 +22,8 @@ public class CommentController {
     }
 
     @PostMapping("/comment/{mainRoleId}")
-    public ResponseMessage addComment(@Valid @RequestBody Comment comment, @PathVariable Long mainRoleId) {
-            return commentService.addComment(comment, mainRoleId);
+    public ResponseMessage addComment(@Valid @RequestBody Comment comment, @PathVariable Long mainRoleId, @CurrentUser UserPrincipal currentUser) {
+            return commentService.addComment(comment, mainRoleId, currentUser);
     }
 
     @GetMapping("/comment/{commentID}")
