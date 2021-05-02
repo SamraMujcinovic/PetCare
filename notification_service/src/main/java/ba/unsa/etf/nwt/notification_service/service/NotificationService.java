@@ -5,6 +5,8 @@ import ba.unsa.etf.nwt.notification_service.exception.WrongInputException;
 import ba.unsa.etf.nwt.notification_service.model.Notification;
 import ba.unsa.etf.nwt.notification_service.repository.NotificationRepository;
 import ba.unsa.etf.nwt.notification_service.response.ResponseMessage;
+import ba.unsa.etf.nwt.notification_service.security.CurrentUser;
+import ba.unsa.etf.nwt.notification_service.security.UserPrincipal;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -26,12 +28,13 @@ public class NotificationService {
         return notificationRepository.findAll();
     }
 
-    public ResponseMessage addNotification(Notification notification) {
+    public ResponseMessage addNotification(Notification notification, @CurrentUser UserPrincipal currentUser) {
         notification.setCreatedAt(new Date());
         try {
             RestTemplate restTemplate = new RestTemplate();
-            Long userId = restTemplate.getForObject(communicationsService.getUri("user_service") + "/user/me/id", Long.class);
-            notification.setUserID(userId);
+            //Long userId = restTemplate.getForObject(communicationsService.getUri("user_service") + "/user/me/id", Long.class);
+            //notification.setUserID(userId);
+            notification.setUserID(currentUser.getId());
             notificationRepository.save(notification);
             return new ResponseMessage(true, HttpStatus.OK,"Notification added successfully!!");
         }

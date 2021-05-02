@@ -57,6 +57,11 @@ public class CommunicationsController {
         return communicationsService.getUri(applicationName);
     }
 
+    @GetMapping("/accessDenied")
+    public void accessDenied(){
+        throw new ResourceNotFoundException("User with this role is not authorized to access this route!");
+    }
+
     //vraca id trenutnog peta
     @GetMapping("/current/pet/petID/{id}")
     public Long getCurrentPetID(@NotNull @PathVariable Long id){

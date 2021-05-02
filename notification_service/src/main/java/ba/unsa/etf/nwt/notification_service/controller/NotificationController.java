@@ -2,6 +2,8 @@ package ba.unsa.etf.nwt.notification_service.controller;
 
 import ba.unsa.etf.nwt.notification_service.model.Notification;
 import ba.unsa.etf.nwt.notification_service.response.ResponseMessage;
+import ba.unsa.etf.nwt.notification_service.security.CurrentUser;
+import ba.unsa.etf.nwt.notification_service.security.UserPrincipal;
 import ba.unsa.etf.nwt.notification_service.service.NotificationService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +25,8 @@ public class NotificationController {
     }
 
     @PostMapping("/notifications")
-    public ResponseMessage addNotifications(@Valid @RequestBody Notification notification) {
-        return notificationService.addNotification(notification);
+    public ResponseMessage addNotifications(@Valid @RequestBody Notification notification, @CurrentUser UserPrincipal currentUser) {
+        return notificationService.addNotification(notification, currentUser);
     }
 
     @GetMapping("/notifications/user")
