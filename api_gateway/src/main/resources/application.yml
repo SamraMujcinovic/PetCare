@@ -29,11 +29,14 @@ management:
       exposure:
         include: "*"
 
-# Increase the Hystrix timeout to 10s (for all)
+# Increase the Hystrix timeout to 5s (for all)
 hystrix:
   command:
     default:
       execution:
         isolation:
           thread:
-            timeoutInMilliseconds: 10000
+            timeoutInMilliseconds: 5000
+
+app:
+  jwtSecret: "SecretKeyForJWTs"

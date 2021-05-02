@@ -16,34 +16,38 @@ public class CategoryController {
 
     private final CategoryService categoryService;
 
-
+    //javna
     @GetMapping("/categories")
     public List<Category> getCategories(){
         return categoryService.getCategories();
     }
 
-
+    //zast
     @GetMapping("/category/{id}")
     public Category getCategory(@NotNull @PathVariable Long id){
         return categoryService.getCategory(id);
     }
 
+    //svi
     @GetMapping("/category/byName")
     public Category getCategoryByName(@NotNull @RequestParam String name){
         return categoryService.getCategoryByName(name);
     }
 
+    //admin
     @PostMapping("/category")
     public ResponseMessage addCategory(@Valid @RequestBody Category category){
 
         return categoryService.addCategory(category);
     }
 
+    //admin
     @DeleteMapping("/category")
     public ResponseMessage deleteCategory(@NotNull @RequestParam Long id){
         return categoryService.deleteCategory(id);
     }
 
+    //admin
     @PutMapping("/category/update/{id}")
     public Category updateCategory(@NotNull @PathVariable Long id, @Valid @RequestBody Category category){
         return categoryService.updateCategory(id, category);
