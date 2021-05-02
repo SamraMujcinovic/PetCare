@@ -1,9 +1,9 @@
-package ba.unsa.etf.nwt.comment_service.config;
+package ba.unsa.etf.nwt.adopt_service.config;
 
-import ba.unsa.etf.nwt.comment_service.exception.CustomAccessDeniedHandler;
-import ba.unsa.etf.nwt.comment_service.security.CustomUserDetailsService;
-import ba.unsa.etf.nwt.comment_service.security.JwtAuthenticationEntryPoint;
-import ba.unsa.etf.nwt.comment_service.security.JwtAuthenticationFilter;
+import ba.unsa.etf.nwt.adopt_service.exception.CustomAccessDeniedHandler;
+import ba.unsa.etf.nwt.adopt_service.security.CustomUserDetailsService;
+import ba.unsa.etf.nwt.adopt_service.security.JwtAuthenticationEntryPoint;
+import ba.unsa.etf.nwt.adopt_service.security.JwtAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -92,7 +92,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/swagger-ui.html", "/swagger-resources/**", "/v2/**", "/webjars/**")
                 .permitAll()
-                .antMatchers(HttpMethod.GET, "/comment", "/eureka/**", "/reply")
+                .antMatchers(HttpMethod.GET, "/eureka/**", "/adoption-request")
                 .permitAll()
                 .antMatchers(HttpMethod.POST)
                 .permitAll()

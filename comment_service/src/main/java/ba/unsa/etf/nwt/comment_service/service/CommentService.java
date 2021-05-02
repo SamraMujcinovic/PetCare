@@ -67,7 +67,7 @@ public class CommentService {
             throw new WrongInputException("Comment isn't added!!");
         }
         catch (Exception e){
-            throw new ResourceNotFoundException("Can't connect to user_service!!");
+            throw new ResourceNotFoundException("Current user not found!!");
         }
         try {
             if (roleName == SectionRoleName.ROLE_PET) {

@@ -3,6 +3,8 @@ package ba.unsa.etf.nwt.adopt_service.controller;
 import ba.unsa.etf.nwt.adopt_service.model.AddPetRequest;
 import ba.unsa.etf.nwt.adopt_service.request.PetForAdoptRequest;
 import ba.unsa.etf.nwt.adopt_service.response.ResponseMessage;
+import ba.unsa.etf.nwt.adopt_service.security.CurrentUser;
+import ba.unsa.etf.nwt.adopt_service.security.UserPrincipal;
 import ba.unsa.etf.nwt.adopt_service.service.AddPetRequestService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -26,8 +28,8 @@ public class AddPetRequestController {
     }*/
     //izmijenjeni oblik post metode
    @PostMapping("/eureka/add-pet-request")
-   public ResponseMessage addAddPetRequest(@Valid @RequestBody PetForAdoptRequest addPetRequest) {
-       return addPetRequestService.addAddPetRequest(addPetRequest);
+   public ResponseMessage addAddPetRequest(@Valid @RequestBody PetForAdoptRequest addPetRequest, @CurrentUser UserPrincipal currentUser) {
+       return addPetRequestService.addAddPetRequest(addPetRequest, currentUser);
    }
     @PostMapping("/add-pet-request")
     public ResponseMessage addAddPetRequestLocal(@Valid @RequestBody AddPetRequest addPetRequest) {

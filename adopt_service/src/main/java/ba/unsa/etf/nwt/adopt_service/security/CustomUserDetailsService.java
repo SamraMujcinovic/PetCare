@@ -1,8 +1,8 @@
-package ba.unsa.etf.nwt.comment_service.security;
+package ba.unsa.etf.nwt.adopt_service.security;
 
-import ba.unsa.etf.nwt.comment_service.exception.ResourceNotFoundException;
-import ba.unsa.etf.nwt.comment_service.security.user_model.User;
-import ba.unsa.etf.nwt.comment_service.service.CommunicationsService;
+import ba.unsa.etf.nwt.adopt_service.exception.ResourceNotFoundException;
+import ba.unsa.etf.nwt.adopt_service.security.user_model.User;
+import ba.unsa.etf.nwt.adopt_service.service.CommunicationsService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

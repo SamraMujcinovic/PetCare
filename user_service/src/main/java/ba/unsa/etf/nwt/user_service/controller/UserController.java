@@ -56,6 +56,7 @@ public class UserController {
     //user and admin
     @GetMapping("/user/me")
     public UserProfileResponse getCurrentUser(@CurrentUser UserPrincipal currentUser){
+        if(currentUser == null) throw new ResourceNotFoundException("Current User not found!");
         return new UserProfileResponse(currentUser.getName(), currentUser.getSurname(), currentUser.getUsername(), currentUser.getEmail());
     }
 
