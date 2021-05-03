@@ -15,6 +15,7 @@ zuul:
     pet_category_service:
       path: /pet_category_service_api/**
       serviceId: PET_CATEGORY_SERVICE
+  sensitive-headers:
 
 server:
   port: 8088
