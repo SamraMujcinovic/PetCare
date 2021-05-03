@@ -104,17 +104,6 @@ public class CommunicationsController {
                         new ResourceNotFoundException("User not found with username or email : " + usernameOrEmail)
                 );
 
-        /*LoadUserDetailsResponse loadUserDetailsResponse = new LoadUserDetailsResponse();
-        loadUserDetailsResponse.setId(user.getId());
-        loadUserDetailsResponse.setName(user.getName());
-        loadUserDetailsResponse.setSurname(user.getSurname());
-        loadUserDetailsResponse.setEmail(user.getEmail());
-        loadUserDetailsResponse.setUsername(user.getUsername());
-        loadUserDetailsResponse.setPassword(user.getPassword());
-        loadUserDetailsResponse.setRoles(user.getRoles());
-
-        return loadUserDetailsResponse;*/
-
         return new LoadUserDetailsResponse(user.getId(), user.getName(), user.getSurname(), user.getEmail(), user.getUsername(), user.getPassword(), user.getRoles());
     }
 
@@ -123,17 +112,6 @@ public class CommunicationsController {
         User user = userService.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("User not found with id : " + id)
         );
-
-        /*LoadUserDetailsResponse loadUserDetailsResponse = new LoadUserDetailsResponse();
-        loadUserDetailsResponse.setId(user.getId());
-        loadUserDetailsResponse.setName(user.getName());
-        loadUserDetailsResponse.setSurname(user.getSurname());
-        loadUserDetailsResponse.setEmail(user.getEmail());
-        loadUserDetailsResponse.setUsername(user.getUsername());
-        loadUserDetailsResponse.setPassword(user.getPassword());
-        loadUserDetailsResponse.setRoles(user.getRoles());
-
-        return loadUserDetailsResponse;*/
 
         return new LoadUserDetailsResponse(user.getId(), user.getName(), user.getSurname(), user.getEmail(), user.getUsername(), user.getPassword(), user.getRoles());
     }
