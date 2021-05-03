@@ -15,7 +15,7 @@ zuul:
     pet_category_service:
       path: /pet_category_service_api/**
       serviceId: PET_CATEGORY_SERVICE
-  sensitive-headers:
+  sensitive-headers: Cookie, Set-Cookie
 
 server:
   port: 8088
@@ -30,14 +30,11 @@ management:
       exposure:
         include: "*"
 
-# Increase the Hystrix timeout to 5s (for all)
+# Increase the Hystrix timeout (for all)
 hystrix:
   command:
     default:
       execution:
         isolation:
           thread:
-            timeoutInMilliseconds: 5000
-
-app:
-  jwtSecret: "SecretKeyForJWTs"
+            timeoutInMilliseconds: ...
