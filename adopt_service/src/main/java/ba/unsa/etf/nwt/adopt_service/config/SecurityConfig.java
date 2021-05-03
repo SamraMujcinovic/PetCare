@@ -92,7 +92,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/swagger-ui.html", "/swagger-resources/**", "/v2/**", "/webjars/**")
                 .permitAll()
-                .antMatchers(HttpMethod.GET, "/eureka/**", "/adoption-request")
+                .antMatchers(HttpMethod.GET, "/eureka/**")
                 .permitAll()
                 .antMatchers(HttpMethod.POST)
                 .permitAll()

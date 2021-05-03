@@ -6,12 +6,10 @@ import ba.unsa.etf.nwt.pet_category_service.model.Pet;
 import ba.unsa.etf.nwt.pet_category_service.model.Rase;
 import ba.unsa.etf.nwt.pet_category_service.request.PetRequest;
 import ba.unsa.etf.nwt.pet_category_service.response.EurekaResponse;
-import ba.unsa.etf.nwt.pet_category_service.response.ResponseMessage;
 import ba.unsa.etf.nwt.pet_category_service.service.CommunicationsService;
 import ba.unsa.etf.nwt.pet_category_service.service.PetService;
 import ba.unsa.etf.nwt.pet_category_service.service.RaseService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.AutoConfigurationPackage;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.web.bind.annotation.*;
@@ -57,7 +55,7 @@ public class CommunicationsController {
         return communicationsService.getUri(applicationName);
     }
 
-    @GetMapping("/accessDenied")
+    @GetMapping("/api/auth/accessDenied")
     public void accessDenied(){
         throw new ResourceNotFoundException("User with this role is not authorized to access this route!");
     }
@@ -114,6 +112,5 @@ public class CommunicationsController {
         }
         return petID;
     }
-
 
 }

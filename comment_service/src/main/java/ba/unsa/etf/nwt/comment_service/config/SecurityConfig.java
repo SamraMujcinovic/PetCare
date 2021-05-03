@@ -92,7 +92,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/swagger-ui.html", "/swagger-resources/**", "/v2/**", "/webjars/**")
                 .permitAll()
-                .antMatchers(HttpMethod.GET, "/comment", "/eureka/**", "/reply")
+                .antMatchers(HttpMethod.GET, "/comment", "/eureka/**", "/comment/{commentID}",
+                        "/comment/category/{roleType}/{categoryID}", "/reply", "/reply/comment/{commentID}")
                 .permitAll()
                 .antMatchers(HttpMethod.POST)
                 .permitAll()

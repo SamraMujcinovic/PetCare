@@ -6,6 +6,7 @@ import ba.unsa.etf.nwt.pet_category_service.service.CategoryService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -16,38 +17,35 @@ public class CategoryController {
 
     private final CategoryService categoryService;
 
-    //javna
     @GetMapping("/categories")
     public List<Category> getCategories(){
         return categoryService.getCategories();
     }
 
-    //zast
     @GetMapping("/category/{id}")
     public Category getCategory(@NotNull @PathVariable Long id){
         return categoryService.getCategory(id);
     }
 
-    //svi
     @GetMapping("/category/byName")
     public Category getCategoryByName(@NotNull @RequestParam String name){
         return categoryService.getCategoryByName(name);
     }
 
-    //admin
+    @RolesAllowed("ROLE_ADMIN")
     @PostMapping("/category")
     public ResponseMessage addCategory(@Valid @RequestBody Category category){
 
         return categoryService.addCategory(category);
     }
 
-    //admin
+    @RolesAllowed("ROLE_ADMIN")
     @DeleteMapping("/category")
     public ResponseMessage deleteCategory(@NotNull @RequestParam Long id){
         return categoryService.deleteCategory(id);
     }
 
-    //admin
+    @RolesAllowed("ROLE_ADMIN")
     @PutMapping("/category/update/{id}")
     public Category updateCategory(@NotNull @PathVariable Long id, @Valid @RequestBody Category category){
         return categoryService.updateCategory(id, category);
