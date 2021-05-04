@@ -27,6 +27,9 @@ public class GRPCInterceptor implements HandlerInterceptor {
         else if(response.getStatus() == 401){
             responseType = "ERROR - AccessDenied";
         }
+        else if(response.getStatus() == 403){
+            responseType = "ERROR - AccessDenied - Forbidden";
+        }
         else {
             responseType = "ERROR - WrongInput/Validation";
         }
