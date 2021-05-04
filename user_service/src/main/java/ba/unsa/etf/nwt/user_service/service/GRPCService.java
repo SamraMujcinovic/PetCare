@@ -35,7 +35,7 @@ public class GRPCService {
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
 
-    public void save(String actionType, String resourceName, String responseType) {
+    public void save(String actionType, String resourceName, String responseType, String username) {
         try {
             ManagedChannel channel = ManagedChannelBuilder.forAddress(address, port)
                     .usePlaintext()
@@ -48,6 +48,7 @@ public class GRPCService {
                     .setActionType(actionType)
                     .setResourceName(resourceName)
                     .setResponseType(responseType)
+                    .setUsername(username)
                     .build());
             channel.shutdown();
             //return response.getStatus();
@@ -62,8 +63,10 @@ public class GRPCService {
         String bearerToken = request.getHeader("Authorization");
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
             String token = bearerToken.substring(7, bearerToken.length());
-            UserDetails userDetails = customUserDetailsService.loadUserById(jwtTokenProvider.getUserIdFromJWT(token));
-            return userDetails.getUsername();
+            if(jwtTokenProvider.validateToken(token)) {
+                UserDetails userDetails = customUserDetailsService.loadUserById(jwtTokenProvider.getUserIdFromJWT(token));
+                return userDetails.getUsername();
+            }
         }
         return "Guest";
     }

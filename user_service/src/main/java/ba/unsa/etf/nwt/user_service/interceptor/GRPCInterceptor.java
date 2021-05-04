@@ -16,8 +16,6 @@ public class GRPCInterceptor implements HandlerInterceptor {
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception exception) throws Exception {
 
-        System.out.println("User " + grpcService.getUsernameFromToken(request));
-
         String responseType = "";
 
         if(response.getStatus() == 200){
@@ -33,17 +31,19 @@ public class GRPCInterceptor implements HandlerInterceptor {
             responseType = "ERROR - WrongInput/Validation";
         }
 
+        String currentUserUsername = grpcService.getUsernameFromToken(request);
+
         if(!request.getRequestURI().equals("/api/auth/accessDenied")) {
             try {
                 //ne racunaj swagger requeste
                 if (!request.getRequestURI().substring(0, 8).equals("/swagger") &&
                         !request.getRequestURI().substring(0, 8).equals("/webjars")) {
 
-                    grpcService.save(request.getMethod(), request.getRequestURI(), responseType);
+                    grpcService.save(request.getMethod(), request.getRequestURI(), responseType, currentUserUsername);
                 }
             } catch (Exception e) {
                 //za slucajeve kada je duzina requesta manja od 8
-                grpcService.save(request.getMethod(), request.getRequestURI(), responseType);
+                grpcService.save(request.getMethod(), request.getRequestURI(), responseType, currentUserUsername);
             }
         }
     }
