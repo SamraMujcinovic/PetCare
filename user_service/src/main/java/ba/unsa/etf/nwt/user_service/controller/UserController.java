@@ -63,6 +63,7 @@ public class UserController {
     @PostMapping("/user/update")
     public ResponseMessage updateUserProfile(@Valid @RequestBody UserProfileRequest userProfileRequest, @CurrentUser UserPrincipal currentUser){
 
+        //korisnici mogu updateovat samo vlastiti profil
         if(!currentUser.getEmail().equals(userProfileRequest.getEmail())){
             throw new WrongInputException("Email not the same as current users!");
         }
@@ -81,6 +82,7 @@ public class UserController {
     @DeleteMapping("/user/delete")
     public ResponseMessage deleteUser(@Valid @RequestBody UserRequest userRequest, @CurrentUser UserPrincipal currentUser){
 
+        //korisnici mogu obrisati samo vlastiti account
         if(!currentUser.getEmail().equals(userRequest.getEmail())){
             throw new WrongInputException("Email not the same as current users!");
         }
