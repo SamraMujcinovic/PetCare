@@ -16,9 +16,6 @@ public class GRPCInterceptor implements HandlerInterceptor {
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception exception) throws Exception {
 
-        System.out.println(request.getRequestURI());
-        System.out.println(response.getStatus());
-
         String responseType = "";
 
         if(response.getStatus() == 200){
@@ -28,10 +25,10 @@ public class GRPCInterceptor implements HandlerInterceptor {
             responseType = "ERROR - ResourceNotFound";
         }
         else if(response.getStatus() == 401){
-            responseType = "ERROR - AccessDenied";
+            responseType = "ERROR - Unauthorized";
         }
         else if(response.getStatus() == 403){
-            responseType = "ERROR - AccessDenied - Forbidden";
+            responseType = "ERROR - AccessDenied (Forbidden)";
         }
         else {
             responseType = "ERROR - WrongInput/Validation";
@@ -39,18 +36,16 @@ public class GRPCInterceptor implements HandlerInterceptor {
 
         String currentUserUsername = grpcService.getUsernameFromToken(request);
 
-        if(!request.getRequestURI().equals("/api/auth/accessDenied")) {
-            try {
-                //ne racunaj swagger requeste
-                if (!request.getRequestURI().substring(0, 8).equals("/swagger") &&
-                        !request.getRequestURI().substring(0, 8).equals("/webjars")) {
+        try {
+            //ne racunaj swagger requeste
+            if (!request.getRequestURI().substring(0, 8).equals("/swagger") &&
+                    !request.getRequestURI().substring(0, 8).equals("/webjars")) {
 
-                    grpcService.save(request.getMethod(), request.getRequestURI(), responseType, currentUserUsername);
-                }
-            } catch (Exception e) {
-                //za slucajeve kada je duzina requesta manja od 8
                 grpcService.save(request.getMethod(), request.getRequestURI(), responseType, currentUserUsername);
             }
+        } catch (Exception e) {
+            //za slucajeve kada je duzina requesta manja od 8
+            grpcService.save(request.getMethod(), request.getRequestURI(), responseType, currentUserUsername);
         }
     }
 }
