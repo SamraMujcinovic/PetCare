@@ -34,7 +34,10 @@ public class GRPCInterceptor implements HandlerInterceptor {
             responseType = "ERROR - WrongInput/Validation";
         }
 
-        String currentUserUsername = grpcService.getUsernameFromToken(request);
+        String currentUserUsername = "Guest";
+        if(request.getUserPrincipal() != null){
+            currentUserUsername = request.getUserPrincipal().getName();
+        }
 
         try {
             //ne racunaj swagger requeste
