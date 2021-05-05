@@ -9,6 +9,8 @@ import ba.unsa.etf.nwt.comment_service.security.CurrentUser;
 import ba.unsa.etf.nwt.comment_service.security.UserPrincipal;
 import ba.unsa.etf.nwt.comment_service.service.ReplyService;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
@@ -55,12 +57,22 @@ public class ReplyController {
     @DeleteMapping("/reply/{replyID}")
     public ResponseMessage deleteReply(@PathVariable Long replyID, @CurrentUser UserPrincipal currentUser){
 
+        //pronalazak role trenutnog korisnika
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        boolean hasAdminRole = authentication.getAuthorities().stream()
+                .anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN"));
+
+        //svi admini i samo useri ciji je odgovor imaju pravo brisanja istog
+        if(hasAdminRole){
+            return replyService.deleteReply(replyID);
+        }
+
         Reply reply = replyService.findById(replyID)
                 .orElseThrow(() -> new ResourceNotFoundException("Reply not found!"));
 
         //korisnici mogu obrisati samo vlastiti odgovor
         if(!currentUser.getUsername().equals(reply.getUsername())){
-            throw new WrongInputException("This reply doesn't belong to current user!");
+            throw new WrongInputException("Current user is not admin and this reply doesn't belong to current user!");
         }
 
         return replyService.deleteReply(replyID);

@@ -78,42 +78,33 @@ public class CommunicationsController {
         return currentUser.getId();
     }
 
-    @GetMapping("/user/me/role")
-    public List<String> getCurrentRole(@CurrentUser UserPrincipal currentUser){
-        try {
-            User user = userService.findByUsername(currentUser.getUsername())
-                    .orElseThrow(() -> new ResourceNotFoundException("User not found!"));
-
-            List<String> roles = new ArrayList<>();
-
-            for (Role role : user.getRoles()) {
-                roles.add(role.getName().toString());
-            }
-
-            return roles;
-        }
-        catch(ResourceNotFoundException e){
-            return new ArrayList<>();
-        }
-    }
-
     @GetMapping("/auth/load/usernameEmail/{usernameOrEmail}")
     public LoadUserDetailsResponse loadUserByUsernameOrEmail(@PathVariable(value = "usernameOrEmail") String usernameOrEmail){
-        User user = userService.findByUsernameOrEmail(usernameOrEmail, usernameOrEmail)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("User not found with username or email : " + usernameOrEmail)
-                );
+        try {
+            User user = userService.findByUsernameOrEmail(usernameOrEmail, usernameOrEmail)
+                    .orElseThrow(() ->
+                            new ResourceNotFoundException("User not found with username or email : " + usernameOrEmail)
+                    );
 
-        return new LoadUserDetailsResponse(user.getId(), user.getName(), user.getSurname(), user.getEmail(), user.getUsername(), user.getPassword(), user.getRoles());
+            return new LoadUserDetailsResponse(user.getId(), user.getName(), user.getSurname(), user.getEmail(), user.getUsername(), user.getPassword(), user.getRoles());
+        } catch (ResourceNotFoundException e){
+            System.out.println(e.getMessage());
+        }
+        return null;
     }
 
     @GetMapping("/auth/load/id/{id}")
     public LoadUserDetailsResponse loadUserById(@PathVariable(value = "id") Long id){
-        User user = userService.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("User not found with id : " + id)
-        );
+        try {
+            User user = userService.findById(id).orElseThrow(
+                    () -> new ResourceNotFoundException("User not found with id : " + id)
+            );
 
-        return new LoadUserDetailsResponse(user.getId(), user.getName(), user.getSurname(), user.getEmail(), user.getUsername(), user.getPassword(), user.getRoles());
+            return new LoadUserDetailsResponse(user.getId(), user.getName(), user.getSurname(), user.getEmail(), user.getUsername(), user.getPassword(), user.getRoles());
+        } catch (ResourceNotFoundException e){
+            System.out.println(e.getMessage());
+        }
+        return null;
     }
 
 }

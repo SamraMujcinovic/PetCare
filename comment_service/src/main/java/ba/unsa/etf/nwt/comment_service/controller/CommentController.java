@@ -8,10 +8,13 @@ import ba.unsa.etf.nwt.comment_service.security.CurrentUser;
 import ba.unsa.etf.nwt.comment_service.security.UserPrincipal;
 import ba.unsa.etf.nwt.comment_service.service.CommentService;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 
 @AllArgsConstructor
@@ -65,12 +68,22 @@ public class CommentController {
     @DeleteMapping("/comment/{commentID}")
     public ResponseMessage deleteComment(@PathVariable Long commentID, @CurrentUser UserPrincipal currentUser){
 
+        //pronalazak role trenutnog korisnika
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        boolean hasAdminRole = authentication.getAuthorities().stream()
+                .anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN"));
+
+        //svi admini i samo useri ciji je komentar imaju pravo brisanja istog
+        if(hasAdminRole){
+            return commentService.deleteComment(commentID);
+        }
+
         Comment comment = commentService.findById(commentID)
                 .orElseThrow(() -> new ResourceNotFoundException("Comment not found!"));
 
-        //korisnici mogu obrisati samo vlastite komentare
-        if(!currentUser.getUsername().equals(comment.getUsername())){
-            throw new WrongInputException("This comment doesn't belong to current user!");
+        //korisnici mogu obrisati samo vlastiti komentar
+        if (!currentUser.getUsername().equals(comment.getUsername())) {
+            throw new WrongInputException("Current user is not admin and this comment doesn't belong to current user!");
         }
 
         return commentService.deleteComment(commentID);
