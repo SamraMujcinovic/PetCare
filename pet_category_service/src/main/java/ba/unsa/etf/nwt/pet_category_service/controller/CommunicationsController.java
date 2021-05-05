@@ -55,11 +55,6 @@ public class CommunicationsController {
         return communicationsService.getUri(applicationName);
     }
 
-    @GetMapping("/api/auth/accessDenied")
-    public void accessDenied(){
-        throw new ResourceNotFoundException("User with this role is not authorized to access this route!");
-    }
-
     //vraca id trenutnog peta
     @GetMapping("/current/pet/petID/{id}")
     public Long getCurrentPetID(@NotNull @PathVariable Long id){
@@ -99,15 +94,15 @@ public class CommunicationsController {
         return rase.getId();
     }
 
+    //todo trebalo bi ovo zastiti, pa tamo u adopt_service skontati kako i token proslijedjivati kroz resttemplate
     @PostMapping("/petID/forAdopt")
     public Long addPetForAdopt(@Valid @RequestBody PetRequest petRequest){
         Long petID;
         try{
             petID = petService.addPetForAdopt(petRequest);
-        }catch (ResourceNotFoundException e){
+        } catch (ResourceNotFoundException e){
             throw new ResourceNotFoundException(e.getMessage());
-        }
-        catch (WrongInputException ee){
+        } catch (WrongInputException ee){
             throw new WrongInputException(ee.getMessage());
         }
         return petID;

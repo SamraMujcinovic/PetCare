@@ -17,7 +17,6 @@ import java.util.List;
 @Service
 public class PetService {
     private final PetRepository petRepository;
-    private final RaseRepository raseRepository;
     private final RaseService raseService;
 
 
@@ -40,7 +39,7 @@ public class PetService {
             pet.setRase(r);
             petRepository.save(pet);
 
-            return new ResponseMessage(true, "Pet successfully added!!", HttpStatus.OK);
+            return new ResponseMessage(true, HttpStatus.OK,"Pet successfully added!!");
 /*
         }catch (NullPointerException e){
             return new Response(false, "Add the age of the pet!", HttpStatus.BAD_REQUEST);
@@ -85,16 +84,14 @@ public class PetService {
     }
 
     public Pet getPet(Long id) {
-
         Pet p = getPetById(id);
         return p;
     }
 
     public ResponseMessage deletePet(Long id) {
-
         Pet p = getPetById(id);
         petRepository.deleteById(id);
-        return new ResponseMessage(true, "Pet successfully deleted!", HttpStatus.OK);
+        return new ResponseMessage(true, HttpStatus.OK,"Pet successfully deleted!");
     }
 
     public List<Pet> findPetByName(String name) {

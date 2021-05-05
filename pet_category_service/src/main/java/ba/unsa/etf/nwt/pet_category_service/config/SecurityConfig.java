@@ -1,6 +1,5 @@
 package ba.unsa.etf.nwt.pet_category_service.config;
 
-import ba.unsa.etf.nwt.pet_category_service.exception.CustomAccessDeniedHandler;
 import ba.unsa.etf.nwt.pet_category_service.security.CustomUserDetailsService;
 import ba.unsa.etf.nwt.pet_category_service.security.JwtAuthenticationEntryPoint;
 import ba.unsa.etf.nwt.pet_category_service.security.JwtAuthenticationFilter;
@@ -18,7 +17,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
@@ -54,11 +52,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public AccessDeniedHandler accessDeniedHandler() {
-        return new CustomAccessDeniedHandler();
-    }
-
-    @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
@@ -72,9 +65,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .disable()
                 .exceptionHandling()
                 .authenticationEntryPoint(unauthorizedHandler)
-                .and()
-                .exceptionHandling()
-                .accessDeniedHandler(accessDeniedHandler())
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -90,11 +80,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/**/*.css",
                         "/**/*.js")
                 .permitAll()
-                .antMatchers("/swagger-ui.html", "/swagger-resources/**", "/v2/**", "/webjars/**")
+                .antMatchers("/swagger-ui.html", "/swagger-resources/**", "/v2/**",
+                        "/webjars/**")
                 .permitAll()
-                .antMatchers(HttpMethod.GET,"/eureka/**", "/current/pet/petID/{id}", "/current/pet/raseID/{id}", "/current/rase/raseID/{id}", "/petID/forAdopt",
-                        "/pets", "/categories", "/category/byName", "/pets/inRase", "/pets/inCategory", "/pet/byName", "/pets/name/contains", "/pets/rase/contains",
-                        "/rases", "/rases/inCategory", "/rase/byName")
+                .antMatchers(HttpMethod.GET,"/eureka/**", "/current/pet/petID/{id}",
+                        "/current/pet/raseID/{id}", "/current/rase/raseID/{id}", "/petID/forAdopt",
+                        "/pets", "/categories", "/category/byName", "/category/{id}", "/pets/inRase",
+                        "/pet/{id}", "/pets/inCategory", "/pet/byName", "/pets/name/contains",
+                        "/pets/rase/contains", "/rases", "/rases/inCategory", "/rase/{id}", "/rase/byName")
                 .permitAll()
                 .antMatchers(HttpMethod.POST)
                 .permitAll()

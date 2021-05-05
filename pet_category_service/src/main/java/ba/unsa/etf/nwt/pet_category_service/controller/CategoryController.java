@@ -35,7 +35,6 @@ public class CategoryController {
     @RolesAllowed("ROLE_ADMIN")
     @PostMapping("/category")
     public ResponseMessage addCategory(@Valid @RequestBody Category category){
-
         return categoryService.addCategory(category);
     }
 

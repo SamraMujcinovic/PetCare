@@ -54,6 +54,7 @@ public class PetController {
         return petService.getPetsRaseContainsString(substring);
     }
 
+    @RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
     @PostMapping("/pet")
     public ResponseMessage addPet(@Valid @RequestBody PetRequest petRequest){
         return petService.addPet(petRequest);
