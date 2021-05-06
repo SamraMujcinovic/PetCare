@@ -34,17 +34,17 @@ public class AddPetRequestService {
 
             AddPetRequest newRequest = new AddPetRequest();
 
-            try {
+            //try {
                 //prvo provjerimo usera
                 /*Long userID = restTemplate.getForObject(communicationsService.getUri("user_service")
                         + "/user/me/id", Long.class);*/
-                //System.out.println("USER " + currentUser.getName());
-                newRequest.setUserID(currentUser.getId());
                 //newRequest.setUserID(userID);
-            }
+            /*}
             catch (Exception e){
                 throw new ResourceNotFoundException("Current user not found!!");
-            }
+            }*/
+
+            newRequest.setUserID(currentUser.getId());
 
             try {
                 //sada prvo moramo dodati poslani pet u bazu preko rute POST u pet servisu

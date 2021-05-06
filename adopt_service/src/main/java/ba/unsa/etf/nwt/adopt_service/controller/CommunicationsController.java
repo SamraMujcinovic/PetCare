@@ -43,9 +43,4 @@ public class CommunicationsController {
         return communicationsService.getUri(applicationName);
     }
 
-    @GetMapping("/api/auth/accessDenied")
-    public void accessDenied(){
-        throw new ResourceNotFoundException("User with this role is not authorized to access this route!");
-    }
-
 }
