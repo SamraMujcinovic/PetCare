@@ -1,6 +1,5 @@
 package ba.unsa.etf.nwt.notification_service.controller;
 
-import ba.unsa.etf.nwt.notification_service.exception.ResourceNotFoundException;
 import ba.unsa.etf.nwt.notification_service.response.EurekaResponse;
 import ba.unsa.etf.nwt.notification_service.service.CommunicationsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,10 +40,5 @@ public class CommunicationsController {
     @GetMapping("/eureka/uri/{applicationName}")
     public String getURIfromService(@PathVariable String applicationName) {
         return communicationsService.getUri(applicationName);
-    }
-
-    @GetMapping("/api/auth/accessDenied")
-    public void accessDenied(){
-        throw new ResourceNotFoundException("User with this role is not authorized to access this route!");
     }
 }

@@ -22,7 +22,7 @@ public class GRPCService {
     @Value("${port: 0}")
     private int port;
 
-    public void save(String actionType, String resourceName, String responseType) {
+    public void save(String actionType, String resourceName, String responseType, String username) {
         try {
             ManagedChannel channel = ManagedChannelBuilder.forAddress(address, port)
                     .usePlaintext()
@@ -35,6 +35,7 @@ public class GRPCService {
                     .setActionType(actionType)
                     .setResourceName(resourceName)
                     .setResponseType(responseType)
+                    .setUsername(username)
                     .build());
             channel.shutdown();
             //return response.getStatus();

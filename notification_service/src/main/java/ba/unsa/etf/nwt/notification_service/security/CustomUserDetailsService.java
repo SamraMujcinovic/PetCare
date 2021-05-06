@@ -33,8 +33,9 @@ public class CustomUserDetailsService implements UserDetailsService {
             return UserPrincipal.create(user);
 
         } catch (Exception e){
-            throw new ResourceNotFoundException("Can't connect to user_service!!");
+            //throw new ResourceNotFoundException("Can't connect to user_service!!");
         }
+        return null;
     }
 
     // This method is used by JWTAuthenticationFilter
@@ -50,7 +51,8 @@ public class CustomUserDetailsService implements UserDetailsService {
             return UserPrincipal.create(user);
 
         } catch (Exception e){
-        throw new ResourceNotFoundException("Can't connect to user_service!!");
+            //throw new ResourceNotFoundException("Can't connect to user_service!!");
         }
+        return null;
     }
 }
