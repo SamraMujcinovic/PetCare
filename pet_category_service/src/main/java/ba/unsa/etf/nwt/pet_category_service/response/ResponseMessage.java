@@ -6,13 +6,13 @@ import org.springframework.http.HttpStatus;
 @Data
 public class ResponseMessage {
     private Boolean success;
-    private String message;
     private HttpStatus status;
+    private String message;
 
-    public ResponseMessage(Boolean success, String message, HttpStatus status) {
+    public ResponseMessage(Boolean success, HttpStatus status, String message) {
         this.success = success;
-        this.message = message;
         this.status = status;
+        this.message = message;
     }
 
     public ResponseMessage(ResponseMessage r){

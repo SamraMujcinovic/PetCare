@@ -1,5 +1,6 @@
 package ba.unsa.etf.nwt.adopt_service.controller;
 
+import ba.unsa.etf.nwt.adopt_service.exception.ResourceNotFoundException;
 import ba.unsa.etf.nwt.adopt_service.response.EurekaResponse;
 import ba.unsa.etf.nwt.adopt_service.service.CommunicationsService;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -16,6 +16,8 @@ import java.util.List;
 @Configuration
 @EnableSwagger2
 public class Swager2Config {
+    public static final String AUTHORIZATION_HEADER = "Authorization";
+    public static final String DEFAULT_INCLUDE_PATTERN = "/.*";
 
     @Bean
     public Docket api() {
@@ -23,7 +25,9 @@ public class Swager2Config {
                 .apis(RequestHandlerSelectors
                         .basePackage("ba.unsa.etf.nwt.pet_category_service.controller"))
                 .paths(PathSelectors.regex("/.*"))
-                .build().apiInfo(apiEndPointsInfo());
+                .build().apiInfo(apiEndPointsInfo())
+                .securityContexts(Lists.newArrayList(securityContext()))
+                .securitySchemes(Lists.newArrayList(apiKey()));
     }
     private ApiInfo apiEndPointsInfo() {
         return new ApiInfoBuilder().title("Pet Category Service Documentation")
@@ -32,6 +36,26 @@ public class Swager2Config {
                 .licenseUrl("http://www.apache.org/licenses/LICENSE-2.0.html")
                 .version("1.0.0")
                 .build();
+    }
+
+    private ApiKey apiKey() {
+        return new ApiKey("JWT", AUTHORIZATION_HEADER, "header");
+    }
+
+    private SecurityContext securityContext() {
+        return SecurityContext.builder()
+                .securityReferences(defaultAuth())
+                .forPaths(PathSelectors.regex(DEFAULT_INCLUDE_PATTERN))
+                .build();
+    }
+
+    List<SecurityReference> defaultAuth() {
+        AuthorizationScope authorizationScope
+                = new AuthorizationScope("global", "accessEverything");
+        AuthorizationScope[] authorizationScopes = new AuthorizationScope[1];
+        authorizationScopes[0] = authorizationScope;
+        return Lists.newArrayList(
+                new SecurityReference("JWT", authorizationScopes));
     }
 
 }

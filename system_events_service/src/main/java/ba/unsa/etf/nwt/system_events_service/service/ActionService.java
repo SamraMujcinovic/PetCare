@@ -23,6 +23,7 @@ public class ActionService extends ActionsServiceGrpc.ActionsServiceImplBase {
         action.setActionType(request.getActionType());
         action.setResourceName(request.getResourceName());
         action.setResponseType(request.getResponseType());
+        action.setUsername(request.getUsername());
         actionRepository.save(action);
 
         ActionsResponse response = ActionsResponse.newBuilder()

@@ -24,8 +24,19 @@ public class GRPCInterceptor implements HandlerInterceptor {
         else if(response.getStatus() == 404){
             responseType = "ERROR - ResourceNotFound";
         }
+        else if(response.getStatus() == 401){
+            responseType = "ERROR - Unauthorized";
+        }
+        else if(response.getStatus() == 403){
+            responseType = "ERROR - AccessDenied (Forbidden)";
+        }
         else {
             responseType = "ERROR - WrongInput/Validation";
+        }
+
+        String currentUserUsername = "Guest";
+        if(request.getUserPrincipal() != null){
+            currentUserUsername = request.getUserPrincipal().getName();
         }
 
         try {
@@ -33,13 +44,11 @@ public class GRPCInterceptor implements HandlerInterceptor {
             if (!request.getRequestURI().substring(0, 8).equals("/swagger") &&
                     !request.getRequestURI().substring(0, 8).equals("/webjars")) {
 
-                grpcService.save(request.getMethod(), request.getRequestURI(), responseType);
+                grpcService.save(request.getMethod(), request.getRequestURI(), responseType, currentUserUsername);
             }
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             //za slucajeve kada je duzina requesta manja od 8
-            grpcService.save(request.getMethod(), request.getRequestURI(), responseType);
+            grpcService.save(request.getMethod(), request.getRequestURI(), responseType, currentUserUsername);
         }
-
     }
 }

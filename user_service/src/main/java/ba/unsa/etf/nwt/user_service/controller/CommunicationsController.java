@@ -7,6 +7,7 @@ import ba.unsa.etf.nwt.user_service.exception.ResourceNotFoundException;
 import ba.unsa.etf.nwt.user_service.model.User;
 import ba.unsa.etf.nwt.user_service.model.roles.Role;
 import ba.unsa.etf.nwt.user_service.response.EurekaResponse;
+import ba.unsa.etf.nwt.user_service.response.LoadUserDetailsResponse;
 import ba.unsa.etf.nwt.user_service.security.CurrentUser;
 import ba.unsa.etf.nwt.user_service.security.UserPrincipal;
 import ba.unsa.etf.nwt.user_service.service.CommunicationsService;
@@ -14,6 +15,7 @@ import ba.unsa.etf.nwt.user_service.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -76,22 +78,33 @@ public class CommunicationsController {
         return currentUser.getId();
     }
 
-    @GetMapping("/user/me/role")
-    public List<String> getCurrentRole(@CurrentUser UserPrincipal currentUser){
+    @GetMapping("/auth/load/usernameEmail/{usernameOrEmail}")
+    public LoadUserDetailsResponse loadUserByUsernameOrEmail(@PathVariable(value = "usernameOrEmail") String usernameOrEmail){
         try {
-            User user = userService.findByUsername(currentUser.getUsername())
-                    .orElseThrow(() -> new ResourceNotFoundException("User not found!"));
+            User user = userService.findByUsernameOrEmail(usernameOrEmail, usernameOrEmail)
+                    .orElseThrow(() ->
+                            new ResourceNotFoundException("User not found with username or email : " + usernameOrEmail)
+                    );
 
-            List<String> roles = new ArrayList<>();
-
-            for (Role role : user.getRoles()) {
-                roles.add(role.getName().toString());
-            }
-
-            return roles;
+            return new LoadUserDetailsResponse(user.getId(), user.getName(), user.getSurname(), user.getEmail(), user.getUsername(), user.getPassword(), user.getRoles());
+        } catch (ResourceNotFoundException e){
+            System.out.println(e.getMessage());
         }
-        catch(ResourceNotFoundException e){
-            return new ArrayList<>();
-        }
+        return null;
     }
+
+    @GetMapping("/auth/load/id/{id}")
+    public LoadUserDetailsResponse loadUserById(@PathVariable(value = "id") Long id){
+        try {
+            User user = userService.findById(id).orElseThrow(
+                    () -> new ResourceNotFoundException("User not found with id : " + id)
+            );
+
+            return new LoadUserDetailsResponse(user.getId(), user.getName(), user.getSurname(), user.getEmail(), user.getUsername(), user.getPassword(), user.getRoles());
+        } catch (ResourceNotFoundException e){
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
+
 }

@@ -21,9 +21,6 @@ public class Action {
     @NotBlank
     private String microservice;
 
-    //dodati kasnije
-    //private String user;
-
     @NotNull
     @NotBlank
     private String actionType;
@@ -35,6 +32,11 @@ public class Action {
     @NotNull
     @NotBlank
     private String responseType;
+
+    @NotNull
+    @NotBlank
+    @Column(name = "user_info", nullable = true, updatable = false)
+    private String username;
 
     public Long getId() {
         return id;
@@ -82,5 +84,13 @@ public class Action {
 
     public void setResponseType(String responseType) {
         this.responseType = responseType;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

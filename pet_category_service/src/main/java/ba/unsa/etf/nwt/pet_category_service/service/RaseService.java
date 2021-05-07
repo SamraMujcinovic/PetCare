@@ -19,7 +19,6 @@ import java.util.List;
 public class RaseService {
 
     private final RaseRepository raseRepository;
-    private final CategoryRepository categoryRepository;
     private final CategoryService categoryService;
 
     public List<Rase> getRases() {
@@ -30,7 +29,7 @@ public class RaseService {
         try {
             Rase r = findRaseByName(raseRequest.getName());
             throw new WrongInputException("Rase with that name already exists!");
-        }catch (ResourceNotFoundException e) {
+        } catch (ResourceNotFoundException e) {
             Rase rase = new Rase();
             rase.setName(raseRequest.getName());
             rase.setDescription(raseRequest.getDescription());
@@ -39,7 +38,7 @@ public class RaseService {
             rase.setCategory(category);
             raseRepository.save(rase);
 
-            return new ResponseMessage(true, "Rase successfully added!!", HttpStatus.OK);
+            return new ResponseMessage(true, HttpStatus.OK, "Rase successfully added!!");
         }
     }
 
@@ -48,7 +47,6 @@ public class RaseService {
     }
 
     public Rase getRase(Long id) {
-
         Rase r = getRaseById(id);
         return r;
 
@@ -61,10 +59,9 @@ public class RaseService {
     }
 
     public ResponseMessage deleteRase(Long id) {
-
         Rase r = getRaseById(id);
         raseRepository.deleteById(id);
-        return new ResponseMessage(true, "Rase successfully deleted", HttpStatus.OK);
+        return new ResponseMessage(true, HttpStatus.OK, "Rase successfully deleted");
     }
 
     public Rase findRaseByName(String name) {
@@ -75,13 +72,11 @@ public class RaseService {
 
     public Rase getRaseByName(String name) {
         //if(name == null) return new RaseResponse(null, "Add a name for search!", "BAD_REQUEST", false);
-
         Rase r = findRaseByName(name);
         return r;
     }
 
     public List<Rase> getRasesInCategory(Long id) {
-
         //trebalo bi provjeriti da li kategorija postoji u bazi
         //ali mozda i ne treba jer ce korisnik kliknuti na tu kategoriju znaci da ako je ponudjena onda i postoji u bazi
         return raseRepository.findByCategory_Id(id);
@@ -93,7 +88,7 @@ public class RaseService {
         try {
             Rase rr = getRaseByName(raseRequest.getName());
             throw new WrongInputException("Rase with that name already exists!");
-        }catch (ResourceNotFoundException e){
+        } catch (ResourceNotFoundException e){
             Category cr = categoryService.getCategory(raseRequest.getCategory_id());
             r.setName(raseRequest.getName());
             r.setDescription(raseRequest.getDescription());

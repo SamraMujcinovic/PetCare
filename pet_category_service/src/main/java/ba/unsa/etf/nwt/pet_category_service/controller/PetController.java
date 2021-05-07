@@ -8,6 +8,7 @@ import ba.unsa.etf.nwt.pet_category_service.service.PetService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Path;
@@ -53,17 +54,20 @@ public class PetController {
         return petService.getPetsRaseContainsString(substring);
     }
 
+    @RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
     @PostMapping("/pet")
     public ResponseMessage addPet(@Valid @RequestBody PetRequest petRequest){
         return petService.addPet(petRequest);
     }
 
     //brisanje peta po id-u
+    @RolesAllowed("ROLE_ADMIN")
     @DeleteMapping("/pet")
     public ResponseMessage deletePet(@NotNull @RequestParam Long id){
         return petService.deletePet(id);
     }
 
+    @RolesAllowed("ROLE_ADMIN")
     @PutMapping("/pet/update/{id}")
     public Pet updatePet(@NotNull @PathVariable Long id, @Valid @RequestBody PetRequest petRequest){
         return petService.updatePet(id, petRequest);

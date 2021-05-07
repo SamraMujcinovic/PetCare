@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 
 @RestController
@@ -34,14 +35,12 @@ public class PasswordChangeController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
     @PostMapping("/securityquestion")
     public QuestionResponse getSecurityQuestion(@Valid @RequestBody PasswordQuestionRequest passwordQuestionRequest,
                                                 @CurrentUser UserPrincipal currentUser){
 
-        if(currentUser == null){
-            throw new ResourceNotFoundException("Current User not found!");
-        }
-
+        //korisnici mogu preuzeti samo vlastito pitanje
         if(!currentUser.getEmail().equals(passwordQuestionRequest.getEmail())){
             throw new WrongInputException("Email not the same as current users!");
         }
@@ -49,14 +48,12 @@ public class PasswordChangeController {
         return passwordService.getQuestion(passwordQuestionRequest);
     }
 
+    @RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
     @PostMapping("/answerQuestion")
     public ResponseMessage answerQuestion(@Valid @RequestBody PasswordAnswerRequest passwordAnswerRequest,
                                           @CurrentUser UserPrincipal currentUser) {
 
-        if(currentUser == null){
-            throw new ResourceNotFoundException("Current User not found!");
-        }
-
+        //korisnici mogu odgovoriti samo na vlastito pitanje
         if(!currentUser.getEmail().equals(passwordAnswerRequest.getEmail())){
             throw new WrongInputException("Email not the same as current users!");
         }
@@ -64,14 +61,12 @@ public class PasswordChangeController {
         return passwordService.getAnswerOfQuestion(passwordAnswerRequest);
     }
 
+    @RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
     @PostMapping("/newPassword")
     public ResponseMessage getNewPassword(@Valid @RequestBody PasswordChangeRequest passwordChangeRequest,
                                           @CurrentUser UserPrincipal currentUser) {
 
-        if(currentUser == null){
-            throw new ResourceNotFoundException("Current User not found!");
-        }
-
+        //korisnici mogu promijeniti samo vlastitu sifru
         if(!currentUser.getEmail().equals(passwordChangeRequest.getEmail())){
             throw new WrongInputException("Email not the same as current users!");
         }

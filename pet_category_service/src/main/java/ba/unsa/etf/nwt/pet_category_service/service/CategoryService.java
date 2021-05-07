@@ -26,9 +26,9 @@ public class CategoryService {
         try {
             Category c = findCategoryByName(category.getName());
             throw new WrongInputException("Category with name " + c.getName() + " already exists!");
-        }catch (ResourceNotFoundException e) {
+        } catch (ResourceNotFoundException e) {
             categoryRepository.save(category);
-            return new ResponseMessage(true, "Category added successfully!", HttpStatus.OK);
+            return new ResponseMessage(true, HttpStatus.OK,"Category added successfully!");
         }
     }
 
@@ -38,7 +38,6 @@ public class CategoryService {
 
 
     public Category getCategory(Long categoryID) {
-
         Category category = getCategoryById(categoryID);
         return category;
 
@@ -52,10 +51,9 @@ public class CategoryService {
 
 
     public ResponseMessage deleteCategory(Long id) {
-
         Category c = getCategoryById(id);
         categoryRepository.deleteById(id);
-        return new ResponseMessage(true, "Category successfully deleted!", HttpStatus.OK);
+        return new ResponseMessage(true, HttpStatus.OK,"Category successfully deleted!");
     }
 
     public Category findCategoryByName(String name) {
@@ -76,7 +74,7 @@ public class CategoryService {
             Category cr1 = getCategoryByName(newCategory.getName());
             //ako vec postoji kateogrija sa tim imenom vracamo response da postoji vec ta kategorija
             throw new WrongInputException("Category with that name already exists!");
-        }catch(ResourceNotFoundException e){
+        } catch (ResourceNotFoundException e){
             //ako nije nadjena kategorija sa tim imenom
             c.setDescription(newCategory.getDescription());
             c.setName(newCategory.getName());

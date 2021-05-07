@@ -53,20 +53,17 @@ public class UserController {
         return new AvailabilityResponse(!userService.existsByEmail(email));
     }
 
-    //user and admin
+    @RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
     @GetMapping("/user/me")
     public UserProfileResponse getCurrentUser(@CurrentUser UserPrincipal currentUser){
         return new UserProfileResponse(currentUser.getName(), currentUser.getSurname(), currentUser.getUsername(), currentUser.getEmail());
     }
 
-    //user and admin
+    @RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
     @PostMapping("/user/update")
     public ResponseMessage updateUserProfile(@Valid @RequestBody UserProfileRequest userProfileRequest, @CurrentUser UserPrincipal currentUser){
 
-        if(currentUser == null){
-            throw new ResourceNotFoundException("Current User not found!");
-        }
-
+        //korisnici mogu updateovat samo vlastiti profil
         if(!currentUser.getEmail().equals(userProfileRequest.getEmail())){
             throw new WrongInputException("Email not the same as current users!");
         }
@@ -81,14 +78,11 @@ public class UserController {
         return new ResponseMessage(true, HttpStatus.OK, "Profile successfully updated.");
     }
 
-    //user and admin
+    @RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
     @DeleteMapping("/user/delete")
     public ResponseMessage deleteUser(@Valid @RequestBody UserRequest userRequest, @CurrentUser UserPrincipal currentUser){
 
-        if(currentUser == null){
-            throw new ResourceNotFoundException("Current User not found!");
-        }
-
+        //korisnici mogu obrisati samo vlastiti account
         if(!currentUser.getEmail().equals(userRequest.getEmail())){
             throw new WrongInputException("Email not the same as current users!");
         }

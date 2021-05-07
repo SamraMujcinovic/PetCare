@@ -5,6 +5,8 @@ import ba.unsa.etf.nwt.notification_service.exception.WrongInputException;
 import ba.unsa.etf.nwt.notification_service.model.Notification;
 import ba.unsa.etf.nwt.notification_service.repository.NotificationRepository;
 import ba.unsa.etf.nwt.notification_service.response.ResponseMessage;
+import ba.unsa.etf.nwt.notification_service.security.CurrentUser;
+import ba.unsa.etf.nwt.notification_service.security.UserPrincipal;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -26,18 +28,22 @@ public class NotificationService {
         return notificationRepository.findAll();
     }
 
-    public ResponseMessage addNotification(Notification notification) {
+
+    //todo poziva se iz adopt_service asinhrono...
+    //kada se posalje zahtjev za add ili adopt dodaje se i notifikacija
+    public ResponseMessage addNotification(Notification notification, @CurrentUser UserPrincipal currentUser) {
         notification.setCreatedAt(new Date());
-        try {
+        //try {
             RestTemplate restTemplate = new RestTemplate();
-            Long userId = restTemplate.getForObject(communicationsService.getUri("user_service") + "/user/me/id", Long.class);
-            notification.setUserID(userId);
+            //Long userId = restTemplate.getForObject(communicationsService.getUri("user_service") + "/user/me/id", Long.class);
+            //notification.setUserID(userId);
+            notification.setUserID(currentUser.getId());
             notificationRepository.save(notification);
             return new ResponseMessage(true, HttpStatus.OK,"Notification added successfully!!");
-        }
+        /*}
         catch (Exception e) {
             throw new ResourceNotFoundException("Can't connect to user_service!!");
-        }
+        }*/
     }
 
     public Notification findById(Long notificationID) {
@@ -51,10 +57,12 @@ public class NotificationService {
         return notification;
     }
 
-    public List<Notification> getUserNotification() {
-        try {
-            RestTemplate restTemplate = new RestTemplate();
-            Long userId = restTemplate.getForObject(communicationsService.getUri("user_service") + "/user/me/id", Long.class);
+    public List<Notification> getUserNotification(@CurrentUser UserPrincipal currentUser) {
+        //try {
+            /*RestTemplate restTemplate = new RestTemplate();
+            Long userId = restTemplate.getForObject(communicationsService.getUri("user_service") +
+                    "/user/me/id", Long.class);*/
+            Long userId = currentUser.getId();
             try {
                 List<Notification> notifications = notificationRepository.findAllByUserID(userId);
                 return notifications;
@@ -63,16 +71,19 @@ public class NotificationService {
                 List<Notification> notifications = new ArrayList<>();
                 return notifications;
             }
-        }
+        /*}
         catch (Exception e) {
             throw new ResourceNotFoundException("Can't connect to user_service!!");
-        }
+        }*/
     }
 
-    public List<Notification> getUnreadUserNotification() {
+    public List<Notification> getUnreadUserNotification(@CurrentUser UserPrincipal currentUser) {
         try {
-            RestTemplate restTemplate = new RestTemplate();
-            Long userId = restTemplate.getForObject(communicationsService.getUri("user_service") + "/user/me/id", Long.class);
+            /*RestTemplate restTemplate = new RestTemplate();
+            Long userId = restTemplate.getForObject(communicationsService.getUri("user_service") + "/user/me/id", Long.class);*/
+
+            Long userId = currentUser.getId();
+
             try {
                 List<Notification> notifications = notificationRepository.findAllByUserIDAndRead(userId, false);
                 return notifications;
@@ -100,6 +111,17 @@ public class NotificationService {
 
     public Notification saveNotification(Notification n){
         return notificationRepository.save(n);
+    }
+
+    public ResponseMessage setOnRead(@CurrentUser UserPrincipal currentUser){
+        List<Notification> notifications = getUnreadUserNotification(currentUser);
+
+        for(Notification n : notifications){
+            n.setRead(true);
+            notificationRepository.save(n);
+        }
+
+        return new ResponseMessage(true, HttpStatus.OK, "You have successfully read all your unread notifications");
     }
 
 }

@@ -6,6 +6,8 @@ import ba.unsa.etf.nwt.adopt_service.model.AdoptionRequest;
 import ba.unsa.etf.nwt.adopt_service.repository.AdoptionRequestRepository;
 import ba.unsa.etf.nwt.adopt_service.response.ErrorResponse;
 import ba.unsa.etf.nwt.adopt_service.response.ResponseMessage;
+import ba.unsa.etf.nwt.adopt_service.security.CurrentUser;
+import ba.unsa.etf.nwt.adopt_service.security.UserPrincipal;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -24,13 +26,14 @@ public class AdoptionRequestService {
         return adoptionRequestRepository.findAll();
     }
 
-    public ResponseMessage addAdoptionRequest(AdoptionRequest adoptionRequest) {
+    public ResponseMessage addAdoptionRequest(AdoptionRequest adoptionRequest, @CurrentUser UserPrincipal currentUser) {
 
             RestTemplate restTemplate = new RestTemplate();
             try {
                 //ovo bi trebalo baciti izuzetak ako nema usera
-                Long userID = restTemplate.getForObject(communicationsService.getUri("user_service") + "/user/me/id", Long.class);
-                adoptionRequest.setUserID(userID);
+                //Long userID = restTemplate.getForObject(communicationsService.getUri("user_service") + "/user/me/id", Long.class);
+                //adoptionRequest.setUserID(userID);
+                adoptionRequest.setUserID(currentUser.getId());
             } catch (Exception e) {
                 if(e.getMessage().equals("URI is not absolute")) {
                     throw new ResourceNotFoundException("Can't connect to user_service!");

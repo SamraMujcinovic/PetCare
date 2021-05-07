@@ -7,6 +7,8 @@ import ba.unsa.etf.nwt.adopt_service.repository.AddPetRequestRepository;
 import ba.unsa.etf.nwt.adopt_service.request.PetForAdoptRequest;
 import ba.unsa.etf.nwt.adopt_service.response.ErrorResponse;
 import ba.unsa.etf.nwt.adopt_service.response.ResponseMessage;
+import ba.unsa.etf.nwt.adopt_service.security.CurrentUser;
+import ba.unsa.etf.nwt.adopt_service.security.UserPrincipal;
 import com.google.inject.internal.ErrorsException;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,21 +28,23 @@ public class AddPetRequestService {
         return addPetRequestRepository.findAll();
     }
 
-    public ResponseMessage addAddPetRequest(PetForAdoptRequest addPetRequest) {
+    public ResponseMessage addAddPetRequest(PetForAdoptRequest addPetRequest, @CurrentUser UserPrincipal currentUser) {
 
             RestTemplate restTemplate = new RestTemplate();
 
             AddPetRequest newRequest = new AddPetRequest();
 
-            try {
+            //try {
                 //prvo provjerimo usera
-                Long userID = restTemplate.getForObject(communicationsService.getUri("user_service")
-                        + "/user/me/id", Long.class);
-                newRequest.setUserID(userID);
-            }
+                /*Long userID = restTemplate.getForObject(communicationsService.getUri("user_service")
+                        + "/user/me/id", Long.class);*/
+                //newRequest.setUserID(userID);
+            /*}
             catch (Exception e){
-                throw new ResourceNotFoundException("Can't connect to user_service!!");
-            }
+                throw new ResourceNotFoundException("Current user not found!!");
+            }*/
+
+            newRequest.setUserID(currentUser.getId());
 
             try {
                 //sada prvo moramo dodati poslani pet u bazu preko rute POST u pet servisu

@@ -1,15 +1,21 @@
 package ba.unsa.etf.nwt.pet_category_service;
 
+import ba.unsa.etf.nwt.pet_category_service.service.CommunicationsService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.web.client.RestTemplate;
+
+import java.net.URI;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -22,6 +28,35 @@ public class RaseTests {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private CommunicationsService communicationsService;
+
+    public String getToken(){
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+            String input = "{\n" +
+                    "  \"password\": \"Password123!\",\n" +
+                    "  \"usernameOrEmail\": \"alakovic1\"\n" +
+                    "}";
+
+            HttpEntity<String> httpEntity = new HttpEntity<>(input, headers);
+
+            final String route = communicationsService.getUri("user_service") + "/api/auth/login/token";
+            URI uri = new URI(route);
+
+            return restTemplate.postForObject(uri,
+                    httpEntity, String.class);
+
+        } catch (Exception e){
+            System.out.println("Can't connect to user_service");
+        }
+        return null;
+    }
 
     @Test
     void GetAllRasesInJSON() throws Exception{
@@ -68,10 +103,7 @@ public class RaseTests {
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().json("{\n" +
-                        "  \"name\": \"Goldfish\",\n" +
-                        "  \"description\": \"Another cold-water fish, goldfish belong to the carp family. Because they enjoy cool water temperatures, keep goldfish in a separate tank from warm water fish.\",\n" +
-                        "  \"category\": {\"name\": \"novaCat\",\"description\": \"string\"}}"));
+                .andExpect(content().json("{\"name\":\"Goldfish\",\"description\":\"Another cold-water fish, goldfish belong to the carp family. Because they enjoy cool water temperatures, keep goldfish in a separate tank from warm water fish.\",\"category\":{\"name\":\"novaCat\",\"description\":\"string\"}}"));
     }
 
     @Test
@@ -83,7 +115,10 @@ public class RaseTests {
                 "  \"category_id\": 1\n" +
                 "}";
 
+        String token = "Bearer " + getToken();
+
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/rase")
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(novaRasa);
         mockMvc.perform(requestBuilder)
@@ -101,7 +136,10 @@ public class RaseTests {
 
         Long raseID = 3L;
 
+        String token = "Bearer " + getToken();
+
         RequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/rase?id={raseID}", raseID)
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .contentType(MediaType.APPLICATION_JSON);
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk())
@@ -121,7 +159,10 @@ public class RaseTests {
 
         String novaRase = "{\"name\": \"novaRasaa\",\"description\": \"nova\",\"category_id\": 1}";
 
+        String token = "Bearer " + getToken();
+
         RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/rase/update/{id}", id)
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(novaRase);
         mockMvc.perform(requestBuilder)
@@ -201,7 +242,10 @@ public class RaseTests {
 
         Long id = 50L;
 
+        String token = "Bearer " + getToken();
+
         RequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/rase?id={id}", id)
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .contentType(MediaType.APPLICATION_JSON);
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isNotFound())
@@ -225,7 +269,10 @@ public class RaseTests {
 
         String novaRase = "{\"name\": \"novaRasaa\",\"description\": \"nova\",\"category_id\": 1}";
 
+        String token = "Bearer " + getToken();
+
         RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/rase/update/{id}", id)
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(novaRase);
         mockMvc.perform(requestBuilder)
@@ -250,7 +297,10 @@ public class RaseTests {
 
         String novaRase = "{\"name\": \"gdfgd\",\"description\": \"nova\",\"category_id\": 50}";
 
+        String token = "Bearer " + getToken();
+
         RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/rase/update/{id}", id)
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(novaRase);
         mockMvc.perform(requestBuilder)
@@ -343,7 +393,10 @@ public class RaseTests {
                 "  \"category_id\": 1\n" +
                 "}";
 
+        String token = "Bearer " + getToken();
+
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/rase")
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(novaRasa);
         mockMvc.perform(requestBuilder)
@@ -363,7 +416,10 @@ public class RaseTests {
                 "  \"category_id\": 1\n" +
                 "}";
 
+        String token = "Bearer " + getToken();
+
         RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/rase/update/{id}", id)
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(novaRasa);
         mockMvc.perform(requestBuilder)
@@ -383,7 +439,10 @@ public class RaseTests {
                 "  \"category_id\": 1\n" +
                 "}";
 
+        String token = "Bearer " + getToken();
+
         RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/rase/update/{id}", id)
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(novaRasa);
         mockMvc.perform(requestBuilder)
@@ -403,7 +462,10 @@ public class RaseTests {
                 "  \"category_id\": 1\n" +
                 "}";
 
+        String token = "Bearer " + getToken();
+
         RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/rase/update/{id}", id)
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(novaRasa);
         mockMvc.perform(requestBuilder)
@@ -423,7 +485,10 @@ public class RaseTests {
                 "  \"category_id\": 1\n" +
                 "}";
 
+        String token = "Bearer " + getToken();
+
         RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/rase/update/{id}", id)
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(novaRasa);
         mockMvc.perform(requestBuilder)
@@ -443,7 +508,10 @@ public class RaseTests {
                 "  \"category_id\": 1\n" +
                 "}";
 
+        String token = "Bearer " + getToken();
+
         RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/rase/update/{id}", id)
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(novaRasa);
         mockMvc.perform(requestBuilder)

@@ -7,6 +7,7 @@ import ba.unsa.etf.nwt.pet_category_service.service.RaseService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -37,16 +38,19 @@ public class RaseController {
         return raseService.getRaseByName(name);
     }
 
+    @RolesAllowed("ROLE_ADMIN")
     @PostMapping("/rase")
     public ResponseMessage addRase(@Valid @RequestBody RaseRequest raseRequest){
        return raseService.addRase(raseRequest);
     }
 
+    @RolesAllowed("ROLE_ADMIN")
     @DeleteMapping("/rase")
     public ResponseMessage deleteRase(@NotNull @RequestParam Long id){
         return raseService.deleteRase(id);
     }
 
+    @RolesAllowed("ROLE_ADMIN")
     @PutMapping("/rase/update/{id}")
     public Rase updateRase(@NotNull @PathVariable Long id, @Valid @RequestBody RaseRequest raseRequest){
         return raseService.updateRase(id, raseRequest);

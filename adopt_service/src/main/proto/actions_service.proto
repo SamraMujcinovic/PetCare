@@ -8,6 +8,7 @@ message ActionsRequest {
     string actionType = 3;
     string resourceName = 4;
     string responseType = 5;
+    string username = 6;
 }
 
 message ActionsResponse {

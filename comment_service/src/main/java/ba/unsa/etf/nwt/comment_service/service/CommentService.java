@@ -7,13 +7,15 @@ import ba.unsa.etf.nwt.comment_service.model.Comment;
 import ba.unsa.etf.nwt.comment_service.model.sectionRole.SectionRoleName;
 import ba.unsa.etf.nwt.comment_service.repository.CommentRepository;
 import ba.unsa.etf.nwt.comment_service.response.ResponseMessage;
+import ba.unsa.etf.nwt.comment_service.security.CurrentUser;
+import ba.unsa.etf.nwt.comment_service.security.UserPrincipal;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
@@ -24,6 +26,7 @@ public class CommentService {
     private final MainRoleService mainRoleService;
     private final CommunicationsService communicationsService;
 
+    //todo promijeniti na asinhronu, kada se na useru izbrise account da se username ovdje automatski postavi na UNKNOWN
     public List<Comment> getComment() {
         try {
             RestTemplate restTemplate = new RestTemplate();
@@ -35,13 +38,12 @@ public class CommentService {
                 commentRepository.save(comment);
             }
             return comments;
-        }
-        catch (Exception e){
+        } catch (Exception e){
             throw new ResourceNotFoundException ("Can't connect to user_service!");
         }
     }
 
-    public ResponseMessage addComment(Comment comment, Long mainRoleId) {
+    public ResponseMessage addComment(Comment comment, Long mainRoleId, @CurrentUser UserPrincipal currentUser) {
 
         RestTemplate restTemplate = new RestTemplate();
         SectionRoleName roleName = SectionRoleName.ROLE_PET;
@@ -54,16 +56,18 @@ public class CommentService {
                 comment.setRoles(mainRoleService.getRoleByName(SectionRoleName.ROLE_CATEGORY));
             }
             else comment.setRoles(mainRoleService.getRoleByName(SectionRoleName.ROLE_PET));
-            String username = restTemplate.getForObject(communicationsService.getUri("user_service")
-                    + "/user/me/username", String.class);
-            comment.setUsername(username);
-        }
-        catch (RuntimeException re){
+
+            /*String username = restTemplate.getForObject(communicationsService.getUri("user_service")
+                    + "/user/me/username", String.class);*/
+            //comment.setUsername(username);
+
+            comment.setUsername(currentUser.getUsername());
+        } catch (RuntimeException re){
             throw new WrongInputException("Comment isn't added!!");
         }
-        catch (Exception e){
-            throw new ResourceNotFoundException("Can't connect to user_service!!");
-        }
+        /*catch (Exception e){
+            throw new ResourceNotFoundException("Current user not found!!");
+        }*/
         try {
             if (roleName == SectionRoleName.ROLE_PET) {
                 Long categoryId = restTemplate.getForObject(communicationsService.getUri("pet_category_service")
@@ -76,9 +80,7 @@ public class CommentService {
             }
             commentRepository.save(comment);
             return new ResponseMessage(true, HttpStatus.OK,"Comment added successfully!!");
-
-        }
-        catch (Exception e){
+        } catch (Exception e){
             if(e.getMessage().equals("URI is not absolute")) {
                 throw new ResourceNotFoundException("Can't connect to pet_category_service!!");
             }
@@ -116,8 +118,7 @@ public class CommentService {
             oldComment.setContent(comment.getContent());
             commentRepository.save(oldComment);
             return new ResponseMessage(true, HttpStatus.OK ,"Comment updated successfully!!");
-        }
-        catch (RuntimeException e){
+        } catch (RuntimeException e){
             throw new WrongInputException("Comment isn't updated!!");
         }
     }
@@ -131,6 +132,7 @@ public class CommentService {
         }
     }
 
+    //todo promijeniti na asinhronu, kada se na useru izbrise account da se username ovdje automatski postavi na UNKNOWN
     public List<Comment> getCategoryComment(Long roleType, Long categoryID) {
         RestTemplate restTemplate = new RestTemplate();
 
@@ -151,8 +153,7 @@ public class CommentService {
                 String username = restTemplate.getForObject(communicationsService.getUri("user_service")
                         + "/user/" + comment.getUsername(), String.class);
                 comment.setUsername(username);
-            }
-            catch (Exception e){
+            } catch (Exception e){
                 throw new ResourceNotFoundException("Can't connect to user_service!!");
             }
             try {
@@ -166,8 +167,7 @@ public class CommentService {
                     comment.setCategoryID(categoryId);
                 }
                 commentRepository.save(comment);
-            }
-            catch (Exception e){
+            } catch (Exception e){
                 //ako se ne moze spojiti na pet service
                 if(e.getMessage().equals("URI is not absolute")) {//ovo je poruka koja se vraca kada nije pokrenut pet service
                     throw new ResourceNotFoundException("Can't connect to pet_category_service!!");
@@ -184,5 +184,9 @@ public class CommentService {
 
     public Comment saveComment(Comment c){
         return commentRepository.save(c);
+    }
+
+    public Optional<Comment> findById(Long id){
+        return commentRepository.findById(id);
     }
 }

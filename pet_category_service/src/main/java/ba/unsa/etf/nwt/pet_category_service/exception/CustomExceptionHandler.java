@@ -21,7 +21,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> tempHandler(String exceptionMessage, String message, HttpStatus status){
         List<String> details = new ArrayList<>();
         details.add(exceptionMessage);
-        ErrorResponse er = new ErrorResponse(new ResponseMessage(false, message, status), details);
+        ErrorResponse er = new ErrorResponse(new ResponseMessage(false, status, message), details);
         return new ResponseEntity<>(er, status);
     }
 
@@ -41,7 +41,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         for(ObjectError error : ex.getBindingResult().getAllErrors()) {
             details.add(error.getDefaultMessage());
         }
-        ErrorResponse error = new ErrorResponse(new ResponseMessage(false, "Validation Failed", HttpStatus.BAD_REQUEST), details);
+        ErrorResponse error = new ErrorResponse(new ResponseMessage(false, HttpStatus.BAD_REQUEST,"Validation Failed"), details);
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 }
