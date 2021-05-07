@@ -103,7 +103,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
+    public JwtAuthenticationResponse login(@Valid @RequestBody LoginRequest loginRequest) {
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -115,10 +115,17 @@ public class AuthController {
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
             String jwt = tokenProvider.generateToken(authentication);
-            return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
+            return new JwtAuthenticationResponse(jwt);
+            //return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
         }
         catch (Exception e){
             throw new WrongInputException("Wrong password!");
         }
     }
+
+    @PostMapping("/login/token")
+    public String getJustToken(@Valid @RequestBody LoginRequest loginRequest) {
+        return login(loginRequest).getAccessToken();
+    }
+
 }

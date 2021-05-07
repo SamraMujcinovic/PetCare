@@ -1,15 +1,21 @@
 package ba.unsa.etf.nwt.adopt_service;
 
+import ba.unsa.etf.nwt.adopt_service.service.CommunicationsService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.web.client.RestTemplate;
+
+import java.net.URI;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -22,11 +28,44 @@ public class AdoptRequestRoutesTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    private CommunicationsService communicationsService;
+
+    public String getToken(){
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+            String input = "{\n" +
+                    "  \"password\": \"Password123!\",\n" +
+                    "  \"usernameOrEmail\": \"alakovic1\"\n" +
+                    "}";
+
+            HttpEntity<String> httpEntity = new HttpEntity<>(input, headers);
+
+            final String route = communicationsService.getUri("user_service") + "/api/auth/login/token";
+            URI uri = new URI(route);
+
+            return restTemplate.postForObject(uri,
+                    httpEntity, String.class);
+
+        } catch (Exception e){
+            System.out.println("Can't connect to user_service");
+        }
+        return null;
+    }
+
     // Testovi za AdoptionRequest
 
     @Test
     void GetAllAdoptionRequestsInJSON() throws Exception {
+
+        String token = "Bearer " + getToken();
+
         RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/adoption-request")
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .contentType(MediaType.APPLICATION_JSON);
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk())
@@ -42,7 +81,10 @@ public class AdoptRequestRoutesTest {
                 "    \"approved\": false\n" +
                 "}\n";
 
+        String token = "Bearer " + getToken();
+
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/adoption-request")
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(newRequest);
         mockMvc.perform(requestBuilder)
@@ -191,7 +233,11 @@ public class AdoptRequestRoutesTest {
 
     @Test
     void GetApprovedAdoptionRequestsInJSON() throws Exception {
+
+        String token = "Bearer " + getToken();
+
         RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/adoption-request/approved")
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .contentType(MediaType.APPLICATION_JSON);
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk())
@@ -200,7 +246,11 @@ public class AdoptRequestRoutesTest {
 
     @Test
     void GetNotApprovedAdoptionRequestsInJSON() throws Exception {
+
+        String token = "Bearer " + getToken();
+
         RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/adoption-request/not-approved")
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .contentType(MediaType.APPLICATION_JSON);
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk())
@@ -209,7 +259,11 @@ public class AdoptRequestRoutesTest {
 
     @Test
     void GetAdoptionRequestsByUserIDInJSON() throws Exception {
+
+        String token = "Bearer " + getToken();
+
         RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/adoption-request/user/{userID}", 1)
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .contentType(MediaType.APPLICATION_JSON);
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk())
@@ -218,7 +272,11 @@ public class AdoptRequestRoutesTest {
 
     @Test
     void GetAdoptionRequestsByNewPetIDInJSON() throws Exception {
+
+        String token = "Bearer " + getToken();
+
         RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/adoption-request/pet/{petID}", 400)
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .contentType(MediaType.APPLICATION_JSON);
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk())
@@ -227,7 +285,11 @@ public class AdoptRequestRoutesTest {
 
     @Test
     void deleteAdoptionRequestsByUserIDInJSON() throws Exception {
+
+        String token = "Bearer " + getToken();
+
         RequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/adoption-request/user/{userID}", 5)
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .contentType(MediaType.APPLICATION_JSON);
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk())
@@ -243,7 +305,11 @@ public class AdoptRequestRoutesTest {
 
     @Test
     void deleteAdoptionRequestsByNewPetIDInJSON() throws Exception {
+
+        String token = "Bearer " + getToken();
+
         RequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/adoption-request/pet/{newPetID}", 200)
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .contentType(MediaType.APPLICATION_JSON);
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk())
