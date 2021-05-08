@@ -40,14 +40,16 @@ public class GRPCInterceptor implements HandlerInterceptor {
         }
 
         try {
-            //ne racunaj swagger requeste
-            if (!request.getRequestURI().substring(0, 8).equals("/swagger") &&
-                    !request.getRequestURI().substring(0, 8).equals("/webjars")) {
+            if(!request.getRequestURI().substring(0, 10).equals("/auth/load")) {
+                //ne racunaj swagger requeste
+                if (!request.getRequestURI().substring(0, 8).equals("/swagger") &&
+                        !request.getRequestURI().substring(0, 8).equals("/webjars")) {
 
-                grpcService.save(request.getMethod(), request.getRequestURI(), responseType, currentUserUsername);
+                    grpcService.save(request.getMethod(), request.getRequestURI(), responseType, currentUserUsername);
+                }
             }
         } catch (Exception e) {
-            //za slucajeve kada je duzina requesta manja od 8
+            //za slucajeve kada je duzina requesta manja od 8 ili 10
             grpcService.save(request.getMethod(), request.getRequestURI(), responseType, currentUserUsername);
         }
     }

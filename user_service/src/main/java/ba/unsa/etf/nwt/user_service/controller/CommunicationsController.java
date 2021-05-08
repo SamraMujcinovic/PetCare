@@ -1,21 +1,16 @@
 package ba.unsa.etf.nwt.user_service.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import ba.unsa.etf.nwt.user_service.exception.ResourceNotFoundException;
 import ba.unsa.etf.nwt.user_service.model.User;
-import ba.unsa.etf.nwt.user_service.model.roles.Role;
 import ba.unsa.etf.nwt.user_service.response.EurekaResponse;
 import ba.unsa.etf.nwt.user_service.response.LoadUserDetailsResponse;
-import ba.unsa.etf.nwt.user_service.security.CurrentUser;
-import ba.unsa.etf.nwt.user_service.security.UserPrincipal;
 import ba.unsa.etf.nwt.user_service.service.CommunicationsService;
 import ba.unsa.etf.nwt.user_service.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -56,10 +51,10 @@ public class CommunicationsController {
 
     //rute za ostale servise
 
-    @GetMapping("/user/me/username")
+    /*@GetMapping("/user/me/username")
     public String getCurrentUsersUsername(@CurrentUser UserPrincipal currentUser){
         return currentUser.getUsername();
-    }
+    }*/
 
     @GetMapping("/user/{username}")
     public String getUsersUsernameByUsername(@PathVariable(value = "username") String username) {
@@ -73,10 +68,10 @@ public class CommunicationsController {
         }
     }
 
-    @GetMapping("/user/me/id")
+    /*@GetMapping("/user/me/id")
     public Long getCurrentUsersId(@CurrentUser UserPrincipal currentUser){
         return currentUser.getId();
-    }
+    }*/
 
     @GetMapping("/auth/load/usernameEmail/{usernameOrEmail}")
     public LoadUserDetailsResponse loadUserByUsernameOrEmail(@PathVariable(value = "usernameOrEmail") String usernameOrEmail){
