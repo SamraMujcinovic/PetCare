@@ -8,11 +8,13 @@ import ba.unsa.etf.nwt.notification_service.response.ResponseMessage;
 import ba.unsa.etf.nwt.notification_service.security.CurrentUser;
 import ba.unsa.etf.nwt.notification_service.security.UserPrincipal;
 import lombok.AllArgsConstructor;
+import org.bouncycastle.pqc.crypto.newhope.NHOtherInfoGenerator;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -113,15 +115,82 @@ public class NotificationService {
         return notificationRepository.save(n);
     }
 
-    public ResponseMessage setOnRead(@CurrentUser UserPrincipal currentUser){
-        List<Notification> notifications = getUnreadUserNotification(currentUser);
+
+
+    //NOVIIIII
+
+    public List<Notification> getAllUnreadNotificationsForUser(Long userID, Boolean read, Boolean isForAdmin){
+        return notificationRepository.findAllByUserIDAndReadAndIsForAdmin(userID, read, isForAdmin);
+    }
+
+    public List<Notification> getAllNotificationsForUser(Long userID, Boolean isForAdmin){
+        return notificationRepository.findAllByUserIDAndIsForAdminOrderByCreatedAtDesc(userID, isForAdmin);
+    }
+
+    public List<Notification> getAllUnreadAdminNotifications(@CurrentUser UserPrincipal currentUser){
+        //return notificationRepository.findAllByReadAndIsForAdmin(read, isForAdmin);
+
+        List<Notification> returnedNotifications = new ArrayList<>();
+
+        List<Notification> allNotifications = getNotification();
+        for(Notification n : allNotifications){
+            if(!n.getRead()){
+                if(currentUser.getId().equals(n.getUserID())){
+                    returnedNotifications.add(n);
+                }
+                else {
+                    if(n.getForAdmin()){
+                        returnedNotifications.add(n);
+                    }
+                }
+            }
+        }
+
+        return returnedNotifications;
+    }
+
+    public List<Notification> getAllAdminNotifications(@CurrentUser UserPrincipal currentUser){
+
+        List<Notification> returnedNotifications = new ArrayList<>();
+
+        List<Notification> allNotifications = getNotification();
+        for(Notification n : allNotifications){
+            if(currentUser.getId().equals(n.getUserID())){
+                returnedNotifications.add(n);
+            }
+            else {
+                if(n.getForAdmin()){
+                    returnedNotifications.add(n);
+                }
+            }
+        }
+
+        returnedNotifications.sort((n1,n2) -> n1.getCreatedAt().compareTo(n2.getCreatedAt()));
+        Collections.reverse(returnedNotifications);
+
+        return returnedNotifications;
+    }
+
+    public ResponseMessage setOnReadUser(Long userID, Boolean read, Boolean isForAdmin){
+        List<Notification> notifications = getAllUnreadNotificationsForUser(userID, read, isForAdmin);
 
         for(Notification n : notifications){
             n.setRead(true);
             notificationRepository.save(n);
         }
 
-        return new ResponseMessage(true, HttpStatus.OK, "You have successfully read all your unread notifications");
+        return new ResponseMessage(true, HttpStatus.OK, "You have successfully read all your unread notifications!");
+    }
+
+    public ResponseMessage setOnReadAdmin(@CurrentUser UserPrincipal currentUser){
+        List<Notification> notifications = getAllUnreadAdminNotifications(currentUser);
+
+        for(Notification n : notifications){
+            n.setRead(true);
+            notificationRepository.save(n);
+        }
+
+        return new ResponseMessage(true, HttpStatus.OK, "You have successfully read all your unread notifications!");
     }
 
 }
