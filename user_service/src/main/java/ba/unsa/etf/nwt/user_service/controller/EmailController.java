@@ -1,19 +1,20 @@
 package ba.unsa.etf.nwt.user_service.controller;
 
 import ba.unsa.etf.nwt.user_service.email.EmailCfg;
-import ba.unsa.etf.nwt.user_service.email.FeedBack;
+import ba.unsa.etf.nwt.user_service.email.ContactUsForm;
 import ba.unsa.etf.nwt.user_service.exception.ResourceNotFoundException;
-import ba.unsa.etf.nwt.user_service.exception.WrongInputException;
 import ba.unsa.etf.nwt.user_service.response.ResponseMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Properties;
 
 @RestController
@@ -27,13 +28,9 @@ public class EmailController {
     }
 
     @PostMapping("/send")
-    public ResponseMessage sendEmail(@RequestBody FeedBack feedback, BindingResult bindingResult){
+    public ResponseMessage sendEmail(@Valid @RequestBody ContactUsForm contactUsForm){
 
         try {
-            if (bindingResult.hasErrors()) {
-                throw new WrongInputException("Info for the email is not valid!");
-            }
-
             //Create mail sender
             JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
             mailSender.setHost(this.emailCfg.getHost());
@@ -48,10 +45,18 @@ public class EmailController {
 
             //Create an email instance
             SimpleMailMessage mailMessage = new SimpleMailMessage();
-            mailMessage.setFrom(feedback.getEmail());
+            mailMessage.setFrom(contactUsForm.getEmail());
             mailMessage.setTo("nwt.pet.care.adm2021@gmail.com");
-            mailMessage.setSubject("New contact us form filled by " + feedback.getName());
-            mailMessage.setText(feedback.getFeedback());
+            mailMessage.setSubject("New email from contact us form!");
+
+            String date = new SimpleDateFormat("dd.MM.yyyy. HH:mm:ss").format(new Date());
+
+            String message = "Time when the form was filled: \n" + date + "\n\n" +
+                    "Contact us form was filled by " + contactUsForm.getName() + ". \n" +
+                    "To contact this person, send a response to " + contactUsForm.getEmail() + " address." + "\n\n" +
+                    "Message: \n";
+
+            mailMessage.setText(message + contactUsForm.getMessage());
 
             //Send mail
             mailSender.send(mailMessage);

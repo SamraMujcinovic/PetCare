@@ -4,7 +4,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-public class FeedBack {
+public class ContactUsForm {
     @NotBlank(message = "Name can't be blank")
     private String name;
 
@@ -14,7 +14,7 @@ public class FeedBack {
 
     @NotBlank(message = "Feedback can't be blank")
     @Size(min = 5, message = "Minimum length of the feedback is 5")
-    private String feedback;
+    private String message;
 
     public String getName() {
         return name;
@@ -32,11 +32,11 @@ public class FeedBack {
         this.email = email;
     }
 
-    public String getFeedback() {
-        return feedback;
+    public String getMessage() {
+        return message;
     }
 
-    public void setFeedback(String feedback) {
-        this.feedback = feedback;
+    public void setMessage(String message) {
+        this.message = message;
     }
 }
