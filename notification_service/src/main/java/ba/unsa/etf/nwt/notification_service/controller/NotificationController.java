@@ -8,6 +8,9 @@ import ba.unsa.etf.nwt.notification_service.security.UserPrincipal;
 import ba.unsa.etf.nwt.notification_service.service.NotificationService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
@@ -74,61 +77,72 @@ public class NotificationController {
 
     //NOVIIII
 
+    //jedna ruta za obje role, samo drugacije funkcije
+    //vrati sve neprocitane notifikacije
+    @RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
+    @GetMapping("/notifications/all/unread/{userID}")
+    public List<Notification> getAllUnreadNotifications(@PathVariable(value = "userID") Long userID, @CurrentUser UserPrincipal currentUser){
 
-    //todo obrisati!!
-    /*@RolesAllowed("ROLE_ADMIN")
-    @GetMapping("/notifications")
-    public List<Notification> getNotifications() {
-        return notificationService.getNotification();
-    }*/
+        //pronalazak role trenutnog korisnika
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        boolean hasAdminRole = authentication.getAuthorities().stream()
+                .anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN"));
 
-    @RolesAllowed("ROLE_USER")
-    @GetMapping("/notifications/unread/user/{userID}")
-    public List<Notification> getAllUnreadUserNotifications(@PathVariable(value = "userID") Long userID, @CurrentUser UserPrincipal currentUser){
-
-        //svaki user moze gledati samo svoje notifikacije
-        if(!currentUser.getId().equals(userID)){
-            throw new WrongInputException("This notification doesn't belong to current user!");
+        //admini
+        if(hasAdminRole){
+            return notificationService.getAllUnreadAdminsNotifications(currentUser);
         }
-
-        return notificationService.getAllUnreadNotificationsForUser(userID, false, false);
-    }
-
-    @RolesAllowed("ROLE_USER")
-    @GetMapping("/notifications/all/user/{userID}")
-    public List<Notification> getAllUserNotifications(@PathVariable(value = "userID") Long userID, @CurrentUser UserPrincipal currentUser){
-
-        //svaki user moze gledati samo svoje notifikacije
-        if(!currentUser.getId().equals(userID)){
-            throw new WrongInputException("This notification doesn't belong to current user!");
+        //user
+        else {
+            return notificationService.getAllUnreadUsersNotifications(userID, currentUser);
         }
-
-        return notificationService.getAllNotificationsForUser(userID, false);
     }
 
-    @RolesAllowed("ROLE_ADMIN")
-    @GetMapping("/notifications/unread/admin")
-    public List<Notification> getAllUnreadAdminNotifications(@CurrentUser UserPrincipal currentUser){
-        return notificationService.getAllUnreadAdminNotifications(currentUser);
+    //jedna ruta za obje role, samo drugacije funkcije
+    //vrati sve notifikacije u zavisnosti od role
+    @RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
+    @GetMapping("/notifications/all/{userID}")
+    public List<Notification> getAllNotifications(@PathVariable(value = "userID") Long userID, @CurrentUser UserPrincipal currentUser){
+
+        //pronalazak role trenutnog korisnika
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        boolean hasAdminRole = authentication.getAuthorities().stream()
+                .anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN"));
+
+        //admini
+        if(hasAdminRole){
+            return notificationService.getAllAdminsNotifications(currentUser);
+        }
+        //user
+        else {
+            return notificationService.getAllUsersNotifications(userID, currentUser);
+        }
     }
 
-    @RolesAllowed("ROLE_ADMIN")
-    @GetMapping("/notifications/all/admin")
-    public List<Notification> getAllAdminNotifications(@CurrentUser UserPrincipal currentUser){
-        return notificationService.getAllAdminNotifications(currentUser);
+    //jedna ruta za obje role, samo drugacije funkcije
+    //postavi na read notifikacije
+    @RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
+    @PutMapping("/notifications/setRead/{userID}")
+    public ResponseMessage setNotificationsOnRead(@PathVariable(value = "userID") Long userID, @CurrentUser UserPrincipal currentUser){
+
+        //pronalazak role trenutnog korisnika
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        boolean hasAdminRole = authentication.getAuthorities().stream()
+                .anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN"));
+
+        //admini
+        if(hasAdminRole){
+            return notificationService.setNotificationsOnReadAdmin(currentUser);
+        }
+        //user
+        else {
+            return notificationService.setNotificationsOnReadUser(userID, currentUser);
+        }
     }
 
-    //sve notifikacije koje nisu procitane, postavljaju se na procitane kada se otvore
-    @RolesAllowed("ROLE_USER")
-    @PutMapping("/notifications/user/setRead/{userID}")
-    public ResponseMessage setNotificationsOnReadUser(@PathVariable(value = "userID") Long userID, @CurrentUser UserPrincipal currentUser){
-        return notificationService.setOnReadUser(userID, false, false);
-    }
-
-    @RolesAllowed("ROLE_ADMIN")
-    @PutMapping("/notifications/admin/setRead")
-    public ResponseMessage setNotificationsOnReadAdmin(@CurrentUser UserPrincipal currentUser){
-        return notificationService.setOnReadAdmin(currentUser);
+    @GetMapping("/notifications/public/add/{userID}")
+    public String addRegistrationNotification(@PathVariable(value = "userID") Long userID){
+        return notificationService.addNotificationForRegistration(userID);
     }
 
 }
