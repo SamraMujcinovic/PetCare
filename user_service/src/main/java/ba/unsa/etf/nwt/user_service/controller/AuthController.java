@@ -101,12 +101,12 @@ public class AuthController {
         User result = userService.save(user);
 
         RestTemplate restTemplate = new RestTemplate();
-
         try {
             ResponseMessage responseMessage = restTemplate.getForObject(communicationsService.getUri("notification_service")
                     + "/notifications/public/add/" + result.getId(), ResponseMessage.class);
+            System.out.println(responseMessage.getMessage());
         } catch (Exception ue){
-            System.out.println(ue.getMessage());
+            System.out.println("Can't connect to notification_service!");
         }
 
         URI location = ServletUriComponentsBuilder

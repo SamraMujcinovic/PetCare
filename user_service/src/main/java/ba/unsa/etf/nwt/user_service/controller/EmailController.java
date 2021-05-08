@@ -4,6 +4,7 @@ import ba.unsa.etf.nwt.user_service.email.EmailCfg;
 import ba.unsa.etf.nwt.user_service.email.ContactUsForm;
 import ba.unsa.etf.nwt.user_service.exception.ResourceNotFoundException;
 import ba.unsa.etf.nwt.user_service.response.ResponseMessage;
+import ba.unsa.etf.nwt.user_service.service.CommunicationsService;
 import org.springframework.http.HttpStatus;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 import javax.validation.Valid;
 import java.text.SimpleDateFormat;
@@ -23,8 +25,11 @@ public class EmailController {
 
     private final EmailCfg emailCfg;
 
-    public EmailController(EmailCfg emailCfg) {
+    private final CommunicationsService communicationsService;
+
+    public EmailController(EmailCfg emailCfg, CommunicationsService communicationsService) {
         this.emailCfg = emailCfg;
+        this.communicationsService = communicationsService;
     }
 
     @PostMapping("/send")
@@ -60,6 +65,15 @@ public class EmailController {
 
             //Send mail
             mailSender.send(mailMessage);
+
+            RestTemplate restTemplate = new RestTemplate();
+            try {
+                ResponseMessage responseMessage = restTemplate.getForObject(communicationsService.getUri("notification_service")
+                        + "/notifications/public/add/-1", ResponseMessage.class);
+                System.out.println(responseMessage.getMessage());
+            } catch (Exception ue){
+                System.out.println("Can't connect to notification_service!");
+            }
 
             return new ResponseMessage(true, HttpStatus.OK, "You have successfully sent an email!");
         }

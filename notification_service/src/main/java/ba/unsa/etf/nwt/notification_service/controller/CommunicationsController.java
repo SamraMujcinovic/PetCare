@@ -51,7 +51,15 @@ public class CommunicationsController {
 
     @GetMapping("/notifications/public/add/{userID}")
     public ResponseMessage addRegistrationNotification(@PathVariable(value = "userID") Long userID){
-        return notificationService.addNotificationForRegistration(userID);
+
+        //notifikacija za novog registrovanog usera
+        if(userID != -1){
+            return notificationService.addNotificationForRegistrationAndContactUs(userID, "There is a new registered user, check the list of users!");
+        }
+        //notifikacija za contact us formu
+        else {
+            return notificationService.addNotificationForRegistrationAndContactUs(userID, "Someone filled contact us form, check email!");
+        }
     }
 
 }

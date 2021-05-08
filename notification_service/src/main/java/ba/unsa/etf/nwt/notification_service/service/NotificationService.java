@@ -232,9 +232,10 @@ public class NotificationService {
         return new ResponseMessage(true, HttpStatus.OK, "You have successfully read all your unread notifications!");
     }
 
-    public ResponseMessage addNotificationForRegistration(Long userID){
+    public ResponseMessage addNotificationForRegistrationAndContactUs(Long userID, String content){
+
         Notification newNotification = new Notification();
-        newNotification.setContent("There is a new registered user, check the list of users!");
+        newNotification.setContent(content);
         newNotification.setUserID(userID);
         newNotification.setRead(false);
         newNotification.setIsForAdmin(true);
@@ -244,9 +245,12 @@ public class NotificationService {
 
         notificationRepository.save(newNotification);
 
-        //return "success";
-
-        return new ResponseMessage(true, HttpStatus.OK, "You have successfully added notification for registration!");
+        if(userID != -1){
+            return new ResponseMessage(true, HttpStatus.OK, "You have successfully added notification for registration!");
+        }
+        else {
+            return new ResponseMessage(true, HttpStatus.OK, "You have successfully added notification for contact us form!");
+        }
     }
 
 }
