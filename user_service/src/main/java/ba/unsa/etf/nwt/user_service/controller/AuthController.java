@@ -103,10 +103,8 @@ public class AuthController {
         RestTemplate restTemplate = new RestTemplate();
 
         try {
-            String route = communicationsService.getUri("notification_service")
-                    + "/notifications/public/add/" + result.getId();
-
-            String responseMessage = restTemplate.getForObject(route, String.class);
+            ResponseMessage responseMessage = restTemplate.getForObject(communicationsService.getUri("notification_service")
+                    + "/notifications/public/add/" + result.getId(), ResponseMessage.class);
         } catch (Exception ue){
             System.out.println(ue.getMessage());
         }

@@ -232,7 +232,7 @@ public class NotificationService {
         return new ResponseMessage(true, HttpStatus.OK, "You have successfully read all your unread notifications!");
     }
 
-    public String addNotificationForRegistration(Long userID){
+    public ResponseMessage addNotificationForRegistration(Long userID){
         Notification newNotification = new Notification();
         newNotification.setContent("There is a new registered user, check the list of users!");
         newNotification.setUserID(userID);
@@ -244,9 +244,9 @@ public class NotificationService {
 
         notificationRepository.save(newNotification);
 
-        return "success";
+        //return "success";
 
-        //return new ResponseMessage(true, HttpStatus.OK, "You have successfully added notification for registration!");
+        return new ResponseMessage(true, HttpStatus.OK, "You have successfully added notification for registration!");
     }
 
 }

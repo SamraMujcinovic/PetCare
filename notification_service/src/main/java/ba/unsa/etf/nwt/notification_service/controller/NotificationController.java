@@ -22,7 +22,7 @@ import java.util.List;
 public class NotificationController {
 
     @Autowired
-    private final NotificationService notificationService;
+    private NotificationService notificationService;
 
     //todo notifikacije rade asinhrono!!
 
@@ -138,11 +138,6 @@ public class NotificationController {
         else {
             return notificationService.setNotificationsOnReadUser(userID, currentUser);
         }
-    }
-
-    @GetMapping("/notifications/public/add/{userID}")
-    public String addRegistrationNotification(@PathVariable(value = "userID") Long userID){
-        return notificationService.addNotificationForRegistration(userID);
     }
 
 }
