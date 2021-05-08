@@ -7,10 +7,10 @@ import org.springframework.stereotype.Component;
 @Component
 @RefreshScope
 public class EmailCfg {
-    @Value("${spring.mail.host: smtp.mailtrap.io}")
+    @Value("${spring.mail.host: smtp.gmail.com}")
     private String host;
 
-    @Value("${spring.mail.port: 2222}")
+    @Value("${spring.mail.port: 222}")
     private int port;
 
     @Value("${spring.mail.username: username}")

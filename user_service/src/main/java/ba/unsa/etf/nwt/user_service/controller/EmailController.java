@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Properties;
+
 @RestController
 @RequestMapping("/email")
 public class EmailController {
@@ -38,6 +40,11 @@ public class EmailController {
             mailSender.setPort(this.emailCfg.getPort());
             mailSender.setUsername(this.emailCfg.getUsername());
             mailSender.setPassword(this.emailCfg.getPassword());
+
+            //Set properties for gmail server
+            Properties props = mailSender.getJavaMailProperties();
+            props.put("mail.smtp.auth", "true");
+            props.put("mail.smtp.starttls.enable", "true");
 
             //Create an email instance
             SimpleMailMessage mailMessage = new SimpleMailMessage();
