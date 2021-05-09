@@ -21,6 +21,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
@@ -51,7 +52,9 @@ public class AuthController {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    public AuthController(AuthenticationManager authenticationManager, UserService userService, RoleService roleService, PasswordEncoder passwordEncoder, JwtTokenProvider tokenProvider, QuestionService questionService, AnswerService answerService) {
+    private final CommunicationsService communicationsService;
+
+    public AuthController(AuthenticationManager authenticationManager, UserService userService, RoleService roleService, PasswordEncoder passwordEncoder, JwtTokenProvider tokenProvider, QuestionService questionService, AnswerService answerService, CommunicationsService communicationsService) {
         this.authenticationManager = authenticationManager;
         this.userService = userService;
         this.roleService = roleService;
@@ -59,6 +62,7 @@ public class AuthController {
         this.tokenProvider = tokenProvider;
         this.questionService = questionService;
         this.answerService = answerService;
+        this.communicationsService = communicationsService;
     }
 
     @PostMapping("/register/{questionId}")
@@ -95,6 +99,15 @@ public class AuthController {
         user.getAnswer().setQuestion(question);
         answerService.save(user.getAnswer());
         User result = userService.save(user);
+
+        RestTemplate restTemplate = new RestTemplate();
+        try {
+            ResponseMessage responseMessage = restTemplate.getForObject(communicationsService.getUri("notification_service")
+                    + "/notifications/public/add/" + result.getId(), ResponseMessage.class);
+            System.out.println(responseMessage.getMessage());
+        } catch (Exception ue){
+            System.out.println("Can't connect to notification_service!");
+        }
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentContextPath().path("/users/{username}")

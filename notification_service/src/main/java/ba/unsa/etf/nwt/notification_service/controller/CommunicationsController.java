@@ -1,7 +1,9 @@
 package ba.unsa.etf.nwt.notification_service.controller;
 
 import ba.unsa.etf.nwt.notification_service.response.EurekaResponse;
+import ba.unsa.etf.nwt.notification_service.response.ResponseMessage;
 import ba.unsa.etf.nwt.notification_service.service.CommunicationsService;
+import ba.unsa.etf.nwt.notification_service.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
@@ -19,6 +21,9 @@ public class CommunicationsController {
 
     @Autowired
     private DiscoveryClient discoveryClient;
+
+    @Autowired
+    private NotificationService notificationService;
 
     @GetMapping("/eureka/service-instances/{applicationName}")
     public List<ServiceInstance> serviceInstancesByApplicationName(@PathVariable String applicationName) {
@@ -41,4 +46,20 @@ public class CommunicationsController {
     public String getURIfromService(@PathVariable String applicationName) {
         return communicationsService.getUri(applicationName);
     }
+
+    //rute za druge servise
+
+    @GetMapping("/notifications/public/add/{userID}")
+    public ResponseMessage addRegistrationNotification(@PathVariable(value = "userID") Long userID){
+
+        //notifikacija za novog registrovanog usera
+        if(userID != -1){
+            return notificationService.addNotificationForRegistrationAndContactUs(userID, "There is a new registered user, check the list of users!");
+        }
+        //notifikacija za contact us formu
+        else {
+            return notificationService.addNotificationForRegistrationAndContactUs(userID, "Someone filled contact us form, check email!");
+        }
+    }
+
 }

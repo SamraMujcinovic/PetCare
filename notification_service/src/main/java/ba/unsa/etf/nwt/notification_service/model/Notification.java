@@ -31,20 +31,30 @@ public class Notification {
             = "Content must be between 2 and 150 characters!!")
     private String content;
 
-    private Long userID;
+    private Long userID = -1L;
 
     private Boolean read = false;
+
+    private Boolean isForAdmin = true;
+
+    private Boolean isAddPetRequest = true;
+
+    private Long requestId = -1L;
 
     @Temporal(TemporalType.TIMESTAMP)
     @JsonFormat(timezone="Europe/Sarajevo")
     @Column(name = "created_at", nullable = true, updatable = false)
     @CreatedDate
-    @JsonIgnore
     private Date createdAt;
 
-    public Notification(String content, Boolean read, Date createdAt) {
+    public Notification(@NotBlank(message = "Content can't be blank!!") @Size(min = 2, max = 150, message
+            = "Content must be between 2 and 150 characters!!") String content, Long userID, Boolean read, Boolean isForAdmin, Boolean isAddPetRequest, Long requestId, Date createdAt) {
         this.content = content;
+        this.userID = userID;
         this.read = read;
+        this.isForAdmin = isForAdmin;
+        this.isAddPetRequest = isAddPetRequest;
+        this.requestId = requestId;
         this.createdAt = createdAt;
     }
 
@@ -86,5 +96,29 @@ public class Notification {
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public Boolean getForAdmin() {
+        return isForAdmin;
+    }
+
+    public void setForAdmin(Boolean forAdmin) {
+        isForAdmin = forAdmin;
+    }
+
+    public Boolean getAddPetRequest() {
+        return isAddPetRequest;
+    }
+
+    public void setAddPetRequest(Boolean addPetRequest) {
+        isAddPetRequest = addPetRequest;
+    }
+
+    public Long getRequestId() {
+        return requestId;
+    }
+
+    public void setRequestId(Long requestId) {
+        this.requestId = requestId;
     }
 }
