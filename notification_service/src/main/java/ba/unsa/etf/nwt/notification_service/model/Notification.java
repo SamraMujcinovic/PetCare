@@ -22,7 +22,7 @@ import java.util.Date;
 public class Notification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonIgnore
+    //@JsonIgnore
     private Long id;
 
     @NotBlank(message = "Content can't be blank!!")

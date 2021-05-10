@@ -2,7 +2,8 @@ package ba.unsa.etf.nwt.adopt_service.controller;
 
 import ba.unsa.etf.nwt.adopt_service.exception.WrongInputException;
 import ba.unsa.etf.nwt.adopt_service.model.AddPetRequest;
-import ba.unsa.etf.nwt.adopt_service.request.PetForAdoptRequest;
+import ba.unsa.etf.nwt.adopt_service.model.AdoptionRequest;
+import ba.unsa.etf.nwt.adopt_service.request.PetForAddRequest;
 import ba.unsa.etf.nwt.adopt_service.response.ResponseMessage;
 import ba.unsa.etf.nwt.adopt_service.security.CurrentUser;
 import ba.unsa.etf.nwt.adopt_service.security.UserPrincipal;
@@ -35,8 +36,10 @@ public class AddPetRequestController {
     //izmijenjeni oblik post metode
     @RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
     @PostMapping("/eurekaa/add-pet-request")
-    public ResponseMessage addAddPetRequest(@Valid @RequestBody PetForAdoptRequest addPetRequest, @CurrentUser UserPrincipal currentUser) {
-       return addPetRequestService.addAddPetRequest(addPetRequest, currentUser);
+    public ResponseMessage addAddPetRequest(@RequestHeader("Authorization") String token,
+                                            @Valid @RequestBody PetForAddRequest addPetRequest,
+                                            @CurrentUser UserPrincipal currentUser) {
+       return addPetRequestService.addAddPetRequest(token, addPetRequest, currentUser);
     }
 
     @RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
@@ -85,12 +88,15 @@ public class AddPetRequestController {
         return addPetRequestService.getNotApprovedAddPetRequests();
     }
 
+    //brisanje requesta
     @RolesAllowed("ROLE_ADMIN")
     @DeleteMapping("/add-pet-request/{id}")
-    public ResponseMessage deleteAddPetRequestByID(@PathVariable Long id) {
-        return addPetRequestService.deleteAddPetRequestByID(id);
+    public ResponseMessage deleteAddPetRequestByID(@RequestHeader("Authorization") String token, @PathVariable Long id) {
+        //return addPetRequestService.deleteAddPetRequestByID(id);
+        return addPetRequestService.deleteAddPetRequest(token, id);
     }
 
+    //omoguceno je useru da svoje requeste brise
     @RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
     @DeleteMapping("/add-pet-request/user/{userID}")
     public ResponseMessage deleteAddPetRequestsByUserID(@PathVariable Long userID, @CurrentUser UserPrincipal currentUser) {
@@ -113,9 +119,36 @@ public class AddPetRequestController {
         return addPetRequestService.deleteAddPetRequestsByUserID(userID);
     }
 
+    //brisanje svih requesta ukoliko je vezan za istog peta
     @RolesAllowed("ROLE_ADMIN")
     @DeleteMapping("/add-pet-request/pet/{newPetID}")
     public ResponseMessage deleteAddPetRequestsByNewPetID(@PathVariable Long newPetID) {
         return addPetRequestService.deleteAddPetRequestsByNewPetID(newPetID);
+    }
+
+    //brisanje requesta
+    /*@RolesAllowed("ROLE_ADMIN")
+    @DeleteMapping("/add-pet-request/delete/{id}")
+    public ResponseMessage deleteAddPetRequest(@RequestHeader("Authorization") String token, @PathVariable Long id) {
+        return addPetRequestService.deleteAddPetRequest(token, id);
+    }*/
+
+    @RolesAllowed("ROLE_ADMIN")
+    @PutMapping("/add-pet-request/not-approved/{id}")
+    public ResponseMessage setAddPetRequestNotApproved(@RequestHeader("Authorization") String token, @PathVariable Long id){
+        return addPetRequestService.setNotApproved(token, id);
+    }
+
+    @RolesAllowed("ROLE_ADMIN")
+    @PutMapping("/add-pet-request/approved/{id}")
+    public ResponseMessage setAddPetRequestApprove(@RequestHeader("Authorization") String token, @PathVariable Long id){
+        return addPetRequestService.setApproved(token, id);
+    }
+
+    //vrati request po id-u, bitno da bi se moglo iz notifikacije doci do requesta da se kasnije approvea
+    @RolesAllowed("ROLE_ADMIN")
+    @GetMapping("/add-pet-request/{id}")
+    public AddPetRequest getAddPetRequest(@PathVariable Long id){
+        return addPetRequestService.getAddPetRequestById(id);
     }
 }

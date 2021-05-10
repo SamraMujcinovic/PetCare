@@ -60,7 +60,7 @@ public class UserController {
     }
 
     @RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
-    @PostMapping("/user/update")
+    @PutMapping("/user/update")
     public ResponseMessage updateUserProfile(@Valid @RequestBody UserProfileRequest userProfileRequest, @CurrentUser UserPrincipal currentUser){
 
         //korisnici mogu updateovat samo vlastiti profil

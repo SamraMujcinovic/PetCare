@@ -41,7 +41,7 @@ public class Pet {
     @Max(value = 100, message = "Pet can't be older than 100 years!")
     private Integer age;
 
-    private boolean adopted;
+    private boolean approved = true;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "rase_id")
@@ -96,19 +96,19 @@ public class Pet {
         this.age = age;
     }
 
-    public boolean getAdopted() {
-        return adopted;
-    }
-
-    public void setAdopted(boolean adopted) {
-        this.adopted = adopted;
-    }
-
     public Rase getRase() {
         return rase;
     }
 
     public void setRase(Rase rase) {
         this.rase = rase;
+    }
+
+    public boolean isApproved() {
+        return approved;
+    }
+
+    public void setApproved(boolean approved) {
+        this.approved = approved;
     }
 }

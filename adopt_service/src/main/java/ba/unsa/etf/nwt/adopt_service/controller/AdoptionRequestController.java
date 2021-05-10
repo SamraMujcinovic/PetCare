@@ -2,6 +2,7 @@ package ba.unsa.etf.nwt.adopt_service.controller;
 
 import ba.unsa.etf.nwt.adopt_service.exception.WrongInputException;
 import ba.unsa.etf.nwt.adopt_service.model.AdoptionRequest;
+import ba.unsa.etf.nwt.adopt_service.request.PetForAdoptRequest;
 import ba.unsa.etf.nwt.adopt_service.response.ResponseMessage;
 import ba.unsa.etf.nwt.adopt_service.security.CurrentUser;
 import ba.unsa.etf.nwt.adopt_service.security.UserPrincipal;
@@ -26,10 +27,13 @@ public class AdoptionRequestController {
         return adoptionRequestService.getAdoptionRequest();
     }
 
-    @RolesAllowed("ROLE_ADMIN")
-    @PostMapping("/eurekaa/adoption-request")
-    public ResponseMessage addAdoptionRequest(@Valid @RequestBody AdoptionRequest adoptionRequest, @CurrentUser UserPrincipal currentUser) {
-        return adoptionRequestService.addAdoptionRequest(adoptionRequest, currentUser);
+    @RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
+    @PostMapping("/eurekaa/adoption-request/{petID}")
+    public ResponseMessage addAdoptionRequest(@RequestHeader("Authorization") String token,
+                                              @PathVariable Long petID ,
+                                              @Valid @RequestBody PetForAdoptRequest petForAdoptRequest,
+                                              @CurrentUser UserPrincipal currentUser) {
+        return adoptionRequestService.addAdoptionRequest(token, petID, petForAdoptRequest, currentUser);
     }
 
     @RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
@@ -78,10 +82,11 @@ public class AdoptionRequestController {
         return adoptionRequestService.getNotApprovedAdoptionRequests();
     }
 
+    //brisanje requesta
     @RolesAllowed("ROLE_ADMIN")
     @DeleteMapping("/adoption-request/{id}")
-    public ResponseMessage deleteAdoptionRequestByID(@PathVariable Long id) {
-        return adoptionRequestService.deleteAdoptionRequestByID(id);
+    public ResponseMessage deleteAdoptionRequestByID(@RequestHeader("Authorization") String token, @PathVariable Long id) {
+        return adoptionRequestService.deleteAdoptionRequestByID(token, id);
     }
 
     @RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
@@ -106,9 +111,30 @@ public class AdoptionRequestController {
         return adoptionRequestService.deleteAdoptionRequestsByUserID(userID);
     }
 
+    //kada je neki pet adoptan, svi ostali zahtjevi sa tim idem se brisu
+    //treba se poslat notif userima da je zahtjev neprihvacen, prije brisanja
     @RolesAllowed("ROLE_ADMIN")
     @DeleteMapping("/adoption-request/pet/{petID}")
     public ResponseMessage deleteAdoptionRequestsByPetID(@PathVariable Long petID) {
         return adoptionRequestService.deleteAdoptionRequestsByPetID(petID);
+    }
+
+    @RolesAllowed("ROLE_ADMIN")
+    @PutMapping("/adopt-request/not-approved/{id}")
+    public ResponseMessage setAddPetRequestNotApproved(@RequestHeader("Authorization") String token, @PathVariable Long id){
+        return adoptionRequestService.setNotApproved(token, id);
+    }
+
+    @RolesAllowed("ROLE_ADMIN")
+    @PutMapping("/adoption-request/approve/{id}")
+    public ResponseMessage approveAdoptionRequest(@RequestHeader("Authorization") String token, @PathVariable Long id){
+        return adoptionRequestService.setApproved(token, id);
+    }
+
+    //vrati request po id-u, bitno da bi se moglo iz notifikacije doci do requesta da se kasnije approvea
+    @RolesAllowed("ROLE_ADMIN")
+    @GetMapping("/adoption-request/{id}")
+    public AdoptionRequest getAdoptionRequest(@PathVariable Long id){
+        return adoptionRequestService.getAdoptionRequestbyId(id);
     }
 }

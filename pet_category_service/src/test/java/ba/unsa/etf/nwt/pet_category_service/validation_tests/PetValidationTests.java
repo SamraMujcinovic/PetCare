@@ -40,7 +40,7 @@ public class PetValidationTests {
         Pet p = new Pet();
         p.setName("");
         p.setLocation("aaaa");
-        p.setAdopted(false);
+        //p.setAdopted(false);
         p.setImage("xxx");
         p.setAge(2);
         Set<ConstraintViolation<Pet>> violations = validator.validate(p);
@@ -52,7 +52,7 @@ public class PetValidationTests {
         Pet p = new Pet();
         p.setName("aaa");
         p.setLocation("");
-        p.setAdopted(false);
+        //p.setAdopted(false);
         p.setImage("xxx");
         p.setAge(2);
         Set<ConstraintViolation<Pet>> violations = validator.validate(p);

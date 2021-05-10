@@ -253,4 +253,121 @@ public class NotificationService {
         }
     }
 
+    public ResponseMessage addNotificationForNewAdoptRequest(Long userID, Long requestID){
+        Notification newNotification = new Notification();
+        newNotification.setContent("New request to adopt a pet!");
+        newNotification.setUserID(userID);
+        newNotification.setRead(false);
+        newNotification.setIsForAdmin(true);
+        newNotification.setIsAddPetRequest(false);
+        newNotification.setRequestId(requestID);
+        newNotification.setCreatedAt(new Date());
+
+        notificationRepository.save(newNotification);
+
+        return new ResponseMessage(true, HttpStatus.OK, "You have successfully added notification for new adopt request!");
+    }
+
+    public ResponseMessage addNotificationForNewAddRequestNotApproved(Long userID, Long requestID){
+        Notification newNotification = new Notification();
+        newNotification.setContent("Your request for adding a pet has not been approved!");
+        newNotification.setUserID(userID);
+        newNotification.setRead(false);
+        newNotification.setIsForAdmin(false);
+        newNotification.setIsAddPetRequest(true);
+        newNotification.setRequestId(requestID);
+        newNotification.setCreatedAt(new Date());
+
+        notificationRepository.save(newNotification);
+
+        return new ResponseMessage(true, HttpStatus.OK, "You have successfully added notification for not approving add request!");
+    }
+
+    public ResponseMessage addNotificationForNewAddPetRequest(Long userID, Long requestID){
+        Notification newNotification = new Notification();
+        newNotification.setContent("New request to add a pet!");
+        newNotification.setUserID(userID);
+        newNotification.setRead(false);
+        newNotification.setIsForAdmin(true);
+        newNotification.setIsAddPetRequest(true);
+        newNotification.setRequestId(requestID);
+        newNotification.setCreatedAt(new Date());
+
+        notificationRepository.save(newNotification);
+
+        return new ResponseMessage(true, HttpStatus.OK, "You have successfully added notification for new adopt request!");
+    }
+
+    public ResponseMessage addNotificationForNewAdoptRequestNotApproved(Long userID, Long requestID){
+        Notification newNotification = new Notification();
+        newNotification.setContent("Your request for adopting a pet has not been approved!");
+        newNotification.setUserID(userID);
+        newNotification.setRead(false);
+        newNotification.setIsForAdmin(false);
+        newNotification.setIsAddPetRequest(false);
+        newNotification.setRequestId(requestID);
+        newNotification.setCreatedAt(new Date());
+
+        notificationRepository.save(newNotification);
+
+        return new ResponseMessage(true, HttpStatus.OK, "You have successfully added notification for not approving adopt request!");
+    }
+
+    public ResponseMessage addNotificationForNewAddRequestApproved(Long userID, Long requestID){
+        Notification newNotification = new Notification();
+        newNotification.setContent("Your request for adding a pet has been approved!");
+        newNotification.setUserID(userID);
+        newNotification.setRead(false);
+        newNotification.setIsForAdmin(false);
+        newNotification.setIsAddPetRequest(true);
+        newNotification.setRequestId(requestID);
+        newNotification.setCreatedAt(new Date());
+
+        notificationRepository.save(newNotification);
+
+        return new ResponseMessage(true, HttpStatus.OK, "You have successfully added notification for approving add request!");
+    }
+
+    public ResponseMessage addNotificationForNewAdoptRequestApproved(Long userID, Long requestID){
+        Notification newNotification = new Notification();
+        newNotification.setContent("Your request for adopting a pet has been approved!");
+        newNotification.setUserID(userID);
+        newNotification.setRead(false);
+        newNotification.setIsForAdmin(false);
+        newNotification.setIsAddPetRequest(false);
+        newNotification.setRequestId(requestID);
+        newNotification.setCreatedAt(new Date());
+
+        notificationRepository.save(newNotification);
+
+        return new ResponseMessage(true, HttpStatus.OK, "You have successfully added notification for approving adopt request!");
+    }
+
+    public ResponseMessage deleteAdminNotification(Long id, @CurrentUser UserPrincipal currentUser){
+        List<Notification> notifications = getAllAdminNotifications(currentUser);
+
+        for(Notification notification : notifications){
+            if(notification.getId().equals(id)){
+                notificationRepository.deleteById(id);
+                return new ResponseMessage(true, HttpStatus.OK, "Notification deleted successfully!");
+            }
+        }
+
+        throw new ResourceNotFoundException("Notification not found!");
+    }
+
+    public ResponseMessage deleteUserNotification(Long userID, Long id, @CurrentUser UserPrincipal currentUser){
+        List<Notification> notifications = getAllUsersNotifications(userID, currentUser);
+
+        for(Notification notification : notifications){
+            if(notification.getId().equals(id)){
+                notificationRepository.deleteById(id);
+                return new ResponseMessage(true, HttpStatus.OK, "Notification deleted successfully!");
+            }
+        }
+
+        throw new ResourceNotFoundException("Notification not found!");
+
+    }
+
 }

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.List;
 
 @RestController
@@ -60,6 +61,48 @@ public class CommunicationsController {
         else {
             return notificationService.addNotificationForRegistrationAndContactUs(userID, "Someone filled contact us form, check email!");
         }
+    }
+
+    @RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
+    @GetMapping("/notifications/add/adopt-request/{userID}/{requestID}")
+    public ResponseMessage addNotificationForNewAdoptRequest(@PathVariable(value = "userID") Long userID,
+                                                             @PathVariable(value = "requestID") Long requestID){
+        return notificationService.addNotificationForNewAdoptRequest(userID, requestID);
+    }
+
+    @RolesAllowed("ROLE_ADMIN")
+    @GetMapping("/notifications/add/not-approved/add-pet-request/{userID}/{requestID}")
+    public ResponseMessage addNotificationForNotApprovedAddPetRequest(@PathVariable(value = "userID") Long userID,
+                                                                      @PathVariable(value = "requestID") Long requestID){
+        return notificationService.addNotificationForNewAddRequestNotApproved(userID, requestID);
+    }
+
+    @RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
+    @GetMapping("/notifications/add/add-pet-request/{userID}/{requestID}")
+    public ResponseMessage addNotificationForNewAddPetRequest(@PathVariable(value = "userID") Long userID,
+                                                             @PathVariable(value = "requestID") Long requestID){
+        return notificationService.addNotificationForNewAddPetRequest(userID, requestID);
+    }
+
+    @RolesAllowed("ROLE_ADMIN")
+    @GetMapping("/notifications/add/not-approved/adopt-request/{userID}/{requestID}")
+    public ResponseMessage addNotificationForNotApprovedAdoptRequest(@PathVariable(value = "userID") Long userID,
+                                                                      @PathVariable(value = "requestID") Long requestID){
+        return notificationService.addNotificationForNewAdoptRequestNotApproved(userID, requestID);
+    }
+
+    @RolesAllowed("ROLE_ADMIN")
+    @GetMapping("/notifications/add/approved/add-pet-request/{userID}/{requestID}")
+    public ResponseMessage addNotificationForApprovedAddPetRequest(@PathVariable(value = "userID") Long userID,
+                                                                      @PathVariable(value = "requestID") Long requestID){
+        return notificationService.addNotificationForNewAddRequestApproved(userID, requestID);
+    }
+
+    @RolesAllowed("ROLE_ADMIN")
+    @GetMapping("/notifications/add/approved/adopt-request/{userID}/{requestID}")
+    public ResponseMessage addNotificationForApprovedAdoptRequest(@PathVariable(value = "userID") Long userID,
+                                                                     @PathVariable(value = "requestID") Long requestID){
+        return notificationService.addNotificationForNewAdoptRequestApproved(userID, requestID);
     }
 
 }

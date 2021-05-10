@@ -22,6 +22,7 @@ public class CategoryController {
         return categoryService.getCategories();
     }
 
+    @RolesAllowed("ROLE_ADMIN")
     @GetMapping("/category/{id}")
     public Category getCategory(@NotNull @PathVariable Long id){
         return categoryService.getCategory(id);
@@ -30,6 +31,12 @@ public class CategoryController {
     @GetMapping("/category/byName")
     public Category getCategoryByName(@NotNull @RequestParam String name){
         return categoryService.getCategoryByName(name);
+    }
+
+    //search
+    @GetMapping("/category/filterByName/contains")
+    public List<Category> getAllCategoriesThatContainName(@NotNull @RequestParam String name){
+        return categoryService.filterByNameContains(name);
     }
 
     @RolesAllowed("ROLE_ADMIN")
