@@ -14,6 +14,10 @@ import ba.unsa.etf.nwt.user_service.service.PasswordService;
 import ba.unsa.etf.nwt.user_service.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,6 +38,9 @@ public class PasswordChangeController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
     @RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
     @PostMapping("/securityquestion")
@@ -79,6 +86,14 @@ public class PasswordChangeController {
             if (!passwordEncoder.matches(passwordChangeRequest.getOldPassword(), user.getPassword())) {
                 throw new WrongInputException("Old password is not a match!");
             }
+
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            currentUser.getUsername(),
+                            passwordChangeRequest.getOldPassword()
+                    )
+            );
+            SecurityContextHolder.getContext().setAuthentication(authentication);
 
             user.setPassword(passwordEncoder.encode(passwordChangeRequest.getNewPassword()));
             userService.save(user);
