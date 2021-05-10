@@ -2,40 +2,98 @@ import React from 'react'
 import Breadcrumbs from '../components/Breadcrumbs'
 import { Link } from 'react-router-dom'
 
+import team1 from "../assets/img/faces/amilaH.jpg";
+import team2 from "../assets/img/faces/amilaL.jpg";
+import team3 from "../assets/img/faces/samra.jpg";
+import team4 from "../assets/img/faces/emir.jpg";
+
+import '../assets/scss/about.scss'
+
 const About = () => (
     <>
         <Breadcrumbs>
             <Link to="/">Home</Link>
             About
         </Breadcrumbs>
-        <section id="about" className="py-16">
-            <div className="tw-container grid grid-cols-1 lg:grid-cols-2 gap-y-8 gap-x-16">
-                <img
-                    style={{height: '450px'}}
-                    alt="dining room"
-                    className="object-cover rounded w-full bg-gray-100"
-                    src='https://react-course-comfy-sloth-store.netlify.app/static/media/hero-bcg.a876f19f.jpeg'
-                />
-                <article>
-                    <div>
-                        <h2 className="font-bold">Our Story</h2>
-                        <div className="w-24 h-1 mt-3 bg-blue-600"/>
-                    </div>
-                    <p className="mt-5 text-sm md:text-base lg:text-lg leading-loose">
-                        Lorem ipsum, dolor sit amet consectetur adipisicing elit. 
-                        Fugiat accusantium sapiente tempora sed dolore esse deserunt 
-                        eaque excepturi, delectus error accusamus vel eligendi, omnis 
-                        beatae. Quisquam, dicta. Eos quod quisquam esse recusandae 
-                        vitae neque dolore, obcaecati incidunt sequi blanditiis est 
-                        exercitationem molestiae delectus saepe odio eligendi modi 
-                        porro eaque in libero minus unde sapiente consectetur 
-                        architecto. Ullam rerum, nemo iste ex, eaque perspiciatis 
-                        nisi, eum totam velit saepe sed quos similique amet. Ex, 
-                        voluptate accusamus nesciunt totam vitae esse iste.
-                    </p>
-                </article>
+        <section id="team">
+        <div class="container my-3 py-5 text-center m-auto">
+            <div class="row mb-5">
+                <div class="col">
+                    <h1>This is us</h1>
+                    <h6 class="my-3">
+                        An amazing team that worked on this web application!!!
+                    </h6>
+                </div>
             </div>
-        </section>
+            <div class="row team-members">
+                <div class="team-card">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <img class="img-fouild rounded mb-3 avatar"
+                                src={team2}
+                                alt="AmilaL"/>
+                            <div class="info">    
+                                <h3>Amila Laković</h3>
+                                <br/>
+                                <p>I just keep googling stuff and it keeps working.</p>
+                                <br/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="team-card">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <img class="img-fouild rounded mb-3 avatar"
+                                src={team1}
+                                alt="AmilaH"/>
+                            <div class="info">   
+                                <h3>Amila Hrustić</h3>
+                                <br/>
+                                <p> Hard work always pays out.</p>
+                                <br/>
+                            </div> 
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row team-members">
+                <div class="team-card">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <img class="img-fouild rounded mb-3 avatar"
+                                src={team3}
+                                alt="Samra"/>
+                            <div class="info">
+                                <h3>Samra Mujčinović</h3>
+                                <br/>
+                                <p>Meme enthusiast.</p>
+                                <br/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="team-card">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <img class="img-fouild rounded mb-3 avatar"
+                                src={team4}
+                                alt="Emir"/>
+                            <div class="info">
+                                <h3>Emir Pita</h3>
+                                <br/>
+                                <p>To go forward, you must backup.</p>
+                                <br/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>    
+        </div>
+    </section>
     </>
 )
 

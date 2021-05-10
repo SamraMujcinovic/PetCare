@@ -33,7 +33,7 @@ export default function Products() {
     const {
         query, setQuery,
         categoryIndex, setCategoryIndex,
-        freeShipping, setFreeShipping,
+        freeShipping,
         price, setPrice, 
         colorIndex, setColorIndex,
         companyIndex, setCompanyIndex,
@@ -57,11 +57,11 @@ export default function Products() {
     const sortProducts = (products, index) => {
         if(index < 0 || index > 4) return products;
         switch(index) {
-            case 0:
+          /*  case 0:
                 return products.sort((a, b) => a.price - b.price);
             case 1:
-                return products.sort((a, b) => a.price - b.price).reverse();
-            case 2:
+                return products.sort((a, b) => a.price - b.price).reverse();*/
+            case 0:
                 return products.sort((a,b) => {
                     const aName = a.name.toLowerCase();
                     const bName = b.name.toLowerCase();
@@ -69,7 +69,7 @@ export default function Products() {
                     if(aName > bName) return 1;
                     return 0;
                 });
-            case 3:
+            case 1:
                 return products.sort((a,b) => {
                     const aName = a.name.toLowerCase();
                     const bName = b.name.toLowerCase();
@@ -102,7 +102,7 @@ export default function Products() {
                             />
                             {/* Categories */}
                             <div id="categories">
-                                <h5>Category</h5>
+                                <h5>Breeds</h5>
                                 <ul className="mt-2">
                                     <li>
                                         <button
@@ -126,7 +126,7 @@ export default function Products() {
                             </div>
                             {/* Companies */}
                             <div id="companies-form">
-                                <h5>Company</h5>
+                                <h5>Location</h5>
                                 <select className="mt-2" value={companyIndex} onChange={(e) => setCompanyIndex(parseInt(e.target.value))}>
                                     <option value={-1}>all</option>
                                     {
@@ -136,7 +136,7 @@ export default function Products() {
                                     }
                                 </select>
                             </div>
-                            {/* Colors */}
+                            {/* Colors
                             <div id="colors">
                                 <h5>Colors</h5>
                                 <div className="mt-2 flex items-center gap-3">
@@ -150,26 +150,17 @@ export default function Products() {
                                         setIndex={setColorIndex}
                                     />
                                 </div>
-                            </div>
+                            </div> */}
                             {/* Price */}
                             <div id="price-range">
-                                <h5>Price</h5>
-                                <p className="mt-2">{price.toCurrency()}</p>
+                                <h5>Age</h5>
+                                <p className="mt-2">{price}</p>
                                 <input 
                                     type="range" 
                                     min={0} 
-                                    max={309999}
+                                    max={25}
                                     onChange={(e) => setPrice(parseInt(e.currentTarget.value))}
                                     value={price}
-                                />
-                            </div>
-                            {/* Free Shipping */}
-                            <div id="free-shipping" className="flex gap-1 items-center">
-                                <label>Free Shipping</label>
-                                <input 
-                                    type="checkbox" 
-                                    checked={freeShipping}
-                                    onChange={() => setFreeShipping(state => !state)}
                                 />
                             </div>
                             <button className="btn-sm bg-red-300 text-red-900 font-bold" onClick={clearFilters}>Clear Filters</button>
@@ -196,10 +187,8 @@ export default function Products() {
                             <form>
                                 <label>Sort By: </label>
                                 <select className="px-2 py-1" value={sortByIndex} onChange={(e) => setSortByIndex(parseInt(e.target.value))}>
-                                    <option value={0}>Price (Lowest)</option>
-                                    <option value={1}>Price (Highest)</option>
-                                    <option value={2}>Name (A-Z)</option>
-                                    <option value={3}>Name (Z-A)</option>
+                                    <option value={0}>Name (A-Z)</option>
+                                    <option value={1}>Name (Z-A)</option>
                                 </select>
                             </form>
                         </article>
