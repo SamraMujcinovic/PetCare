@@ -13,6 +13,12 @@ public class CommunicationsService {
     @Autowired
     private DiscoveryClient discoveryClient;
 
+    @Autowired
+    private AddPetRequestService addPetRequestService;
+
+    @Autowired
+    private AdoptionRequestService adoptionRequestService;
+
     public String getUri(String applicationName){
         List<ServiceInstance> instances = this.discoveryClient.getInstances(applicationName);
         String uri = "";
@@ -20,6 +26,14 @@ public class CommunicationsService {
             uri = instance.getUri().toString();
         }
         return uri;
+    }
+
+    public void deleteForAdd(String token, Long id){
+        addPetRequestService.findAndDeleteAddPetRequest(token, id);
+    }
+
+    public void deleteForAdopt(String token, Long id){
+        adoptionRequestService.findAndDeleteAdoptionRequest(token, id);
     }
 
 }

@@ -7,6 +7,9 @@ public class ResponseMessage {
     private HttpStatus status;
     private String message;
 
+    public ResponseMessage() {
+    }
+
     public ResponseMessage(Boolean success, HttpStatus status, String message) {
         this.success = success;
         this.status = status;

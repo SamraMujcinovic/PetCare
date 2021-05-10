@@ -84,10 +84,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/webjars/**")
                 .permitAll()
                 .antMatchers(HttpMethod.GET,"/eureka/**", "/current/pet/petID/{id}",
-                        "/current/pet/raseID/{id}", "/current/rase/raseID/{id}", "/petID/forAdopt",
-                        "/pets", "/categories", "/category/byName", "/category/{id}", "/pets/inRase",
-                        "/pet/{id}", "/pets/inCategory", "/pet/byName", "/pets/name/contains",
-                        "/pets/rase/contains", "/rases", "/rases/inCategory", "/rase/{id}", "/rase/byName")
+                        "/current/pet/raseID/{id}", "/current/rase/raseID/{id}",
+                        "/pets", "/categories", "/category/byName", "/category/{id}", "/category/filterByName/contains",
+                        "/pets/inRase", "/pet/{id}", "/pets/inCategory", "/pet/byName", "/pets/name/contains",
+                        "/pets/rase/contains", "/rases", "/rases/inCategory", "/rase/{id}", "/rase/byName",
+                        "/rases/filterByName/contains", "/rases/filterByName/contains/thisCategory",
+                        "/pets/name/contains/thisRase/{id}")
                 .permitAll()
                 .antMatchers(HttpMethod.POST)
                 .permitAll()

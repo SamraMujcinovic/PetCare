@@ -31,7 +31,7 @@ public class PetRequest {
     @Max(value = 100, message = "Pet can't be older than 100 years!")
     private Integer age;
 
-    private boolean adopted;
+    //private boolean adopted;
 
     private Long rase_id;
 
@@ -73,14 +73,6 @@ public class PetRequest {
 
     public void setAge( Integer age) {
         this.age = age;
-    }
-
-    public boolean isAdopted() {
-        return adopted;
-    }
-
-    public void setAdopted(boolean adopted) {
-        this.adopted = adopted;
     }
 
     public Long getRase_id() {

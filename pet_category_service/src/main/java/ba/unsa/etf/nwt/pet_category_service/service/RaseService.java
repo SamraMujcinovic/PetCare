@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
@@ -58,9 +59,15 @@ public class RaseService {
                 .orElseThrow(() -> new ResourceNotFoundException("No rase with ID " + id));
     }
 
+    //todo moraju se obrisati i petovi
     public ResponseMessage deleteRase(Long id) {
         Rase r = getRaseById(id);
+
+        //moraju se i svi petovi ove rase automatski obrisat
+        //petService.deletePet(r.getId());
+
         raseRepository.deleteById(id);
+
         return new ResponseMessage(true, HttpStatus.OK, "Rase successfully deleted");
     }
 
@@ -72,8 +79,8 @@ public class RaseService {
 
     public Rase getRaseByName(String name) {
         //if(name == null) return new RaseResponse(null, "Add a name for search!", "BAD_REQUEST", false);
-        Rase r = findRaseByName(name);
-        return r;
+        return findRaseByName(name);
+        //return r;
     }
 
     public List<Rase> getRasesInCategory(Long id) {
@@ -96,5 +103,33 @@ public class RaseService {
             raseRepository.save(r);
             return r;
         }
+    }
+
+    public List<Rase> filterByNameContains(String name){
+
+        List<Rase> rases = new ArrayList<>();
+        List<Rase> allrases = getRases();
+
+        for(Rase rase : allrases){
+            if(rase.getName().toLowerCase().contains(name.toLowerCase())){
+                rases.add(rase);
+            }
+        }
+
+        return rases;
+    }
+
+    public List<Rase> filterByNameContainsInThisCategory(Long id, String name){
+
+        List<Rase> rases = new ArrayList<>();
+        List<Rase> allrases = getRasesInCategory(id);
+
+        for(Rase rase : allrases){
+            if(rase.getName().toLowerCase().contains(name.toLowerCase())){
+                rases.add(rase);
+            }
+        }
+
+        return rases;
     }
 }

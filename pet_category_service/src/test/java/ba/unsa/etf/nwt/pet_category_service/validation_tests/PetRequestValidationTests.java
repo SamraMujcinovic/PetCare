@@ -41,7 +41,7 @@ public class PetRequestValidationTests {
         PetRequest p = new PetRequest();
         p.setName("");
         p.setLocation("aaaa");
-        p.setAdopted(false);
+        //p.setAdopted(false);
         p.setImage("xxx");
         p.setAge(2);
         Set<ConstraintViolation<PetRequest>> violations = validator.validate(p);
@@ -53,7 +53,7 @@ public class PetRequestValidationTests {
         PetRequest p = new PetRequest();
         p.setName("aaa");
         p.setLocation("");
-        p.setAdopted(false);
+        //p.setAdopted(false);
         p.setImage("xxx");
         p.setAge(2);
         Set<ConstraintViolation<PetRequest>> violations = validator.validate(p);

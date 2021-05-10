@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
@@ -16,7 +17,6 @@ import java.util.List;
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
-
 
     public List<Category> getCategories() {
         return categoryRepository.findAll();
@@ -81,5 +81,19 @@ public class CategoryService {
             categoryRepository.save(c);
             return c;
         }
+    }
+
+    public List<Category> filterByNameContains(String name){
+
+        List<Category> categories = new ArrayList<>();
+        List<Category> allcategories = getCategories();
+
+        for(Category category : allcategories){
+            if(category.getName().toLowerCase().contains(name.toLowerCase())){
+                categories.add(category);
+            }
+        }
+
+        return categories;
     }
 }

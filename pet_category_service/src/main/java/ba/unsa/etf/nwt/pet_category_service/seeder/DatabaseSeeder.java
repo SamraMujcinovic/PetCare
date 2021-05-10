@@ -12,7 +12,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 @Component
-public class Seeder {
+public class DatabaseSeeder {
 
     @Autowired
     private CategoryService categoryService;
@@ -47,11 +47,11 @@ public class Seeder {
 
         //ljubimci
 
-        createPet("Rex", "Sarajevo", "image1", "", 2, false, r1);
-        createPet("Pupi", "Tuzla", "image2", "", 1, false, r2);
-        createPet("Cicko", "Zenica", "image3", "", 9, false, r3);
-        createPet("Ribica", "Neum", "image4", "", 0, false, r4);
-        createPet("Pricalica", "Brcko", "image5", "", 1, false, r5);
+        createPet("Rex", "Sarajevo", "image1", "", 2, true, r1);
+        createPet("Pupi", "Tuzla", "image2", "", 1, true, r2);
+        createPet("Cicko", "Zenica", "image3", "", 9, true, r3);
+        createPet("Ribica", "Neum", "image4", "", 0, true, r4);
+        createPet("Pricalica", "Brcko", "image5", "", 1, true, r5);
 
     }
 
@@ -72,14 +72,14 @@ public class Seeder {
         return r;
     }
 
-    private void createPet(String name, String location, String image, String description, int age, boolean adopted, Rase rase){
+    private void createPet(String name, String location, String image, String description, int age, boolean approved, Rase rase){
         Pet p = new Pet();
         p.setName(name);
         p.setLocation(location);
         p.setImage(image);
         p.setDescription(description);
         p.setAge(age);
-        p.setAdopted(adopted);
+        p.setApproved(approved);
         p.setRase(rase);
         petService.savePet(p);
         //p.setId(1L);

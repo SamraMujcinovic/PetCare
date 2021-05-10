@@ -140,4 +140,23 @@ public class NotificationController {
         }
     }
 
+    @RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
+    @DeleteMapping("/notifications/delete/{userID}/{id}")
+    public ResponseMessage deleteNotification(@PathVariable(value = "userID") Long userID, @PathVariable(value = "id") Long id, @CurrentUser UserPrincipal currentUser){
+
+        //pronalazak role trenutnog korisnika
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        boolean hasAdminRole = authentication.getAuthorities().stream()
+                .anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN"));
+
+        //admini
+        if(hasAdminRole){
+            return notificationService.deleteAdminNotification(id, currentUser);
+        }
+        //user
+        else {
+            return notificationService.deleteUserNotification(userID, id, currentUser);
+        }
+    }
+
 }
