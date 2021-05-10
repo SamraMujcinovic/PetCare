@@ -10,6 +10,7 @@ import ba.unsa.etf.nwt.adopt_service.response.ResponseMessage;
 import ba.unsa.etf.nwt.adopt_service.security.CurrentUser;
 import ba.unsa.etf.nwt.adopt_service.security.UserPrincipal;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -208,7 +209,6 @@ public class AddPetRequestService {
         RestTemplate restTemplate = new RestTemplate();
 
         if(!addPetRequest.isApproved()) {
-
             try {
 
                 HttpHeaders headers = new HttpHeaders();
@@ -224,23 +224,33 @@ public class AddPetRequestService {
             } catch (Exception ue) {
                 throw new ResourceNotFoundException("Can't connect to pet_category_service and delete a pet!");
             }
-        }
 
-        try {
+            try {
 
-            HttpHeaders headers = new HttpHeaders();
-            headers.set("Authorization", token);
+                HttpHeaders headers = new HttpHeaders();
+                headers.set("Authorization", token);
 
-            HttpEntity<String> entityReq = new HttpEntity<>("", headers);
+                HttpEntity<String> entityReq = new HttpEntity<>("", headers);
 
-            ResponseEntity<ResponseMessage> responseMessage = restTemplate.exchange(communicationsService.getUri("notification_service")
-                            + "/notifications/add/not-approved/add-pet-request/" + addPetRequest.getUserID() + "/" + addPetRequest.getId(),
-                    HttpMethod.GET ,entityReq, ResponseMessage.class);
+                ResponseEntity<ResponseMessage> responseMessage = restTemplate.exchange(communicationsService.getUri("notification_service")
+                                + "/notifications/add/not-approved/add-pet-request/" + addPetRequest.getUserID() + "/" + addPetRequest.getId(),
+                        HttpMethod.GET ,entityReq, ResponseMessage.class);
 
-            System.out.println(responseMessage.getBody().getMessage());
-        } catch (Exception ue){
-            System.out.println("Can't connect to notification_service!");
-        }
+                System.out.println(responseMessage.getBody().getMessage());
+            } catch (Exception ue){
+                System.out.println("Can't connect to notification_service!");
+            }
+
+            //ne bi trebalo da ikad postoji ovih zahtjeva
+            //ali za svaki slucaj se brisu
+            communicationsService.deleteForAdopt(token, addPetRequest.getNewPetID());
+
+        }// else {
+
+            //adoptionRequestService.findAndDeleteAdoptionRequest(token, addPetRequest.getNewPetID());
+
+            //communicationsService.deleteForAdopt(token, addPetRequest.getNewPetID());
+        //}
 
         addPetRequestRepository.deleteById(id);
 
@@ -250,8 +260,6 @@ public class AddPetRequestService {
     public ResponseMessage setNotApproved(String token, Long id){
         AddPetRequest addPetRequest = addPetRequestRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Request not found!"));
-
-        addPetRequest.setApproved(false);
 
         RestTemplate restTemplate = new RestTemplate();
 
@@ -271,6 +279,7 @@ public class AddPetRequestService {
             System.out.println("Can't connect to notification_service!");
         }
 
+        addPetRequest.setApproved(false);
         addPetRequestRepository.save(addPetRequest);
 
         return new ResponseMessage(true, HttpStatus.OK, "You didn't approve this request!");
@@ -279,8 +288,6 @@ public class AddPetRequestService {
     public ResponseMessage setApproved(String token, Long id){
         AddPetRequest addPetRequest = addPetRequestRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Request not found!"));
-
-        addPetRequest.setApproved(true);
 
         //poziva se ruta iz pet servisa da se i tamo odobri..
 
@@ -319,6 +326,7 @@ public class AddPetRequestService {
             System.out.println("Can't connect to notification_service!");
         }
 
+        addPetRequest.setApproved(true);
         addPetRequestRepository.save(addPetRequest);
 
         return new ResponseMessage(true, HttpStatus.OK, "This request has been approved!");
@@ -330,35 +338,44 @@ public class AddPetRequestService {
     }
 
     public void findAndDeleteAddPetRequest(String token, Long id){
-        try {
+        //try {
 
-            AddPetRequest addPetRequest = addPetRequestRepository.findByNewPetID(id)
-                    .orElseThrow(() -> new ResourceNotFoundException("Request not found!"));
+            List<AddPetRequest> addPetRequests =
+                    addPetRequestRepository.findAllByNewPetID(id);
 
-            RestTemplate restTemplate = new RestTemplate();
+            //AddPetRequest addPetRequest = addPetRequestRepository.findByNewPetID(id)
+              //      .orElseThrow(() -> new ResourceNotFoundException("Request not found!"));
 
-            try {
+            for(AddPetRequest addPetRequest : addPetRequests) {
 
-                HttpHeaders headers = new HttpHeaders();
-                headers.set("Authorization", token);
+                if (!addPetRequest.isApproved()) {
 
-                HttpEntity<String> entityReq = new HttpEntity<>("", headers);
+                    RestTemplate restTemplate = new RestTemplate();
 
-                ResponseEntity<ResponseMessage> responseMessage = restTemplate.exchange(communicationsService.getUri("notification_service")
-                                + "/notifications/add/not-approved/add-pet-request/" + addPetRequest.getUserID() + "/" + addPetRequest.getId(),
-                        HttpMethod.GET ,entityReq, ResponseMessage.class);
+                    try {
 
-                System.out.println(responseMessage.getBody().getMessage());
-            } catch (Exception ue){
-                System.out.println("Can't connect to notification_service!");
+                        HttpHeaders headers = new HttpHeaders();
+                        headers.set("Authorization", token);
+
+                        HttpEntity<String> entityReq = new HttpEntity<>("", headers);
+
+                        ResponseEntity<ResponseMessage> responseMessage = restTemplate.exchange(communicationsService.getUri("notification_service")
+                                        + "/notifications/add/not-approved/add-pet-request/" + addPetRequest.getUserID() + "/" + addPetRequest.getId(),
+                                HttpMethod.GET, entityReq, ResponseMessage.class);
+
+                        System.out.println(responseMessage.getBody().getMessage());
+                    } catch (Exception ue) {
+                        System.out.println("Can't connect to notification_service!");
+                    }
+                }
+
+                addPetRequestRepository.deleteById(addPetRequest.getId());
             }
 
-            addPetRequestRepository.deleteById(addPetRequest.getId());
-
-        } catch (ResourceNotFoundException e){
+        /*} catch (ResourceNotFoundException e){
             //ne treba nista da se desi
             System.out.println(e.getMessage());
-        }
+        }*/
     }
 
 }

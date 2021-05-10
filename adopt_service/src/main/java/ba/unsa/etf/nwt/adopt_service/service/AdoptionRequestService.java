@@ -11,6 +11,7 @@ import ba.unsa.etf.nwt.adopt_service.response.ResponseMessage;
 import ba.unsa.etf.nwt.adopt_service.security.CurrentUser;
 import ba.unsa.etf.nwt.adopt_service.security.UserPrincipal;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -144,36 +145,46 @@ public class AdoptionRequestService {
 
             RestTemplate restTemplate = new RestTemplate();
 
-            try {
+            if(adoptionRequest.isApproved()) {
+                try {
 
-                HttpHeaders headers = new HttpHeaders();
-                headers.set("Authorization", token);
+                    HttpHeaders headers = new HttpHeaders();
+                    headers.set("Authorization", token);
 
-                HttpEntity<String> entityReq = new HttpEntity<>("", headers);
+                    HttpEntity<String> entityReq = new HttpEntity<>("", headers);
 
-                ResponseEntity<ResponseMessage> responseMessage = restTemplate.exchange(communicationsService.getUri("pet_category_service")
-                                + "/pet?id=" + adoptionRequest.getPetID(),
-                        HttpMethod.DELETE ,entityReq, ResponseMessage.class);
+                    ResponseEntity<ResponseMessage> responseMessage = restTemplate.exchange(communicationsService.getUri("pet_category_service")
+                                    + "/pet?id=" + adoptionRequest.getPetID(),
+                            HttpMethod.DELETE, entityReq, ResponseMessage.class);
 
-                System.out.println(responseMessage.getBody().getMessage());
-            } catch (Exception ue){
-                throw new ResourceNotFoundException("Can't connect to pet_category_service and delete a pet!");
-            }
+                    System.out.println(responseMessage.getBody().getMessage());
+                } catch (Exception ue) {
+                    throw new ResourceNotFoundException("Can't connect to pet_category_service and delete a pet!");
+                }
 
-            try {
+                //addPetRequestService.findAndDeleteAddPetRequest(token, adoptionRequest.getPetID());
 
-                HttpHeaders headers = new HttpHeaders();
-                headers.set("Authorization", token);
+                communicationsService.deleteForAdd(token, adoptionRequest.getPetID());
 
-                HttpEntity<String> entityReq = new HttpEntity<>("", headers);
+            } else {
 
-                ResponseEntity<ResponseMessage> responseMessage = restTemplate.exchange(communicationsService.getUri("notification_service")
-                                + "/notifications/add/not-approved/adopt-request/" + adoptionRequest.getUserID() + "/" + adoptionRequest.getId(),
-                        HttpMethod.GET ,entityReq, ResponseMessage.class);
+                try {
 
-                System.out.println(responseMessage.getBody().getMessage());
-            } catch (Exception ue){
-                System.out.println("Can't connect to notification_service!");
+                    HttpHeaders headers = new HttpHeaders();
+                    headers.set("Authorization", token);
+
+                    HttpEntity<String> entityReq = new HttpEntity<>("", headers);
+
+                    ResponseEntity<ResponseMessage> responseMessage = restTemplate.exchange(communicationsService.getUri("notification_service")
+                                    + "/notifications/add/not-approved/adopt-request/" + adoptionRequest.getUserID() + "/" + adoptionRequest.getId(),
+                            HttpMethod.GET ,entityReq, ResponseMessage.class);
+
+                    System.out.println(responseMessage.getBody().getMessage());
+                } catch (Exception ue){
+                    System.out.println("Can't connect to notification_service!");
+                }
+
+                //adoptionRequestRepository.delete(adoptionRequest);
             }
 
             adoptionRequestRepository.delete(adoptionRequest);
@@ -234,8 +245,6 @@ public class AdoptionRequestService {
         AdoptionRequest adoptionRequest = adoptionRequestRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Request not found!"));
 
-        adoptionRequest.setApproved(false);
-
         RestTemplate restTemplate = new RestTemplate();
 
         try {
@@ -254,6 +263,7 @@ public class AdoptionRequestService {
             System.out.println("Can't connect to notification_service!");
         }
 
+        adoptionRequest.setApproved(false);
         adoptionRequestRepository.save(adoptionRequest);
 
         return new ResponseMessage(true, HttpStatus.OK, "You didn't approve this request!");
@@ -262,8 +272,6 @@ public class AdoptionRequestService {
     public ResponseMessage setApproved(String token, Long id){
         AdoptionRequest adoptionRequest = adoptionRequestRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Request not found!"));
-
-        adoptionRequest.setApproved(true);
 
         //poziva se ruta iz pet servisa da se i tamo odobri..
 
@@ -303,6 +311,7 @@ public class AdoptionRequestService {
             System.out.println("Can't connect to notification_service!");
         }
 
+        adoptionRequest.setApproved(true);
         adoptionRequestRepository.save(adoptionRequest);
 
         //ResponseMessage responseMessage = deleteAdoptionRequestsByPetID(adoptionRequest.getPetID());
@@ -350,35 +359,43 @@ public class AdoptionRequestService {
     }
 
     public void findAndDeleteAdoptionRequest(String token, Long id){
-        try {
+        //try {
 
-            AdoptionRequest adoptionRequest = adoptionRequestRepository.findByPetID(id)
-                    .orElseThrow(() -> new ResourceNotFoundException("Request not found!"));
+            List<AdoptionRequest> adoptionRequests =
+                    adoptionRequestRepository.findAllByPetID(id);
+
+            //AdoptionRequest adoptionRequest = adoptionRequestRepository.findByPetID(id)
+              //      .orElseThrow(() -> new ResourceNotFoundException("Request not found!"));
 
             RestTemplate restTemplate = new RestTemplate();
 
-            try {
+            for(AdoptionRequest adoptionRequest : adoptionRequests) {
 
-                HttpHeaders headers = new HttpHeaders();
-                headers.set("Authorization", token);
+                if (!adoptionRequest.isApproved()) {
+                    try {
 
-                HttpEntity<String> entityReq = new HttpEntity<>("", headers);
+                        HttpHeaders headers = new HttpHeaders();
+                        headers.set("Authorization", token);
 
-                ResponseEntity<ResponseMessage> responseMessage = restTemplate.exchange(communicationsService.getUri("notification_service")
-                                + "/notifications/add/not-approved/adopt-request/" + adoptionRequest.getUserID() + "/" + adoptionRequest.getId(),
-                        HttpMethod.GET ,entityReq, ResponseMessage.class);
+                        HttpEntity<String> entityReq = new HttpEntity<>("", headers);
 
-                System.out.println(responseMessage.getBody().getMessage());
-            } catch (Exception ue){
-                System.out.println("Can't connect to notification_service!");
+                        ResponseEntity<ResponseMessage> responseMessage = restTemplate.exchange(communicationsService.getUri("notification_service")
+                                        + "/notifications/add/not-approved/adopt-request/" + adoptionRequest.getUserID() + "/" + adoptionRequest.getId(),
+                                HttpMethod.GET, entityReq, ResponseMessage.class);
+
+                        System.out.println(responseMessage.getBody().getMessage());
+                    } catch (Exception ue) {
+                        System.out.println("Can't connect to notification_service!");
+                    }
+                }
+
+                adoptionRequestRepository.deleteById(adoptionRequest.getId());
             }
 
-            adoptionRequestRepository.deleteById(adoptionRequest.getId());
-
-        } catch (ResourceNotFoundException e){
+        //} catch (ResourceNotFoundException e){
             //ne treba nista da se desi
-            System.out.println(e.getMessage());
-        }
+          //  System.out.println(e.getMessage());
+        //}
     }
 
 }
