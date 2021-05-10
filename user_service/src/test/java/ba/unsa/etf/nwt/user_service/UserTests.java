@@ -199,7 +199,7 @@ public class UserTests {
 
         String token = "Bearer " + getUserToken();
 
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/user/update")
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/user/update")
                 .header(HttpHeaders.AUTHORIZATION, token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(newUserInfo);
@@ -225,7 +225,7 @@ public class UserTests {
 
         String token = "Bearer " + getUserToken();
 
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/user/update")
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/user/update")
                 .header(HttpHeaders.AUTHORIZATION, token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(newUserInfo);
@@ -257,7 +257,7 @@ public class UserTests {
         addUser();
         String token = "Bearer " + getUserToken();
 
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/user/update")
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/user/update")
                 .header(HttpHeaders.AUTHORIZATION, token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(newUserInfo);
@@ -288,7 +288,7 @@ public class UserTests {
 
         String token = "Bearer " + getUserToken();
 
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/user/update")
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/user/update")
                 .header(HttpHeaders.AUTHORIZATION, token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(newUserInfo);
@@ -320,7 +320,7 @@ public class UserTests {
 
         String token = "Bearer " + getUserChangedToken();
 
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/user/update")
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/user/update")
                 .header(HttpHeaders.AUTHORIZATION, token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(newUserInfo);
@@ -352,7 +352,7 @@ public class UserTests {
 
         String token = "Bearer " + getUserChangedToken();
 
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/user/update")
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/user/update")
                 .header(HttpHeaders.AUTHORIZATION, token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(newUserInfo);
