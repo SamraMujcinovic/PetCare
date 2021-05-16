@@ -1,8 +1,10 @@
 package ba.unsa.etf.nwt.user_service.security;
 
+import ba.unsa.etf.nwt.user_service.service.CommunicationsService;
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.security.core.Authentication;
@@ -13,6 +15,9 @@ import java.util.Date;
 @RefreshScope
 public class JwtTokenProvider {
     private static final Logger logger = LoggerFactory.getLogger(JwtTokenProvider.class);
+
+    @Autowired
+    private CommunicationsService communicationsService;
 
     @Value("${app.jwtSecret: SecretKeyForJWTs}")
     private String jwtSecret;
@@ -47,7 +52,8 @@ public class JwtTokenProvider {
     public boolean validateToken(String authToken) {
         try {
             Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);
-            return true;
+            return communicationsService.isValidToken(jwtSecret, authToken);
+            //return true;
         } catch (SignatureException ex) {
             logger.error("Invalid JWT signature");
         } catch (MalformedJwtException ex) {

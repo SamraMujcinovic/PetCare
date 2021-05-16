@@ -2,15 +2,19 @@ package ba.unsa.etf.nwt.user_service.controller;
 
 import ba.unsa.etf.nwt.user_service.exception.ResourceNotFoundException;
 import ba.unsa.etf.nwt.user_service.exception.WrongInputException;
+import ba.unsa.etf.nwt.user_service.model.InvalidTokens;
 import ba.unsa.etf.nwt.user_service.model.Question;
 import ba.unsa.etf.nwt.user_service.model.User;
 import ba.unsa.etf.nwt.user_service.model.roles.Role;
 import ba.unsa.etf.nwt.user_service.model.roles.RoleName;
 import ba.unsa.etf.nwt.user_service.request.LoginRequest;
 import ba.unsa.etf.nwt.user_service.request.RegistrationRequest;
+import ba.unsa.etf.nwt.user_service.request.password_requests.PasswordQuestionRequest;
 import ba.unsa.etf.nwt.user_service.response.JwtAuthenticationResponse;
 import ba.unsa.etf.nwt.user_service.response.ResponseMessage;
+import ba.unsa.etf.nwt.user_service.security.CurrentUser;
 import ba.unsa.etf.nwt.user_service.security.JwtTokenProvider;
+import ba.unsa.etf.nwt.user_service.security.UserPrincipal;
 import ba.unsa.etf.nwt.user_service.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,11 +23,13 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.Collections;
@@ -53,6 +59,9 @@ public class AuthController {
     private AuthenticationManager authenticationManager;
 
     private final CommunicationsService communicationsService;
+
+    @Autowired
+    private InvalidTokensService invalidTokensService;
 
     public AuthController(AuthenticationManager authenticationManager, UserService userService, RoleService roleService, PasswordEncoder passwordEncoder, JwtTokenProvider tokenProvider, QuestionService questionService, AnswerService answerService, CommunicationsService communicationsService) {
         this.authenticationManager = authenticationManager;
@@ -139,6 +148,32 @@ public class AuthController {
     @PostMapping("/login/token")
     public String getJustToken(@Valid @RequestBody LoginRequest loginRequest) {
         return login(loginRequest).getAccessToken();
+    }
+
+    @RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
+    @PostMapping("/logout")
+    public ResponseMessage logout(@RequestHeader("Authorization") String token,
+                                  @Valid @RequestBody PasswordQuestionRequest request,
+                                  @CurrentUser UserPrincipal currentUser){
+
+        //svi korisnici se mogu odjaviti samo sa vlastitih profila
+        if(!currentUser.getEmail().equals(request.getEmail())){
+            throw new WrongInputException("Email not the same as current users!");
+        }
+
+        String newInvalidToken = "";
+
+        if (StringUtils.hasText(token) && token.startsWith("Bearer ")) {
+            newInvalidToken = token.substring(7, token.length());
+        }
+
+        InvalidTokens invalidToken = new InvalidTokens();
+        invalidToken.setToken(newInvalidToken);
+
+        invalidTokensService.addToken(invalidToken);
+
+        return new ResponseMessage(true, HttpStatus.OK,
+                "You have successfully logout from your account!");
     }
 
 }
