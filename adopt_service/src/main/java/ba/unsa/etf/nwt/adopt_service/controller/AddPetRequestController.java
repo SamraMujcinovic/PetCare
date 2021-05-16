@@ -48,6 +48,7 @@ public class AddPetRequestController {
         return addPetRequestService.addAddPetRequestLocal(addPetRequest);
     }
 
+    //TODO admini imaju pravo ispisa svih requsta, dok useri samo njegovih, popraviti...
     @RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
     @GetMapping("/add-pet-request/user/{userID}")
     public List<AddPetRequest> getAddPetRequestByUserID(@PathVariable Long userID, @CurrentUser UserPrincipal currentUser) {
@@ -89,6 +90,7 @@ public class AddPetRequestController {
     }
 
     //brisanje requesta
+    //TODO razgraniciti brisanje za admina i usera, ako user uopste bude imao pravo brisanja svojih requesta
     @RolesAllowed("ROLE_ADMIN")
     @DeleteMapping("/add-pet-request/{id}")
     public ResponseMessage deleteAddPetRequestByID(@RequestHeader("Authorization") String token, @PathVariable Long id) {
@@ -96,7 +98,7 @@ public class AddPetRequestController {
         return addPetRequestService.deleteAddPetRequest(token, id);
     }
 
-    //omoguceno je useru da svoje requeste brise
+    //omoguceno je useru da svoje requeste brise (SVE)
     @RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
     @DeleteMapping("/add-pet-request/user/{userID}")
     public ResponseMessage deleteAddPetRequestsByUserID(@PathVariable Long userID, @CurrentUser UserPrincipal currentUser) {
@@ -120,6 +122,7 @@ public class AddPetRequestController {
     }
 
     //brisanje svih requesta ukoliko je vezan za istog peta
+    //vjerovatno se nece koristiti
     @RolesAllowed("ROLE_ADMIN")
     @DeleteMapping("/add-pet-request/pet/{newPetID}")
     public ResponseMessage deleteAddPetRequestsByNewPetID(@PathVariable Long newPetID) {

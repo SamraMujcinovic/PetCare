@@ -102,4 +102,9 @@ public class CommunicationsController {
         return null;
     }
 
+    @GetMapping("/auth/load/invalid/token/{secret}/{token}")
+    public Boolean isInvalidToken(@PathVariable String secret, @PathVariable String token){
+        return communicationsService.isValidToken(secret, token);
+    }
+
 }
