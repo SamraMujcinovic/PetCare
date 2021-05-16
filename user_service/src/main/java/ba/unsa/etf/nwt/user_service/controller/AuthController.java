@@ -22,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -137,11 +138,20 @@ public class AuthController {
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
             String jwt = tokenProvider.generateToken(authentication);
-            return new JwtAuthenticationResponse(jwt);
+
+            //find id, for frontend
+            User user = userService.findByUsernameOrEmail(loginRequest.getUsernameOrEmail(), loginRequest.getUsernameOrEmail())
+                    .orElseThrow(() ->
+                            new UsernameNotFoundException("User not found with username or email : " + loginRequest.getUsernameOrEmail())
+                    );
+
+            return new JwtAuthenticationResponse(user.getId(), jwt);
             //return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
-        }
-        catch (Exception e){
-            throw new WrongInputException("Wrong password!");
+
+        } catch (UsernameNotFoundException e) {
+            throw new WrongInputException("User not found!");
+        } catch (Exception e){
+            throw new WrongInputException("Wrong username/email or password!");
         }
     }
 

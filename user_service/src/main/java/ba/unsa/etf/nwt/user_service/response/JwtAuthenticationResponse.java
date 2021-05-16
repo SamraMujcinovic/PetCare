@@ -1,10 +1,12 @@
 package ba.unsa.etf.nwt.user_service.response;
 
 public class JwtAuthenticationResponse {
+    private Long userId;
     private String accessToken;
     private String tokenType = "Bearer";
 
-    public JwtAuthenticationResponse(String accessToken) {
+    public JwtAuthenticationResponse(Long userId, String accessToken) {
+        this.userId = userId;
         this.accessToken = accessToken;
     }
 
@@ -22,5 +24,13 @@ public class JwtAuthenticationResponse {
 
     public void setTokenType(String tokenType) {
         this.tokenType = tokenType;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 }
