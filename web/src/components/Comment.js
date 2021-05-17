@@ -1,5 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import Reply from './Reply'
 
 import '../assets/scss/comment.scss'
 
@@ -18,25 +19,24 @@ class Comment extends React.Component {
       replyCommentId: -1,
       comments: [
         {id: 1, user: "landiggity", title: "Title 1", content: "This is my first comment on this forum"},
-        {id: 2, user: "scarlett-jo", title:"Title 2", content: "That's a mighty fine comment you've got there my good looking fellow..."},
-        {id: 3, user: "rosco", title:"Tile 3", content: "What is the meaning of all of this 'React' mumbo-jumbo?"}
+        {id: 13, user: "scarlett-jo", title:"Title 2", content: "That's a mighty fine comment you've got there my good looking fellow..."},
+        {id: 222, user: "rosco", title:"Tile 3", content: "What is the meaning of all of this 'React' mumbo-jumbo?"}
       ],
 
       reply: [
-        {id: 1, user: "landiggity", commentID: 2, content: "Text1"},
+        {id: 1, user: "landiggity", commentID: 222, content: "Text1"},
         {id: 2, user: "scarlett-jo", commentID: 1, content: "text2"},
-        {id: 3, user: "rosco", commentID: 2, content: "text 3"}
-    
-      ]
+        {id: 3, user: "rosco", commentID: 222, content: "text 3"}
+      ],
+
+      errors: {}
     };
 
     this.toggleComment = this.toggleComment.bind(this);
     this.handleCommentChange = this.handleCommentChange.bind(this);
+    this.handleValidationComment = this.handleValidationComment.bind(this);
     this.submitComment = this.submitComment.bind(this);
     this.toggleReply = this.toggleReply.bind(this);
-    this.handleReplyChange = this.handleReplyChange.bind(this);
-    this.submitReply = this.submitReply.bind(this);
-
   }
 
   toggleComment(event) {
@@ -45,21 +45,53 @@ class Comment extends React.Component {
         addComment: !this.state.addComment
     });
   }
-
+  
   handleCommentChange(event) {
     const value = event.target.value;
     this.setState({
         ...this.state,
         [event.target.name]: value
     });
-}
-
-  submitComment(event) {
-    alert('Comment: ' + this.state.commentTitle + '    ' + this.state.commentContent);
-    event.preventDefault();
   }
 
-  toggleReply(event, clickedId) {
+  handleValidationComment(){
+    let errors = {};
+    let formIsValid = true;
+
+    //commentTitle
+    if(!this.state.commentTitle){
+      formIsValid = false;
+      errors["commentTitle"] = "Title can't be blank!";
+   }
+
+    else if(this.state.commentTitle.length < 2 || this.state.commentTitle.length > 100 ){
+      formIsValid = false;
+      errors["commentTitle"] = "Title must be between 2 and 100 characters!";
+    }
+
+    //commentContent
+    if(!this.state.commentTitle){
+      formIsValid = false;
+      errors["commentContent"] = "Content can't be blank!";
+   }
+
+    else if(this.state.commentTitle.length < 2 || this.state.commentTitle.length > 1000 ){
+      formIsValid = false;
+      errors["commentContent"] = "Content must be between 2 and 1000 characters!";
+    }
+
+    this.setState({errors: errors});
+    return formIsValid;
+  }
+
+  submitComment(event) {
+    event.preventDefault();
+    if (this.handleValidationComment()) {
+      }
+    else return;
+  }
+
+  toggleReply(clickedId) {
     if(this.state.replyCommentId === -1) {
       this.setState({
         ...this.state,
@@ -80,7 +112,6 @@ class Comment extends React.Component {
         replyCommentId: clickedId
       });
     }
-    event.preventDefault();
   }
 
   handleReplyChange(event) {
@@ -90,12 +121,7 @@ class Comment extends React.Component {
         [event.target.name]: value
     });
     event.preventDefault();
-}
-
-  submitReply(event, clickedId) {
-    alert('Reply: ' + clickedId);
-    event.preventDefault();
-  }
+  } 
 
     render () {
       return(
@@ -128,7 +154,7 @@ class Comment extends React.Component {
                             <h5> {reply.user} </h5>
                           </div>
                         </div>
-                        <p className="pt-5 pb-6">  {reply.content} </p>
+                        <p className="pt-5 pb-6"> {reply.content} </p>
                       </div>
                     }
                   </div>
@@ -139,12 +165,8 @@ class Comment extends React.Component {
                 </div>
                <div className="add-reply">
                   { this.state.addReply && this.state.replyCommentId === comment.id &&
-                    <div className="reply-area">
-                      <form className={"form"} >
-                        <textarea type="text" name="replyContent" value={this.state.replyContent} onChange={this.handleReplyChange} placeholder="Content"/>
-                        <br/>
-                        <input type="submit" onClick = {() => this.submitReply(comment.id)} value="Submit" className="btn px-6 py-3 bg-red-500 text-white text-center margin-auto mt-8 buttons"/>
-                      </form>
+                    <div>
+                      <Reply commentId={comment.id}></Reply>
                     </div>
                   }
                 </div>
@@ -159,8 +181,10 @@ class Comment extends React.Component {
                 <div className="comment-area">
                   <form className={"form"} onSubmit={this.submitComment}>
                     <input type="text" name="commentTitle" value={this.state.commentTitle} onChange={this.handleCommentChange} placeholder="Title"/>
+                    <span className={"error"}>{this.state.errors["commentTitle"]}</span>
                     <br/>
                     <textarea type="text" name="commentContent"  value={this.state.commentContent} onChange={this.handleCommentChange} placeholder="Content"/>
+                    <span className={"error"}>{this.state.errors["commentContent"]}</span>
                     <br/>
                     <input type="submit" value="Submit" className="btn px-6 py-3 bg-red-500 text-white text-center margin-auto mt-8 buttons"/>
                   </form>

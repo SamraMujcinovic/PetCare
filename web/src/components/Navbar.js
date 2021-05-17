@@ -1,12 +1,14 @@
 import React, {useContext, useState, useEffect} from 'react'
-import { useLocation, NavLink, Link} from 'react-router-dom'
+import { useLocation, NavLink, Link, useHistory} from 'react-router-dom'
 import { useAuth0 } from '@auth0/auth0-react'
 import {StoreContext} from '../context/index'
+import axios from "axios";
+import { getToken, getUser, logoutUser } from "../utilities/Common";
 
 import '../assets/scss/other.scss'
 
 const LoginButton = () => {
-    const { loginWithRedirect } = useAuth0()
+    
     return (
         <Link to="/login" >
             <button className="flex text-2xl items-center lg:text-xl gap-3 shadow-none login-btn" >
@@ -18,7 +20,40 @@ const LoginButton = () => {
 }
 
 const LogoutButton = () => {
-    const { logout } = useAuth0();
+    const [email, setEmail] = useState("")
+    const history = useHistory()
+    
+    useEffect(() => {
+        axios.get(
+          "http://localhost:8088/user_service_api/user/me",
+            {
+              headers: {
+                Authorization: "Bearer " + getToken(),
+              },
+            }
+          )
+        .then((response) => {
+            setEmail(response.data.email)
+        })}
+    )
+
+    const logout = () => {
+        axios.post('http://localhost:8088/user_service_api/api/auth/logout', 
+            {
+              email: email
+            }, 
+            { 
+              headers: {
+                Authorization: "Bearer " + getToken(),
+              },  
+            }).then(res => {
+                logoutUser()
+                history.push("/");
+          }).catch(error => {
+              console.log(error);
+          });
+        
+    }
   
     return (
       <button className="flex text-2xl items-center lg:text-xl gap-3" onClick={() => logout({ returnTo: window.location.origin })}>
@@ -82,8 +117,8 @@ function Navbar() {
                     <div className="hidden lg:flex gap-8">
                         {/*<CartButton items={amount}/>*/}
                         {
-                            //isAuthenticated ? <LogoutButton/> : <LoginButton/>
-                            <LoginButton/>
+                            getToken() ? <LogoutButton/> : <LoginButton/>
+                           // <LoginButton/>
                         }
                     </div>
                     <button onClick={() => setMobileMenuOpen(true)} className="btn-lg lg:hidden border-0 bg-transparent text-red-500">
@@ -117,8 +152,8 @@ function Navbar() {
                     <div className="mt-10 flex gap-8 justify-center">
                             {/*<CartButton items={amount}/>*/}
                             {
-                                <LoginButton/>
-                                //isAuthenticated ? <LogoutButton/> : <LoginButton/>
+                                //<LoginButton/>
+                                getToken() ? <LogoutButton/> : <LoginButton/>
                             }
                     </div>
                 </div>

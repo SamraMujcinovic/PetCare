@@ -20,6 +20,9 @@ class AddPet extends React.Component {
         category: this.category[0],
         message: '',
         adopted: false,
+        selectedFile: null,
+        isFilePicked: false,
+        errors: {}
       };
   
       this.handleChange = this.handleChange.bind(this);
@@ -60,6 +63,12 @@ class AddPet extends React.Component {
                     <br/>
                     <input type="text" name="age" value={this.state.age} onChange={this.handleChange} placeholder="Age"/>
                     <br/>
+                    <input type="file" name="file"  accept="image/*" id="upload-button" style={{display: 'none'}} onChange={this.handleChange} />
+                    <label htmlFor="upload-button" style={{zIndex: 1000}}>
+                        <div aria-label="upload picture" className="btn px-6 py-2 bg-red-500 text-white text-center margin-auto mt-8 imageInput">
+                          Import image
+                        </div>
+                    </label>
                     <Dropdown className={"dropdown"} options={this.category} name="question" onChange={this.handleCategoryChange} value={this.state.category} placeholder="Select an option" />
                     <br/>
                     <textarea type="text" name="message" value={this.state.message} onChange={this.handleChange} placeholder="Message"/>
