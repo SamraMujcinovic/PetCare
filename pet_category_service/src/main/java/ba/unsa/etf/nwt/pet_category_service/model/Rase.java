@@ -21,7 +21,7 @@ public class Rase {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
-    @JsonIgnore
+    //@JsonIgnore
     private Long id;
 
     @NotBlank(message = "Rase name can't be blank!")

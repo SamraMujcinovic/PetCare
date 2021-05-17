@@ -21,6 +21,7 @@ import java.util.List;
 public class AdoptionRequestController {
     private final AdoptionRequestService adoptionRequestService;
 
+    //ruta vjerovatno nece biti koristena
     @RolesAllowed("ROLE_ADMIN")
     @GetMapping("/adoption-request")
     public List<AdoptionRequest> getAdoptionRequests() {
@@ -44,16 +45,16 @@ public class AdoptionRequestController {
 
     @RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
     @GetMapping("/adoption-request/user/{userID}")
-    public List<AdoptionRequest> getAdoptionRequestByUserID(@PathVariable Long userID, @CurrentUser UserPrincipal currentUser) {
+    public List<AdoptionRequest> getAdoptionRequests(@PathVariable Long userID, @CurrentUser UserPrincipal currentUser) {
 
         //pronalazak role trenutnog korisnika
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         boolean hasAdminRole = authentication.getAuthorities().stream()
                 .anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN"));
 
-        //svi admini i samo useri ciji je request imaju pravo pregleda istog
+        //svim adminima se vracaju svi requestovi
         if(hasAdminRole){
-            return adoptionRequestService.getAdoptionRequestByUserID(userID);
+            return adoptionRequestService.getAdoptionRequest();
         }
 
         //korisnici mogu obrisati samo vlastite requeste
@@ -89,7 +90,9 @@ public class AdoptionRequestController {
         return adoptionRequestService.deleteAdoptionRequestByID(token, id);
     }
 
-    @RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
+    //brisanje svih requesta nekog usera
+    //nece se koristiti, nije povezano sa pet_category_service
+    /*@RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
     @DeleteMapping("/adoption-request/user/{userID}")
     public ResponseMessage deleteAdoptionRequestsByUserID(@PathVariable Long userID, @CurrentUser UserPrincipal currentUser) {
 
@@ -109,7 +112,7 @@ public class AdoptionRequestController {
         }
 
         return adoptionRequestService.deleteAdoptionRequestsByUserID(userID);
-    }
+    }*/
 
     //kada je neki pet adoptan, svi ostali zahtjevi sa tim idem se brisu
     //treba se poslat notif userima da je zahtjev neprihvacen, prije brisanja

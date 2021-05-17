@@ -18,7 +18,7 @@ public class AddPetRequest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonIgnore
+    //@JsonIgnore
     private Long id;
 
     @NotNull(message = "User ID can't be null.")

@@ -21,7 +21,7 @@ public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
-    @JsonIgnore
+    //@JsonIgnore
     private Long id;
 
     @NotBlank(message = "Category name can't be blank!")

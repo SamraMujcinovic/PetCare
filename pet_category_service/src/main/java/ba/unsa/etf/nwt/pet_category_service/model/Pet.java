@@ -20,7 +20,7 @@ public class Pet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
-    @JsonIgnore
+    //@JsonIgnore
     private Long id;
 
     @NotBlank(message = "Pet name can't be blank!")
