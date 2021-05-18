@@ -1,4 +1,4 @@
-package ba.unsa.etf.nwt.user_service.rabbitmq.notification_service;
+package ba.unsa.etf.nwt.notification_service.rabbitmq.consumer;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -3,7 +3,7 @@ package ba.unsa.etf.nwt.user_service.controller;
 import ba.unsa.etf.nwt.user_service.exception.ResourceNotFoundException;
 import ba.unsa.etf.nwt.user_service.exception.WrongInputException;
 import ba.unsa.etf.nwt.user_service.model.User;
-import ba.unsa.etf.nwt.user_service.rabbitmq.comment_service.CommentServiceMessage;
+import ba.unsa.etf.nwt.user_service.rabbitmq.CommentServiceMessage;
 import ba.unsa.etf.nwt.user_service.rabbitmq.MessagingConfig;
 import ba.unsa.etf.nwt.user_service.request.UserProfileRequest;
 import ba.unsa.etf.nwt.user_service.request.UserRequest;

@@ -373,6 +373,12 @@ public class NotificationService {
     //for rabbitmq
     public void contactUsAndRegistrationNotification(Long userID, String content){
 
+        if(userID != -1 && content.equals("Someone filled contact us form, check email!"))
+            throw new WrongInputException("Invalid notification!");
+
+        if(userID == -1 && content.equals("There is a new registered user, check the list of users!"))
+            throw new WrongInputException("Invalid notification!");
+
         Notification newNotification = new Notification();
         newNotification.setContent(content);
         newNotification.setUserID(userID);

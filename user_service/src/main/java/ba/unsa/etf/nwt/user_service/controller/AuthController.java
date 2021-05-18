@@ -8,7 +8,7 @@ import ba.unsa.etf.nwt.user_service.model.User;
 import ba.unsa.etf.nwt.user_service.model.roles.Role;
 import ba.unsa.etf.nwt.user_service.model.roles.RoleName;
 import ba.unsa.etf.nwt.user_service.rabbitmq.MessagingConfig;
-import ba.unsa.etf.nwt.user_service.rabbitmq.notification_service.NotificationServiceMessage;
+import ba.unsa.etf.nwt.user_service.rabbitmq.NotificationServiceMessage;
 import ba.unsa.etf.nwt.user_service.request.LoginRequest;
 import ba.unsa.etf.nwt.user_service.request.RegistrationRequest;
 import ba.unsa.etf.nwt.user_service.request.password_requests.PasswordQuestionRequest;

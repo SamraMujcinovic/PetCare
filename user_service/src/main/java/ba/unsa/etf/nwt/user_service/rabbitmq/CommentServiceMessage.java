@@ -1,4 +1,4 @@
-package ba.unsa.etf.nwt.user_service.rabbitmq.comment_service;
+package ba.unsa.etf.nwt.user_service.rabbitmq;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

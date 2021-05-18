@@ -1,8 +1,11 @@
-package ba.unsa.etf.nwt.notification_service.rabbitmq;
+package ba.unsa.etf.nwt.notification_service.rabbitmq.consumer;
 
+import ba.unsa.etf.nwt.notification_service.rabbitmq.MessagingConfig;
+import ba.unsa.etf.nwt.notification_service.rabbitmq.consumer.NotificationServiceMessage;
 import ba.unsa.etf.nwt.notification_service.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,13 +19,17 @@ public class MessageConsumer {
     @Autowired
     private NotificationService notificationService;
 
-    @Bean
-    public MessageConverter converter(){
-        return new Jackson2JsonMessageConverter();
-    }
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
 
     @RabbitListener(queues = "user_notification_service_queue")
     public void consumeMessageFromQueue(NotificationServiceMessage notificationServiceMessage){
-        notificationService.contactUsAndRegistrationNotification(notificationServiceMessage.getUserId(), notificationServiceMessage.getContent());
+        try {
+            notificationService.contactUsAndRegistrationNotification(notificationServiceMessage.getUserId(), notificationServiceMessage.getContent());
+        } catch (Exception e){
+            //send back message to user_service
+            rabbitTemplate.convertAndSend(MessagingConfig.NOTIFICATION_SERVICE_EXCHANGE,
+                    MessagingConfig.NOTIFICATION_SERVICE_ROUTING_KEY, notificationServiceMessage);
+        }
     }
 }

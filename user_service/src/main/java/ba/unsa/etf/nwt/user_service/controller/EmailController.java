@@ -4,7 +4,7 @@ import ba.unsa.etf.nwt.user_service.email.EmailCfg;
 import ba.unsa.etf.nwt.user_service.email.ContactUsForm;
 import ba.unsa.etf.nwt.user_service.exception.ResourceNotFoundException;
 import ba.unsa.etf.nwt.user_service.rabbitmq.MessagingConfig;
-import ba.unsa.etf.nwt.user_service.rabbitmq.notification_service.NotificationServiceMessage;
+import ba.unsa.etf.nwt.user_service.rabbitmq.NotificationServiceMessage;
 import ba.unsa.etf.nwt.user_service.response.ResponseMessage;
 import ba.unsa.etf.nwt.user_service.service.CommunicationsService;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
