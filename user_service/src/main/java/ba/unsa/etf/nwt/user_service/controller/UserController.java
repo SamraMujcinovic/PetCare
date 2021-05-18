@@ -3,8 +3,8 @@ package ba.unsa.etf.nwt.user_service.controller;
 import ba.unsa.etf.nwt.user_service.exception.ResourceNotFoundException;
 import ba.unsa.etf.nwt.user_service.exception.WrongInputException;
 import ba.unsa.etf.nwt.user_service.model.User;
-import ba.unsa.etf.nwt.user_service.rabbitmq.CommentServiceMessage;
-import ba.unsa.etf.nwt.user_service.rabbitmq.CommentServiceMessagingConfig;
+import ba.unsa.etf.nwt.user_service.rabbitmq.comment_service.CommentServiceMessage;
+import ba.unsa.etf.nwt.user_service.rabbitmq.MessagingConfig;
 import ba.unsa.etf.nwt.user_service.request.UserProfileRequest;
 import ba.unsa.etf.nwt.user_service.request.UserRequest;
 import ba.unsa.etf.nwt.user_service.response.AvailabilityResponse;
@@ -101,8 +101,8 @@ public class UserController {
             //send message to comment_service
             CommentServiceMessage commentServiceMessage = new CommentServiceMessage(user.getUsername(),
                     "This is the username of a user that has been deleted!");
-            rabbitTemplate.convertAndSend(CommentServiceMessagingConfig.COMMENT_SERVICE_EXCHANGE,
-                    CommentServiceMessagingConfig.COMMENT_SERVICE_ROUTING_KEY, commentServiceMessage);
+            rabbitTemplate.convertAndSend(MessagingConfig.USER_SERVICE_EXCHANGE,
+                    MessagingConfig.USER_SERVICE_ROUTING_KEY, commentServiceMessage);
 
             //delete user
             userService.delete(user);

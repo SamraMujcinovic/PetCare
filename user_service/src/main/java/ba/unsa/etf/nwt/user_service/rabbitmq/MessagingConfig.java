@@ -9,20 +9,20 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class CommentServiceMessagingConfig {
+public class MessagingConfig {
 
-    public static final String COMMENT_SERVICE_QUEUE = "comment_service_queue";
-    public static final String COMMENT_SERVICE_EXCHANGE = "comment_service_exchange";
-    public static final String COMMENT_SERVICE_ROUTING_KEY = "comment_service_routing_key";
+    public static final String USER_SERVICE_QUEUE = "user_service_queue";
+    public static final String USER_SERVICE_EXCHANGE = "user_service_exchange";
+    public static final String USER_SERVICE_ROUTING_KEY = "user_service_routing_key";
 
     @Bean
     public Queue queue(){
-        return new Queue(COMMENT_SERVICE_QUEUE);
+        return new Queue(USER_SERVICE_QUEUE);
     }
 
     @Bean
     public TopicExchange exchange(){
-        return new TopicExchange(COMMENT_SERVICE_EXCHANGE);
+        return new TopicExchange(USER_SERVICE_EXCHANGE);
     }
 
     @Bean
@@ -30,7 +30,7 @@ public class CommentServiceMessagingConfig {
         return BindingBuilder
                 .bind(queue)
                 .to(exchange)
-                .with(COMMENT_SERVICE_ROUTING_KEY);
+                .with(USER_SERVICE_ROUTING_KEY);
     }
 
     @Bean

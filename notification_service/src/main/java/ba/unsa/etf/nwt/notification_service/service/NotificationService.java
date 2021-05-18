@@ -370,4 +370,19 @@ public class NotificationService {
 
     }
 
+    //for rabbitmq
+    public void contactUsAndRegistrationNotification(Long userID, String content){
+
+        Notification newNotification = new Notification();
+        newNotification.setContent(content);
+        newNotification.setUserID(userID);
+        newNotification.setRead(false);
+        newNotification.setIsForAdmin(true);
+        newNotification.setIsAddPetRequest(true);
+        newNotification.setRequestId(-1L);
+        newNotification.setCreatedAt(new Date());
+
+        notificationRepository.save(newNotification);
+    }
+
 }

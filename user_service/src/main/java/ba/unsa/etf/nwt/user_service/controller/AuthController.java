@@ -7,6 +7,8 @@ import ba.unsa.etf.nwt.user_service.model.Question;
 import ba.unsa.etf.nwt.user_service.model.User;
 import ba.unsa.etf.nwt.user_service.model.roles.Role;
 import ba.unsa.etf.nwt.user_service.model.roles.RoleName;
+import ba.unsa.etf.nwt.user_service.rabbitmq.MessagingConfig;
+import ba.unsa.etf.nwt.user_service.rabbitmq.notification_service.NotificationServiceMessage;
 import ba.unsa.etf.nwt.user_service.request.LoginRequest;
 import ba.unsa.etf.nwt.user_service.request.RegistrationRequest;
 import ba.unsa.etf.nwt.user_service.request.password_requests.PasswordQuestionRequest;
@@ -16,6 +18,7 @@ import ba.unsa.etf.nwt.user_service.security.CurrentUser;
 import ba.unsa.etf.nwt.user_service.security.JwtTokenProvider;
 import ba.unsa.etf.nwt.user_service.security.UserPrincipal;
 import ba.unsa.etf.nwt.user_service.service.*;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +30,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.annotation.security.RolesAllowed;
@@ -60,6 +62,9 @@ public class AuthController {
     private AuthenticationManager authenticationManager;
 
     private final CommunicationsService communicationsService;
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
 
     @Autowired
     private InvalidTokensService invalidTokensService;
@@ -110,14 +115,20 @@ public class AuthController {
         answerService.save(user.getAnswer());
         User result = userService.save(user);
 
-        RestTemplate restTemplate = new RestTemplate();
+        /*RestTemplate restTemplate = new RestTemplate();
         try {
             ResponseMessage responseMessage = restTemplate.getForObject(communicationsService.getUri("notification_service")
                     + "/notifications/public/add/" + result.getId(), ResponseMessage.class);
             System.out.println(responseMessage.getMessage());
         } catch (Exception ue){
             System.out.println("Can't connect to notification_service!");
-        }
+        }*/
+
+        //send message to notification_service
+        NotificationServiceMessage notificationServiceMessage = new NotificationServiceMessage(user.getId(),
+                "There is a new registered user, check the list of users!");
+        rabbitTemplate.convertAndSend(MessagingConfig.USER_SERVICE_EXCHANGE,
+                MessagingConfig.USER_SERVICE_ROUTING_KEY, notificationServiceMessage);
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentContextPath().path("/users/{username}")
