@@ -37,7 +37,7 @@ public class DatabaseSeeder {
         MainRole r1 = createRole(SectionRoleName.ROLE_CATEGORY);
         MainRole r2 = createRole(SectionRoleName.ROLE_PET);
 
-        Comment c = createComment("user", 1L,"Question", "What kind of dog do you want?", r2);
+        Comment c = createComment("username", 1L,"Question", "What kind of dog do you want?", r2);
 
         Reply rp1 = createReply("alakovic1", c, "Sweet and relaxed, friendly towards everyone.");
 

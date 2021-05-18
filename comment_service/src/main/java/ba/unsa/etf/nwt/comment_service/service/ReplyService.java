@@ -26,9 +26,17 @@ public class ReplyService {
     private final CommentService commentService;
     private final CommunicationsService communicationsService;
 
-    //todo popraviti na asinhrono
+    public void setUsernameOnUnknown(String username){
+        List<Reply> replies = replyRepository.findAllByUsername(username);
+        for(Reply reply : replies){
+            reply.setUsername("UNKNOWN");
+            replyRepository.save(reply);
+        }
+    }
+
+
     public List<Reply> getReply() {
-        try {
+        /*try {
             RestTemplate restTemplate = new RestTemplate();
             List<Reply> replies = replyRepository.findAll();
             for (Reply reply : replies) {
@@ -40,7 +48,9 @@ public class ReplyService {
             return replies;
         } catch (Exception e){
             throw new ResourceNotFoundException ("Can't connect to user_service!");
-        }
+        }*/
+
+        return replyRepository.findAll();
     }
 
     public ResponseMessage addReply(Reply reply, Long commentId, @CurrentUser UserPrincipal currentUser) {

@@ -26,9 +26,16 @@ public class CommentService {
     private final MainRoleService mainRoleService;
     private final CommunicationsService communicationsService;
 
-    //todo promijeniti na asinhronu, kada se na useru izbrise account da se username ovdje automatski postavi na UNKNOWN
+    public void setUsernameOnUnknown(String username){
+        List<Comment> comments = commentRepository.findAllByUsername(username);
+        for(Comment comment : comments){
+            comment.setUsername("UNKNOWN");
+            commentRepository.save(comment);
+        }
+    }
+
     public List<Comment> getComment() {
-        try {
+        /*try {
             RestTemplate restTemplate = new RestTemplate();
             List<Comment> comments = commentRepository.findAll();
             for(Comment comment : comments){
@@ -40,7 +47,9 @@ public class CommentService {
             return comments;
         } catch (Exception e){
             throw new ResourceNotFoundException ("Can't connect to user_service!");
-        }
+        }*/
+
+        return commentRepository.findAll();
     }
 
     public ResponseMessage addComment(Comment comment, Long mainRoleId, @CurrentUser UserPrincipal currentUser) {
@@ -132,7 +141,6 @@ public class CommentService {
         }
     }
 
-    //todo promijeniti na asinhronu, kada se na useru izbrise account da se username ovdje automatski postavi na UNKNOWN
     public List<Comment> getCategoryComment(Long roleType, Long categoryID) {
         RestTemplate restTemplate = new RestTemplate();
 
@@ -149,13 +157,13 @@ public class CommentService {
                 .collect(Collectors.toList());
 
         for(Comment comment : comments){
-            try {
+            /*try {
                 String username = restTemplate.getForObject(communicationsService.getUri("user_service")
                         + "/user/" + comment.getUsername(), String.class);
                 comment.setUsername(username);
             } catch (Exception e){
                 throw new ResourceNotFoundException("Can't connect to user_service!!");
-            }
+            }*/
             try {
                 if (roleName == SectionRoleName.ROLE_PET) {
                     Long categoryId = restTemplate.getForObject(communicationsService.getUri("pet_category_service")
