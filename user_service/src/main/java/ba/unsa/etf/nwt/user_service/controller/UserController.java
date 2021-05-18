@@ -101,8 +101,8 @@ public class UserController {
             //send message to comment_service
             CommentServiceMessage commentServiceMessage = new CommentServiceMessage(user.getUsername(),
                     "This is the username of a user that has been deleted!");
-            rabbitTemplate.convertAndSend(MessagingConfig.USER_SERVICE_EXCHANGE,
-                    MessagingConfig.USER_SERVICE_ROUTING_KEY, commentServiceMessage);
+            rabbitTemplate.convertAndSend(MessagingConfig.USER_COMMENT_SERVICE_EXCHANGE,
+                    MessagingConfig.USER_COMMENT_SERVICE_ROUTING_KEY, commentServiceMessage);
 
             //delete user
             userService.delete(user);

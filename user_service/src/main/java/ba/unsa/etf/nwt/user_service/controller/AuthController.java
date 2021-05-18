@@ -127,8 +127,8 @@ public class AuthController {
         //send message to notification_service
         NotificationServiceMessage notificationServiceMessage = new NotificationServiceMessage(user.getId(),
                 "There is a new registered user, check the list of users!");
-        rabbitTemplate.convertAndSend(MessagingConfig.USER_SERVICE_EXCHANGE,
-                MessagingConfig.USER_SERVICE_ROUTING_KEY, notificationServiceMessage);
+        rabbitTemplate.convertAndSend(MessagingConfig.USER_NOTIFICATION_SERVICE_EXCHANGE,
+                MessagingConfig.USER_NOTIFICATION_SERVICE_ROUTING_KEY, notificationServiceMessage);
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentContextPath().path("/users/{username}")

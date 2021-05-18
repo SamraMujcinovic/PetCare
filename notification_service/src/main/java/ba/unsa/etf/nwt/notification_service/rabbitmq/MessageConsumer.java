@@ -21,7 +21,7 @@ public class MessageConsumer {
         return new Jackson2JsonMessageConverter();
     }
 
-    @RabbitListener(queues = "user_service_queue")
+    @RabbitListener(queues = "user_notification_service_queue")
     public void consumeMessageFromQueue(NotificationServiceMessage notificationServiceMessage){
         notificationService.contactUsAndRegistrationNotification(notificationServiceMessage.getUserId(), notificationServiceMessage.getContent());
     }

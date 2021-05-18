@@ -25,7 +25,7 @@ public class MessageConsumer {
         return new Jackson2JsonMessageConverter();
     }
 
-    @RabbitListener(queues = "user_service_queue")
+    @RabbitListener(queues = "user_comment_service_queue")
     public void consumeMessageFromQueue(CommentServiceMessage commentServiceMessage){
         System.out.println("Message from RabbitMQ: " + commentServiceMessage.getMessage());
         commentService.setUsernameOnUnknown(commentServiceMessage.getUsername());

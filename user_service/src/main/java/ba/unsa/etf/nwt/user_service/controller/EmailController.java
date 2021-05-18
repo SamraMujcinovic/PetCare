@@ -84,8 +84,8 @@ public class EmailController {
             //send message to notification_service
             NotificationServiceMessage notificationServiceMessage = new NotificationServiceMessage(-1L,
                     "Someone filled contact us form, check email!");
-            rabbitTemplate.convertAndSend(MessagingConfig.USER_SERVICE_EXCHANGE,
-                    MessagingConfig.USER_SERVICE_ROUTING_KEY, notificationServiceMessage);
+            rabbitTemplate.convertAndSend(MessagingConfig.USER_NOTIFICATION_SERVICE_EXCHANGE,
+                    MessagingConfig.USER_NOTIFICATION_SERVICE_ROUTING_KEY, notificationServiceMessage);
 
 
             return new ResponseMessage(true, HttpStatus.OK, "You have successfully sent an email!");
