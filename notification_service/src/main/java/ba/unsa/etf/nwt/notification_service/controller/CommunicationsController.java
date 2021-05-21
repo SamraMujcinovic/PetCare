@@ -70,18 +70,18 @@ public class CommunicationsController {
         return notificationService.addNotificationForNewAdoptRequest(userID, requestID);
     }
 
-    @RolesAllowed("ROLE_ADMIN")
-    @GetMapping("/notifications/add/not-approved/add-pet-request/{userID}/{requestID}")
-    public ResponseMessage addNotificationForNotApprovedAddPetRequest(@PathVariable(value = "userID") Long userID,
-                                                                      @PathVariable(value = "requestID") Long requestID){
-        return notificationService.addNotificationForNewAddRequestNotApproved(userID, requestID);
-    }
-
     @RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
     @GetMapping("/notifications/add/add-pet-request/{userID}/{requestID}")
     public ResponseMessage addNotificationForNewAddPetRequest(@PathVariable(value = "userID") Long userID,
                                                              @PathVariable(value = "requestID") Long requestID){
         return notificationService.addNotificationForNewAddPetRequest(userID, requestID);
+    }
+
+    /*@RolesAllowed("ROLE_ADMIN")
+    @GetMapping("/notifications/add/not-approved/add-pet-request/{userID}/{requestID}")
+    public ResponseMessage addNotificationForNotApprovedAddPetRequest(@PathVariable(value = "userID") Long userID,
+                                                                      @PathVariable(value = "requestID") Long requestID){
+        return notificationService.addNotificationForNewAddRequestNotApproved(userID, requestID);
     }
 
     @RolesAllowed("ROLE_ADMIN")
@@ -103,6 +103,6 @@ public class CommunicationsController {
     public ResponseMessage addNotificationForApprovedAdoptRequest(@PathVariable(value = "userID") Long userID,
                                                                      @PathVariable(value = "requestID") Long requestID){
         return notificationService.addNotificationForNewAdoptRequestApproved(userID, requestID);
-    }
+    }*/
 
 }
