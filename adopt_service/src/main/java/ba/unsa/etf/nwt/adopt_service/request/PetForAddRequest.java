@@ -4,23 +4,22 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 
 @AllArgsConstructor
 @NoArgsConstructor
 public class PetForAddRequest {
 
     @Valid
-    private PetRequest petForAdopt;
+    private PetRequest petForAdd;
 
     private String message;
 
-    public PetRequest getPetForAdopt() {
-        return petForAdopt;
+    public PetRequest getPetForAdd() {
+        return petForAdd;
     }
 
-    public void setPetForAdopt(PetRequest petForAdopt) {
-        this.petForAdopt = petForAdopt;
+    public void setPetForAdd(PetRequest petForAdd) {
+        this.petForAdd = petForAdd;
     }
 
     public String getMessage() {

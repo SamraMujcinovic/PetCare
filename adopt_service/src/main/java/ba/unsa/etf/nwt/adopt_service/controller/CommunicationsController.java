@@ -70,7 +70,7 @@ public class CommunicationsController {
     }*/
 
 
-    @PostMapping("/upload/photo")
+    /*@PostMapping("/upload/photo")
     public String uploadPhoto(@RequestParam("file") MultipartFile multipartFile){
 
         String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
@@ -98,8 +98,7 @@ public class CommunicationsController {
             System.out.println(e.getMessage());
         }
 
-        //treba da mi vrati adresu...
         return null;
-    }
+    }*/
 
 }

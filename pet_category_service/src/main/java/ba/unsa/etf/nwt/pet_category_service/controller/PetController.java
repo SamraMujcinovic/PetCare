@@ -6,7 +6,9 @@ import ba.unsa.etf.nwt.pet_category_service.request.PetRequest;
 import ba.unsa.etf.nwt.pet_category_service.response.ResponseMessage;
 import ba.unsa.etf.nwt.pet_category_service.service.PetService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
@@ -72,9 +74,25 @@ public class PetController {
     }
 
     //obicna ruta za dodavanje od strane admina, pettovi su approved
-    @RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
-    @PostMapping("/pet")
-    public ResponseMessage addPet(@Valid @RequestBody PetRequest petRequest){
+    @RolesAllowed("ROLE_ADMIN")
+    @PostMapping(value = "/pet", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseMessage addPet(@RequestParam(value = "name") String name,
+                                  @RequestParam(value = "location") String location,
+                                  @RequestParam(value = "description", required = false) String description,
+                                  @RequestParam(value = "age") Integer age,
+                                  @RequestParam(value = "rase_id") Long rase_id,
+                                  @RequestParam(value = "image", required = false) MultipartFile multipartFile){
+
+        String absolutePath = petService.findPhotoAbsolutePath(multipartFile);
+
+        PetRequest petRequest = new PetRequest();
+        petRequest.setName(name);
+        petRequest.setLocation(location);
+        petRequest.setDescription(description);
+        petRequest.setAge(age);
+        petRequest.setRase_id(rase_id);
+        petRequest.setImage(absolutePath);
+
         return petService.addPet(petRequest);
     }
 
@@ -88,7 +106,24 @@ public class PetController {
     //approved opcija se rucno ne mijenja kroz update pet...
     @RolesAllowed("ROLE_ADMIN")
     @PutMapping("/pet/update/{id}")
-    public Pet updatePet(@NotNull @PathVariable Long id, @Valid @RequestBody PetRequest petRequest){
+    public Pet updatePet(@NotNull @PathVariable Long id,
+                         @RequestParam(value = "name") String name,
+                         @RequestParam(value = "location") String location,
+                         @RequestParam(value = "description", required = false) String description,
+                         @RequestParam(value = "age") Integer age,
+                         @RequestParam(value = "rase_id") Long rase_id,
+                         @RequestParam(value = "image", required = false) MultipartFile multipartFile){
+
+        String absolutePath = petService.findPhotoAbsolutePath(multipartFile);
+
+        PetRequest petRequest = new PetRequest();
+        petRequest.setName(name);
+        petRequest.setLocation(location);
+        petRequest.setDescription(description);
+        petRequest.setAge(age);
+        petRequest.setRase_id(rase_id);
+        petRequest.setImage(absolutePath);
+
         return petService.updatePet(id, petRequest);
     }
 

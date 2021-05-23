@@ -17,6 +17,9 @@ spring:
     config:
       username: user
       password: password
+  servlet:
+    multipart:
+      max-file-size: 500MB
 
 encrypt:
   key: ruhdghu36878DTFGYuy7eu9heihGDYUHhduehfuieriro009238usG
