@@ -9,7 +9,10 @@ import ba.unsa.etf.nwt.pet_category_service.service.RaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
+
+import java.io.File;
 
 @Component
 public class DatabaseSeeder {
@@ -47,11 +50,53 @@ public class DatabaseSeeder {
 
         //ljubimci
 
-        createPet("Rex", "Sarajevo", "image1", "", 2, true, r1);
-        createPet("Pupi", "Tuzla", "image2", "", 1, true, r2);
-        createPet("Cicko", "Zenica", "image3", "", 9, true, r3);
-        createPet("Ribica", "Neum", "image4", "", 0, true, r4);
-        createPet("Pricalica", "Brcko", "image5", "", 1, true, r5);
+        String firstPet = "";
+        String secondPet = "";
+        String thirdPet = "";
+        String fourthPet = "";
+        String fifthPet = "";
+
+        //pronadji putanju slika za bazu
+        try {
+            File resource1 = new ClassPathResource("/pet-photos-for-seeder/american_bulldog.jpg").getFile();
+            firstPet = resource1.getAbsolutePath();
+        } catch (Exception e){
+            System.out.println("ERROR + " + e.getMessage());
+        }
+
+        try {
+            File resource2 = new ClassPathResource("/pet-photos-for-seeder/bichon_frise.jpg").getFile();
+            secondPet = resource2.getAbsolutePath();
+        } catch (Exception e){
+            System.out.println("ERROR + " + e.getMessage());
+        }
+
+        try {
+            File resource3 = new ClassPathResource("/pet-photos-for-seeder/british_shorthair.jpg").getFile();
+            thirdPet = resource3.getAbsolutePath();
+        } catch (Exception e){
+            System.out.println("ERROR + " + e.getMessage());
+        }
+
+        try {
+            File resource4 = new ClassPathResource("/pet-photos-for-seeder/goldfish.jpg").getFile();
+            fourthPet = resource4.getAbsolutePath();
+        } catch (Exception e){
+            System.out.println("ERROR + " + e.getMessage());
+        }
+
+        try {
+            File resource5 = new ClassPathResource("/pet-photos-for-seeder/budgerigar.jpg").getFile();
+            fifthPet = resource5.getAbsolutePath();
+        } catch (Exception e){
+            System.out.println("ERROR + " + e.getMessage());
+        }
+
+        createPet("Rex", "Sarajevo", firstPet, "", 2, true, r1);
+        createPet("Pupi", "Tuzla", secondPet, "", 1, true, r2);
+        createPet("Cicko", "Zenica", thirdPet, "", 9, true, r3);
+        createPet("Ribica", "Neum", fourthPet, "", 0, true, r4);
+        createPet("Pricalica", "Brcko", fifthPet, "", 1, true, r5);
 
     }
 
