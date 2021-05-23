@@ -1,23 +1,25 @@
 package ba.unsa.etf.nwt.adopt_service.service;
 
 import ba.unsa.etf.nwt.adopt_service.exception.ResourceNotFoundException;
-import ba.unsa.etf.nwt.adopt_service.exception.WrongInputException;
-import ba.unsa.etf.nwt.adopt_service.model.AddPetRequest;
 import ba.unsa.etf.nwt.adopt_service.model.AdoptionRequest;
+import ba.unsa.etf.nwt.adopt_service.rabbitmq.MessagingConfig;
+import ba.unsa.etf.nwt.adopt_service.rabbitmq.NotificationAdoptServiceMessage;
 import ba.unsa.etf.nwt.adopt_service.repository.AdoptionRequestRepository;
 import ba.unsa.etf.nwt.adopt_service.request.PetForAdoptRequest;
-import ba.unsa.etf.nwt.adopt_service.response.ErrorResponse;
 import ba.unsa.etf.nwt.adopt_service.response.ResponseMessage;
 import ba.unsa.etf.nwt.adopt_service.security.CurrentUser;
 import ba.unsa.etf.nwt.adopt_service.security.UserPrincipal;
 import lombok.AllArgsConstructor;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
@@ -25,6 +27,14 @@ import java.util.stream.Collectors;
 public class AdoptionRequestService {
     private final AdoptionRequestRepository adoptionRequestRepository;
     private final CommunicationsService communicationsService;
+
+    private List<AdoptionRequest> allRequestsForDelete;
+
+    //@Value("${adopt.isAlreadyNotApprovedAdopt: 0}")
+    //private int isAlreadyNotApprovedAdopt;
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
 
     public List<AdoptionRequest> getAdoptionRequest() {
         return adoptionRequestRepository.findAll();
@@ -65,6 +75,7 @@ public class AdoptionRequestService {
 
             try {
 
+                //sinhrono
                 HttpHeaders headers = new HttpHeaders();
                 headers.set("Authorization", token);
 
@@ -76,7 +87,8 @@ public class AdoptionRequestService {
 
                 System.out.println(responseMessage.getBody().getMessage());
             } catch (Exception ue){
-                System.out.println("Can't connect to notification_service!");
+                throw new ResourceNotFoundException("Can't connect to notification_service!");
+                //System.out.println("Can't connect to notification_service!");
             }
 
         //}
@@ -148,6 +160,7 @@ public class AdoptionRequestService {
             if(adoptionRequest.isApproved()) {
                 try {
 
+                    //sinhrono
                     HttpHeaders headers = new HttpHeaders();
                     headers.set("Authorization", token);
 
@@ -168,21 +181,29 @@ public class AdoptionRequestService {
 
             } else {
 
-                try {
+                //if(isAlreadyNotApprovedAdopt != 1) {
+                    /*try {
 
-                    HttpHeaders headers = new HttpHeaders();
-                    headers.set("Authorization", token);
+                        HttpHeaders headers = new HttpHeaders();
+                        headers.set("Authorization", token);
 
-                    HttpEntity<String> entityReq = new HttpEntity<>("", headers);
+                        HttpEntity<String> entityReq = new HttpEntity<>("", headers);
 
-                    ResponseEntity<ResponseMessage> responseMessage = restTemplate.exchange(communicationsService.getUri("notification_service")
-                                    + "/notifications/add/not-approved/adopt-request/" + adoptionRequest.getUserID() + "/" + adoptionRequest.getId(),
-                            HttpMethod.GET ,entityReq, ResponseMessage.class);
+                        ResponseEntity<ResponseMessage> responseMessage = restTemplate.exchange(communicationsService.getUri("notification_service")
+                                        + "/notifications/add/not-approved/adopt-request/" + adoptionRequest.getUserID() + "/" + adoptionRequest.getId(),
+                                HttpMethod.GET ,entityReq, ResponseMessage.class);
 
-                    System.out.println(responseMessage.getBody().getMessage());
-                } catch (Exception ue){
-                    System.out.println("Can't connect to notification_service!");
-                }
+                        System.out.println(responseMessage.getBody().getMessage());
+                    } catch (Exception ue){
+                        System.out.println("Can't connect to notification_service!");
+                    }*/
+
+                    //send message to notification_service
+                    NotificationAdoptServiceMessage notificationAdoptServiceMessage = new NotificationAdoptServiceMessage(adoptionRequest.getUserID(),
+                            adoptionRequest.getId(), false, false);
+                    rabbitTemplate.convertAndSend(MessagingConfig.ADOPT_NOTIFICATION_SERVICE_EXCHANGE,
+                            MessagingConfig.ADOPT_NOTIFICATION_SERVICE_ROUTING_KEY, notificationAdoptServiceMessage);
+                //}
 
                 //adoptionRequestRepository.delete(adoptionRequest);
             }
@@ -197,7 +218,7 @@ public class AdoptionRequestService {
         }
     }
 
-    public ResponseMessage deleteAdoptionRequestsByUserID(Long userID) {
+    /*public ResponseMessage deleteAdoptionRequestsByUserID(Long userID) {
         try {
             List<AdoptionRequest> adoptionRequestListUser = adoptionRequestRepository
                     .findAll()
@@ -217,7 +238,7 @@ public class AdoptionRequestService {
         } catch (Exception e) {
             return new ResponseMessage(false, HttpStatus.NOT_FOUND, "There are no adoption requests with user id=" + userID + "!");
         }
-    }
+    }*/
 
     public ResponseMessage deleteAdoptionRequestsByPetID(Long petID) {
         try {
@@ -245,7 +266,7 @@ public class AdoptionRequestService {
         AdoptionRequest adoptionRequest = adoptionRequestRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Request not found!"));
 
-        RestTemplate restTemplate = new RestTemplate();
+        /*RestTemplate restTemplate = new RestTemplate();
 
         try {
 
@@ -261,7 +282,15 @@ public class AdoptionRequestService {
             System.out.println(responseMessage.getBody().getMessage());
         } catch (Exception ue){
             System.out.println("Can't connect to notification_service!");
-        }
+        }*/
+
+        //send message to notification_service
+        NotificationAdoptServiceMessage notificationAdoptServiceMessage = new NotificationAdoptServiceMessage(adoptionRequest.getUserID(),
+                adoptionRequest.getId(), false, false);
+        rabbitTemplate.convertAndSend(MessagingConfig.ADOPT_NOTIFICATION_SERVICE_EXCHANGE,
+                MessagingConfig.ADOPT_NOTIFICATION_SERVICE_ROUTING_KEY, notificationAdoptServiceMessage);
+
+        //isAlreadyNotApprovedAdopt = 1;
 
         adoptionRequest.setApproved(false);
         adoptionRequestRepository.save(adoptionRequest);
@@ -278,6 +307,7 @@ public class AdoptionRequestService {
         RestTemplate restTemplate = new RestTemplate();
         try {
 
+            //sinhrono
             HttpHeaders headers = new HttpHeaders();
             headers.set("Authorization", token);
 
@@ -295,7 +325,7 @@ public class AdoptionRequestService {
 
         //salje se notifikacija korisniku
 
-        try {
+        /*try {
 
             HttpHeaders headers = new HttpHeaders();
             headers.set("Authorization", token);
@@ -309,7 +339,14 @@ public class AdoptionRequestService {
             System.out.println(responseMessage.getBody().getMessage());
         } catch (Exception ue){
             System.out.println("Can't connect to notification_service!");
-        }
+        }*/
+
+        //send message to notification_service
+        NotificationAdoptServiceMessage notificationAdoptServiceMessage = new NotificationAdoptServiceMessage(adoptionRequest.getUserID(),
+                adoptionRequest.getId(), true, false);
+        rabbitTemplate.convertAndSend(MessagingConfig.ADOPT_NOTIFICATION_SERVICE_EXCHANGE,
+                MessagingConfig.ADOPT_NOTIFICATION_SERVICE_ROUTING_KEY, notificationAdoptServiceMessage);
+
 
         adoptionRequest.setApproved(true);
         adoptionRequestRepository.save(adoptionRequest);
@@ -337,7 +374,7 @@ public class AdoptionRequestService {
         for(AdoptionRequest adoptionRequest : adoptionRequests){
             RestTemplate restTemplate = new RestTemplate();
 
-            try {
+            /*try {
 
                 HttpHeaders headers = new HttpHeaders();
                 headers.set("Authorization", token);
@@ -351,14 +388,21 @@ public class AdoptionRequestService {
                 System.out.println(responseMessage.getBody().getMessage());
             } catch (Exception ue){
                 System.out.println("Can't connect to notification_service!");
-            }
+            }*/
+
+            //send message to notification_service
+            NotificationAdoptServiceMessage notificationAdoptServiceMessage = new NotificationAdoptServiceMessage(adoptionRequest.getUserID(),
+                    adoptionRequest.getId(), false, false);
+            rabbitTemplate.convertAndSend(MessagingConfig.ADOPT_NOTIFICATION_SERVICE_EXCHANGE,
+                    MessagingConfig.ADOPT_NOTIFICATION_SERVICE_ROUTING_KEY, notificationAdoptServiceMessage);
+
 
             adoptionRequestRepository.deleteById(adoptionRequest.getId());
         }
 
     }
 
-    public void findAndDeleteAdoptionRequest(String token, Long id){
+    public void findAndDeleteAdoptionRequest(Long id){
         //try {
 
             List<AdoptionRequest> adoptionRequests =
@@ -372,7 +416,7 @@ public class AdoptionRequestService {
             for(AdoptionRequest adoptionRequest : adoptionRequests) {
 
                 if (!adoptionRequest.isApproved()) {
-                    try {
+                    /*try {
 
                         HttpHeaders headers = new HttpHeaders();
                         headers.set("Authorization", token);
@@ -386,9 +430,18 @@ public class AdoptionRequestService {
                         System.out.println(responseMessage.getBody().getMessage());
                     } catch (Exception ue) {
                         System.out.println("Can't connect to notification_service!");
-                    }
+                    }*/
+
+                    //send message to notification_service
+                    NotificationAdoptServiceMessage notificationAdoptServiceMessage = new NotificationAdoptServiceMessage(adoptionRequest.getUserID(),
+                            adoptionRequest.getId(), false, false);
+                    rabbitTemplate.convertAndSend(MessagingConfig.ADOPT_NOTIFICATION_SERVICE_EXCHANGE,
+                            MessagingConfig.ADOPT_NOTIFICATION_SERVICE_ROUTING_KEY, notificationAdoptServiceMessage);
+
                 }
 
+                //dodavanje u listu u slucaju da dodje do greske pa da se mogu vratiti...
+                allRequestsForDelete.add(adoptionRequest);
                 adoptionRequestRepository.deleteById(adoptionRequest.getId());
             }
 
@@ -396,6 +449,12 @@ public class AdoptionRequestService {
             //ne treba nista da se desi
           //  System.out.println(e.getMessage());
         //}
+    }
+
+    public void addBackAllDeletedRequests(){
+        for(AdoptionRequest adoptionRequest : allRequestsForDelete){
+            adoptionRequestRepository.save(adoptionRequest);
+        }
     }
 
 }

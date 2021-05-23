@@ -81,9 +81,8 @@ public class PetController {
     //brisanje peta po id-u
     @RolesAllowed("ROLE_ADMIN")
     @DeleteMapping("/pet/delete")
-    public ResponseMessage deletePet(@RequestHeader("Authorization") String token,
-                                     @NotNull @RequestParam Long id){
-        return petService.deletePetById(token, id);
+    public ResponseMessage deletePet(@NotNull @RequestParam Long id){
+        return petService.deletePetById(id);
     }
 
     //approved opcija se rucno ne mijenja kroz update pet...

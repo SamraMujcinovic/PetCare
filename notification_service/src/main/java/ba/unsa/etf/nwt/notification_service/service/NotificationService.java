@@ -369,5 +369,4 @@ public class NotificationService {
         throw new ResourceNotFoundException("Notification not found!");
 
     }
-
 }
