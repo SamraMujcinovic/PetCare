@@ -30,11 +30,11 @@ public class CommunicationsService {
     }
 
     public void deleteForAdd(String token, Long id){
-        addPetRequestService.findAndDeleteAddPetRequest(token, id);
+        addPetRequestService.findAndDeleteAddPetRequest(id);
     }
 
     public void deleteForAdopt(String token, Long id){
-        adoptionRequestService.findAndDeleteAdoptionRequest(token, id);
+        adoptionRequestService.findAndDeleteAdoptionRequest(id);
     }
 
     public Boolean validateToken(String secret, String token){

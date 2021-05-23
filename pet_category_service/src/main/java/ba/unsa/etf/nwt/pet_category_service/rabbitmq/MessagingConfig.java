@@ -1,4 +1,4 @@
-package ba.unsa.etf.nwt.notification_service.rabbitmq;
+package ba.unsa.etf.nwt.pet_category_service.rabbitmq;
 
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -11,18 +11,18 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class MessagingConfig {
 
-    public static final String NOTIFICATION_SERVICE_QUEUE = "notification_service_queue";
-    public static final String NOTIFICATION_SERVICE_EXCHANGE = "notification_service_exchange";
-    public static final String NOTIFICATION_SERVICE_ROUTING_KEY = "notification_service_routing_key";
-
+    public static final String PET_ADOPT_SERVICE_QUEUE = "pet_category_adopt_service_queue";
+    public static final String PET_ADOPT_SERVICE_EXCHANGE = "pet_category_adopt_service_exchange";
+    public static final String PET_ADOPT_SERVICE_ROUTING_KEY = "pet_category_adopt_service_routing_key";
+    
     @Bean
     public Queue queue(){
-        return new Queue(NOTIFICATION_SERVICE_QUEUE);
+        return new Queue(PET_ADOPT_SERVICE_QUEUE);
     }
 
     @Bean
     public TopicExchange exchange(){
-        return new TopicExchange(NOTIFICATION_SERVICE_EXCHANGE);
+        return new TopicExchange(PET_ADOPT_SERVICE_EXCHANGE);
     }
 
     @Bean
@@ -30,7 +30,7 @@ public class MessagingConfig {
         return BindingBuilder
                 .bind(queue())
                 .to(exchange())
-                .with(NOTIFICATION_SERVICE_ROUTING_KEY);
+                .with(PET_ADOPT_SERVICE_ROUTING_KEY);
     }
 
     @Bean

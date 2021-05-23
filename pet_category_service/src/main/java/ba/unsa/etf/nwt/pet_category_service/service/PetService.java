@@ -3,10 +3,13 @@ package ba.unsa.etf.nwt.pet_category_service.service;
 import ba.unsa.etf.nwt.pet_category_service.exception.ResourceNotFoundException;
 import ba.unsa.etf.nwt.pet_category_service.model.Pet;
 import ba.unsa.etf.nwt.pet_category_service.model.Rase;
+import ba.unsa.etf.nwt.pet_category_service.rabbitmq.MessagingConfig;
 import ba.unsa.etf.nwt.pet_category_service.repository.PetRepository;
 import ba.unsa.etf.nwt.pet_category_service.request.PetRequest;
 import ba.unsa.etf.nwt.pet_category_service.response.ResponseMessage;
 import lombok.AllArgsConstructor;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -20,6 +23,11 @@ public class PetService {
     private final PetRepository petRepository;
     private final RaseService raseService;
     private final CommunicationsService communicationsService;
+
+    private List<Pet> pet;
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
 
     public List<Pet> getPets() {
         return petRepository.findAll();
@@ -213,11 +221,11 @@ public class PetService {
                 "You have successfully approved this pet!");
     }
 
-    public ResponseMessage deletePetById(String token, Long id){
+    public ResponseMessage deletePetById(Long id){
 
-        RestTemplate restTemplate = new RestTemplate();
+        //RestTemplate restTemplate = new RestTemplate();
 
-        try {
+        /*try {
             HttpHeaders headers = new HttpHeaders();
             headers.set("Authorization", token);
 
@@ -230,10 +238,27 @@ public class PetService {
             System.out.println(responseMessage.getBody().getMessage());
         } catch (Exception ue){
             System.out.println("Can't connect to adopt_service and delete all connected requests!");
-        }
+        }*/
+
+        //send message to adopt_service
+        rabbitTemplate.convertAndSend(MessagingConfig.PET_ADOPT_SERVICE_EXCHANGE,
+                MessagingConfig.PET_ADOPT_SERVICE_ROUTING_KEY, id);
+
+        pet = new ArrayList<>();
+
+        Pet p = petRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Pet not found!"));
+
+        pet.add(p);
 
         petRepository.deleteById(id);
 
         return new ResponseMessage(true, HttpStatus.OK, "Pet deleted!");
+    }
+
+    public void addPetBack(){
+        for(Pet p : pet){
+            petRepository.save(p);
+        }
     }
 }

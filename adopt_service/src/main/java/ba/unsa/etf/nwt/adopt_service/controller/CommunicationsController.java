@@ -52,13 +52,13 @@ public class CommunicationsController {
         return communicationsService.getUri(applicationName);
     }
 
-    @RolesAllowed("ROLE_ADMIN")
+    /*@RolesAllowed("ROLE_ADMIN")
     @DeleteMapping("/requests/delete/ifExists/{id}")
     public ResponseMessage deleteRequestIfExists(@RequestHeader("Authorization") String token, @PathVariable Long id){
         adoptionRequestService.findAndDeleteAdoptionRequest(token, id);
         addPetRequestService.findAndDeleteAddPetRequest(token, id);
 
         return new ResponseMessage(true, HttpStatus.OK, "Request found and deleted!");
-    }
+    }*/
 
 }

@@ -50,7 +50,7 @@ public class CommunicationsController {
 
     //rute za druge servise
 
-    @GetMapping("/notifications/public/add/{userID}")
+    /*@GetMapping("/notifications/public/add/{userID}")
     public ResponseMessage addRegistrationNotification(@PathVariable(value = "userID") Long userID){
 
         //notifikacija za novog registrovanog usera
@@ -61,7 +61,7 @@ public class CommunicationsController {
         else {
             return notificationService.addNotificationForRegistrationAndContactUs(userID, "Someone filled contact us form, check email!");
         }
-    }
+    }*/
 
     @RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
     @GetMapping("/notifications/add/adopt-request/{userID}/{requestID}")
