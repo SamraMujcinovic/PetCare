@@ -19,8 +19,9 @@ public class PetRequest {
         @NotBlank(message = "Pet location can't be blank!")
         private String location;
 
-        //da li je image string?
-        @NotBlank(message = "Pet image can't be blank!")
+        //da li je image string? jeste..
+        //@NotBlank(message = "Pet image can't be blank!")
+        @Column(columnDefinition = "text")
         private String image;
 
         @Column(columnDefinition = "text")

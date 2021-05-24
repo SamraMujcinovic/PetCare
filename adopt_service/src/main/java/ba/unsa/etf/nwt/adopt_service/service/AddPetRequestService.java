@@ -11,16 +11,19 @@ import ba.unsa.etf.nwt.adopt_service.response.ResponseMessage;
 import ba.unsa.etf.nwt.adopt_service.security.CurrentUser;
 import ba.unsa.etf.nwt.adopt_service.security.UserPrincipal;
 import lombok.AllArgsConstructor;
-import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.PostConstruct;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,23 +45,48 @@ public class AddPetRequestService {
         return addPetRequestRepository.findAll();
     }
 
-    public ResponseMessage addAddPetRequest(String token, PetForAddRequest addPetRequest, @CurrentUser UserPrincipal currentUser) {
+    public String findPhotoAbsolutePath(MultipartFile multipartFile){
+        try {
+            String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
+
+            String uploadDir = "./pet-photos/";
+
+            Path uploadPath = Paths.get(uploadDir);
+
+            if (!Files.exists(uploadPath)) {
+                try {
+                    Files.createDirectories(uploadPath);
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+
+            try (InputStream inputStream = multipartFile.getInputStream()) {
+                Path filePath = uploadPath.resolve(fileName);
+                Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+                return filePath.toFile().getAbsolutePath();
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+
+            return "";
+        } catch (Exception e){
+            System.out.println("The photo couldn't be uploaded!");
+        }
+
+        return "";
+    }
+
+    public ResponseMessage addAddPetRequest(String token, PetForAddRequest addPetRequest,
+                                            @CurrentUser UserPrincipal currentUser,
+                                            String absolutePath) {
 
             RestTemplate restTemplate = new RestTemplate();
 
             AddPetRequest newRequest = new AddPetRequest();
 
-            //try {
-                //prvo provjerimo usera
-                /*Long userID = restTemplate.getForObject(communicationsService.getUri("user_service")
-                        + "/user/me/id", Long.class);*/
-                //newRequest.setUserID(userID);
-            /*}
-            catch (Exception e){
-                throw new ResourceNotFoundException("Current user not found!!");
-            }*/
-
             newRequest.setUserID(currentUser.getId());
+            addPetRequest.getPetForAdd().setImage(absolutePath);
 
             try {
                 //sada prvo moramo dodati poslani pet u bazu preko rute POST u pet servisu
@@ -69,7 +97,7 @@ public class AddPetRequestService {
                 HttpHeaders headers = new HttpHeaders();
                 headers.set("Authorization", token);
 
-                HttpEntity<PetRequest> entityReq = new HttpEntity<PetRequest>(addPetRequest.getPetForAdopt(), headers);
+                HttpEntity<PetRequest> entityReq = new HttpEntity<PetRequest>(addPetRequest.getPetForAdd(), headers);
 
                 ResponseEntity<Long> petID = restTemplate.exchange(communicationsService.getUri("pet_category_service")
                                 + "/petID/forAdopt", HttpMethod.POST, entityReq, Long.class);
@@ -106,7 +134,7 @@ public class AddPetRequestService {
                 //kad se tamo hendla onaj exception vratit ce nesto bla bla
                 //i onda bih trebala provjeriti jel wrong input ili resource not found
                 if(e.getMessage().contains("rase")){//ako zadana rasa ne postoji u bazi
-                    throw new ResourceNotFoundException("No rase with id " + addPetRequest.getPetForAdopt().getRase_id());
+                    throw new ResourceNotFoundException("No rase with id " + addPetRequest.getPetForAdd().getRase_id());
                 }
                 //ako nije dodalo novog peta uopce
                 throw new ResourceNotFoundException("Pet is not added!");

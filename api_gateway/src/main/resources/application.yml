@@ -23,6 +23,9 @@ server:
 spring:
   application:
     name: api_gateway
+  servlet:
+    multipart:
+      max-file-size: 500MB
 
 management:
   endpoints:

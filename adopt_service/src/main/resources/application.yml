@@ -17,6 +17,9 @@ spring:
     config:
       username: user
       password: password
+  servlet:
+    multipart:
+      max-file-size: 500MB
 
 encrypt:
   key: ruhdghu36878DTFGYuy7eu9heihGDYUHhduehfuieriro009238usG
@@ -30,8 +33,3 @@ management:
 server:
   port: 8082
 
-add:
-  isAlreadyNotApprovedAdd: 0
-
-adopt:
-  isAlreadyNotApprovedAdopt: 0

@@ -12,8 +12,15 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +38,38 @@ public class PetService {
 
     public List<Pet> getPets() {
         return petRepository.findAll();
+    }
+
+    public String findPhotoAbsolutePath(MultipartFile multipartFile){
+        try {
+            String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
+
+            String uploadDir = "./pet-photos/";
+
+            Path uploadPath = Paths.get(uploadDir);
+
+            if (!Files.exists(uploadPath)) {
+                try {
+                    Files.createDirectories(uploadPath);
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+
+            try (InputStream inputStream = multipartFile.getInputStream()) {
+                Path filePath = uploadPath.resolve(fileName);
+                Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+                return filePath.toFile().getAbsolutePath();
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+
+            return "";
+        } catch (Exception e){
+            System.out.println("The photo couldn't be uploaded!");
+        }
+
+        return "";
     }
 
     private Pet addNewPet(PetRequest petRequest, Boolean isApproved){

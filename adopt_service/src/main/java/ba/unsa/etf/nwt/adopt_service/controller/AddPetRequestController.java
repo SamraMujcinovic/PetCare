@@ -4,17 +4,27 @@ import ba.unsa.etf.nwt.adopt_service.exception.WrongInputException;
 import ba.unsa.etf.nwt.adopt_service.model.AddPetRequest;
 import ba.unsa.etf.nwt.adopt_service.model.AdoptionRequest;
 import ba.unsa.etf.nwt.adopt_service.request.PetForAddRequest;
+import ba.unsa.etf.nwt.adopt_service.request.PetRequest;
 import ba.unsa.etf.nwt.adopt_service.response.ResponseMessage;
 import ba.unsa.etf.nwt.adopt_service.security.CurrentUser;
 import ba.unsa.etf.nwt.adopt_service.security.UserPrincipal;
 import ba.unsa.etf.nwt.adopt_service.service.AddPetRequestService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
+import java.awt.*;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 @AllArgsConstructor
@@ -36,11 +46,31 @@ public class AddPetRequestController {
 
     //izmijenjeni oblik post metode
     @RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
-    @PostMapping("/eurekaa/add-pet-request")
+    @PostMapping(value = "/eurekaa/add-pet-request", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseMessage addAddPetRequest(@RequestHeader("Authorization") String token,
-                                            @Valid @RequestBody PetForAddRequest addPetRequest,
-                                            @CurrentUser UserPrincipal currentUser) {
-       return addPetRequestService.addAddPetRequest(token, addPetRequest, currentUser);
+                                            @RequestParam(value = "name") String name,
+                                            @RequestParam(value = "location") String location,
+                                            @RequestParam(value = "description", required = false) String description,
+                                            @RequestParam(value = "age") Integer age,
+                                            @RequestParam(value = "rase_id") Long rase_id,
+                                            @RequestParam(value = "message", required = false) String message,
+                                            @CurrentUser UserPrincipal currentUser,
+                                            @RequestParam(value = "image", required = false) MultipartFile multipartFile) {
+
+        String absolutePath = addPetRequestService.findPhotoAbsolutePath(multipartFile);
+
+        PetRequest petRequest = new PetRequest();
+        petRequest.setName(name);
+        petRequest.setLocation(location);
+        petRequest.setDescription(description);
+        petRequest.setAge(age);
+        petRequest.setRase_id(rase_id);
+
+        PetForAddRequest addPetRequest = new PetForAddRequest();
+        addPetRequest.setMessage(message);
+        addPetRequest.setPetForAdd(petRequest);
+
+        return addPetRequestService.addAddPetRequest(token, addPetRequest, currentUser, absolutePath);
     }
 
     @RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
