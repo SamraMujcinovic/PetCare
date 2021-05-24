@@ -11,7 +11,7 @@ class Request extends React.Component {
     render() {
       return (
         <div>
-            
+            Requests
         </div>
       );
     }

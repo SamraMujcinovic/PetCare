@@ -3,8 +3,6 @@ package ba.unsa.etf.nwt.user_service.controller;
 import ba.unsa.etf.nwt.user_service.exception.ResourceNotFoundException;
 import ba.unsa.etf.nwt.user_service.exception.WrongInputException;
 import ba.unsa.etf.nwt.user_service.model.User;
-import ba.unsa.etf.nwt.user_service.rabbitmq.CommentServiceMessage;
-import ba.unsa.etf.nwt.user_service.rabbitmq.MessagingConfig;
 import ba.unsa.etf.nwt.user_service.request.UserProfileRequest;
 import ba.unsa.etf.nwt.user_service.request.UserRequest;
 import ba.unsa.etf.nwt.user_service.response.AvailabilityResponse;
@@ -13,9 +11,10 @@ import ba.unsa.etf.nwt.user_service.response.UserProfileResponse;
 import ba.unsa.etf.nwt.user_service.security.CurrentUser;
 import ba.unsa.etf.nwt.user_service.security.UserPrincipal;
 import ba.unsa.etf.nwt.user_service.service.UserService;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,9 +30,6 @@ public class UserController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private RabbitTemplate rabbitTemplate;
-
     @RolesAllowed("ROLE_ADMIN")
     @GetMapping("/users")
     public List<User> getUsers() {
@@ -46,7 +42,16 @@ public class UserController {
         User user = userService.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found!"));
 
-        return new UserProfileResponse(user.getName(), user.getSurname(), user.getUsername(), user.getEmail());
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        boolean hasAdminRole = authentication.getAuthorities().stream()
+                .anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN"));
+
+        String role = "user";
+        if(hasAdminRole){
+            role = "admin";
+        }
+
+        return new UserProfileResponse(user.getName(), user.getSurname(), user.getUsername(), user.getEmail(), role);
     }
 
     @GetMapping("/user/usernameCheck")
@@ -62,7 +67,16 @@ public class UserController {
     @RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
     @GetMapping("/user/me")
     public UserProfileResponse getCurrentUser(@CurrentUser UserPrincipal currentUser){
-        return new UserProfileResponse(currentUser.getName(), currentUser.getSurname(), currentUser.getUsername(), currentUser.getEmail());
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        boolean hasAdminRole = authentication.getAuthorities().stream()
+                .anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN"));
+
+        String role = "user";
+        if(hasAdminRole){
+            role = "admin";
+        }
+
+        return new UserProfileResponse(currentUser.getName(), currentUser.getSurname(), currentUser.getUsername(), currentUser.getEmail(), role);
     }
 
     @RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
@@ -97,14 +111,6 @@ public class UserController {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found!"));
 
         if (passwordEncoder.matches(userRequest.getPassword(), user.getPassword())) {
-
-            //send message to comment_service
-            CommentServiceMessage commentServiceMessage = new CommentServiceMessage(user.getUsername(),
-                    "This is the username of a user that has been deleted!");
-            rabbitTemplate.convertAndSend(MessagingConfig.USER_COMMENT_SERVICE_EXCHANGE,
-                    MessagingConfig.USER_COMMENT_SERVICE_ROUTING_KEY, commentServiceMessage);
-
-            //delete user
             userService.delete(user);
             return new ResponseMessage(true, HttpStatus.OK, "You have successfully deleted your account.");
         } else {
