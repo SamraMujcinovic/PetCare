@@ -268,7 +268,7 @@ public class AuthTests {
                         "    \"message\": \"Exception for wrong input was thrown\"\n" +
                         "  },\n" +
                         "  \"details\": [\n" +
-                        "    \"Wrong password!\"\n" +
+                        "    \"Wrong username/email or password!\"\n" +
                         "  ]\n" +
                         "}"));
     }
@@ -293,7 +293,7 @@ public class AuthTests {
                         "    \"message\": \"Exception for wrong input was thrown\"\n" +
                         "  },\n" +
                         "  \"details\": [\n" +
-                        "    \"Wrong password!\"\n" +
+                        "    \"Wrong username/email or password!\"\n" +
                         "  ]\n" +
                         "}"));
     }

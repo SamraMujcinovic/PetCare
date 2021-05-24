@@ -125,13 +125,13 @@ public class CommunicationsTests {
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
 
-        //pregled svih komentara (poziva se user_service)
+        //pregled svih komentara
         RequestBuilder requestBuilder2 = MockMvcRequestBuilders.get("/comment")
                 .contentType(MediaType.APPLICATION_JSON);
         mockMvc.perform(requestBuilder2)
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$[0].username").value("UNKNOWN"))
+                .andExpect(jsonPath("$[0].username").value("username"))
                 .andExpect(jsonPath("$[1].username").value("alakovic1"));
     }
 

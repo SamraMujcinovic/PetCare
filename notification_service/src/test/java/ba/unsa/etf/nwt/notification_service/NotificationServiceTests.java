@@ -1,18 +1,23 @@
 package ba.unsa.etf.nwt.notification_service;
 
+import ba.unsa.etf.nwt.notification_service.service.CommunicationsService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.web.client.RestTemplate;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import java.net.URI;
+
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -22,253 +27,278 @@ class NotificationServiceTests {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    private CommunicationsService communicationsService;
+
+    public String getToken(){
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+            String input = "{\n" +
+                    "  \"password\": \"Password123!\",\n" +
+                    "  \"usernameOrEmail\": \"alakovic1\"\n" +
+                    "}";
+
+            HttpEntity<String> httpEntity = new HttpEntity<>(input, headers);
+
+            final String route = communicationsService.getUri("user_service") + "/api/auth/login/token";
+            URI uri = new URI(route);
+
+            return restTemplate.postForObject(uri,
+                    httpEntity, String.class);
+
+        } catch (Exception e){
+            System.out.println("Can't connect to user_service");
+        }
+        return null;
+    }
+
+    public String getToken2(){
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+            String input = "{\n" +
+                    "  \"password\": \"string123!A\",\n" +
+                    "  \"usernameOrEmail\": \"username\"\n" +
+                    "}";
+
+            HttpEntity<String> httpEntity = new HttpEntity<>(input, headers);
+
+            final String route = communicationsService.getUri("user_service") + "/api/auth/login/token";
+            URI uri = new URI(route);
+
+            return restTemplate.postForObject(uri,
+                    httpEntity, String.class);
+
+        } catch (Exception e){
+            System.out.println("Can't connect to user_service");
+        }
+        return null;
+    }
+
     @Test
-    void GetAllNotificationsInJSON() throws Exception {
-        /*RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/notifications")
+    void GetAllUnreadNotificationsForUserAdmin() throws Exception {
+
+        Long userId = 1L;
+
+        String token = "Bearer " + getToken();
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/notifications/all/unread/" + userId)
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .contentType(MediaType.APPLICATION_JSON);
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));*/
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+
     }
 
     @Test
-    void CreateNewNotification() throws Exception {
-        /*String newNotification = "{\n" +
-                "    \"content\": \"Notification 1\",\n" +
-                "    \"userID\": 1,\n" +
-                "    \"read\": false,\n" +
-                "    \"createdAt\": null\n" +
-                "}\n";
+    void GetAllUnreadNotificationsForUserNotSuccess1() throws Exception {
 
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/notifications")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(newNotification);
+        Long userId = 1L;
+
+        String token = "Bearer " + getToken2();
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/notifications/all/unread/" + userId)
+                .header(HttpHeaders.AUTHORIZATION, token)
+                .contentType(MediaType.APPLICATION_JSON);
         mockMvc.perform(requestBuilder)
-                .andExpect(status().isOk())
+                .andExpect(status().is4xxClientError())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().json("{\n" +
-                        "  \"success\": true,\n" +
-                        "  \"message\": \"Notification added successfully!!\",\n" +
-                        "  \"status\": \"OK\"\n" +
-                        "}"));*/
+                .andExpect(jsonPath("$.details[0]").value("This notification doesn't belong to current user!"));
+
     }
 
     @Test
-    void CreateNewNotificationBlankContent() throws Exception {
-        /*String newNotification = "{\n" +
-                "    \"content\": \"\",\n" +
-                "    \"userID\": 1,\n" +
-                "    \"read\": false,\n" +
-                "    \"createdAt\": null\n" +
-                "}\n";
+    void GetAllUnreadNotificationsForUserNotSuccess2() throws Exception {
 
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/notifications")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(newNotification);
+        Long userId = 3L;
+
+        String token = "Bearer " + getToken2();
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/notifications/all/unread/" + userId)
+                .header(HttpHeaders.AUTHORIZATION, token)
+                .contentType(MediaType.APPLICATION_JSON);
         mockMvc.perform(requestBuilder)
-                .andExpect(status().isBadRequest())
+                .andExpect(status().is4xxClientError())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().json("{\n" +
-                        "    \"responseMessage\": {\n" +
-                        "        \"success\": false,\n" +
-                        "        \"status\": \"BAD_REQUEST\",\n" +
-                        "        \"message\": \"Validation Failed\"\n" +
-                        "    },\n" +
-                        "    \"details\": [\n" +
-                        "        \"Content can't be blank!!\",\n" +
-                        "        \"Content must be between 2 and 150 characters!!\"\n" +
-                        "    ]\n" +
-                        "}"));*/
+                .andExpect(jsonPath("$.details[0]").value("This notification doesn't belong to current user!"));
+
     }
 
     @Test
-    void CreateNewNotificationSmallContent() throws Exception {
-        /*String newNotification = "{\n" +
-                "    \"content\": \"N\",\n" +
-                "    \"userID\": 1,\n" +
-                "    \"read\": false,\n" +
-                "    \"createdAt\": null\n" +
-                "}\n";
+    void GetAllUnreadNotificationsForUserSuccess() throws Exception {
 
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/notifications")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(newNotification);
-        mockMvc.perform(requestBuilder)
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().json("{\n" +
-                        "    \"responseMessage\": {\n" +
-                        "        \"success\": false,\n" +
-                        "        \"status\": \"BAD_REQUEST\",\n" +
-                        "        \"message\": \"Validation Failed\"\n" +
-                        "    },\n" +
-                        "    \"details\": [\n" +
-                        "        \"Content must be between 2 and 150 characters!!\"\n" +
-                        "    ]\n" +
-                        "}"));*/
-    }
+        Long userId = 5L;
 
-    @Test
-    void CreateNewNotificationNoContent() throws Exception {
-        /*String newNotification = "{\n" +
-                "    \"userID\": 1,\n" +
-                "    \"read\": false,\n" +
-                "    \"createdAt\": null\n" +
-                "}\n";
+        String token = "Bearer " + getToken2();
 
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/notifications")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(newNotification);
-        mockMvc.perform(requestBuilder)
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().json("{\"responseMessage\":{\"success\":false,\"status\":\"BAD_REQUEST\",\"message\":\"Validation Failed\"},\"details\":[\"Content can't be blank!!\"]}"));*/
-    }
-
-    @Test
-    void CreateNewNotificationEmptyNotification() throws Exception {
-        /*String newNotification = "{}\n";
-
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/notifications")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(newNotification);
-        mockMvc.perform(requestBuilder)
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().json("{\"responseMessage\":{\"success\":false,\"status\":\"BAD_REQUEST\",\"message\":\"Validation Failed\"},\"details\":[\"Content can't be blank!!\"]}"));*/
-    }
-
-    @Test
-    void CreateNewNotificationOnlyUser() throws Exception {
-        /*String newNotification = "{\n" +
-                "    \"userID\": 1,\n" +
-                "    \"createdAt\": null\n" +
-                "}\n";
-
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/notifications")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(newNotification);
-        mockMvc.perform(requestBuilder)
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().json("{\"responseMessage\":{\"success\":false,\"status\":\"BAD_REQUEST\",\"message\":\"Validation Failed\"},\"details\":[\"Content can't be blank!!\"]}"));*/
-    }
-
-    @Test
-    void CreateNewNotificationOnlyContent() throws Exception {
-        /*String newNotification = "{\n" +
-                "    \"content\": 1,\n" +
-                "    \"createdAt\": null\n" +
-                "}\n";
-
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/notifications")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(newNotification);
-        mockMvc.perform(requestBuilder)
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().json("{\"responseMessage\":{\"success\":false,\"status\":\"BAD_REQUEST\",\"message\":\"Validation Failed\"},\"details\":[\"Content must be between 2 and 150 characters!!\"]}"));*/
-    }
-
-    @Test
-    void CreateNewNotificationReadTrue() throws Exception {
-        /*String newNotification = "{\n" +
-                "    \"content\": \"Notif\",\n" +
-                "    \"userID\": 1,\n" +
-                "    \"read\": true,\n" +
-                "    \"createdAt\": null\n" +
-                "}\n";
-
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/notifications")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(newNotification);
-        mockMvc.perform(requestBuilder)
-                .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().json("{\"success\":true,\"status\":\"OK\",\"message\":\"Notification added successfully!!\"}"));*/
-    }
-
-    @Test
-    void CreateNewNotificationNoRead() throws Exception {
-        /*String newNotification = "{\n" +
-                "    \"content\": \"Notif\",\n" +
-                "    \"userID\": 1,\n" +
-                "    \"createdAt\": null\n" +
-                "}\n";
-
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/notifications")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(newNotification);
-        mockMvc.perform(requestBuilder)
-                .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().json("{\"success\":true,\"status\":\"OK\",\"message\":\"Notification added successfully!!\"}"));*/
-    }
-
-    @Test
-    void CreateNewNotificationOnlyValidContent() throws Exception {
-        /*String newNotification = "{\n" +
-                "    \"content\": 123,\n" +
-                "    \"createdAt\": null\n" +
-                "}\n";
-
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/notifications")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(newNotification);
-        mockMvc.perform(requestBuilder)
-                .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().json("{\"success\":true,\"status\":\"OK\",\"message\":\"Notification added successfully!!\"}"));*/
-    }
-
-    @Test
-    void CreateNewNotificationIsntAdded() throws Exception {
-        /*String newNotification = "{}\n";
-
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/notifications")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(newNotification);
-        mockMvc.perform(requestBuilder)
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().json("{\"responseMessage\":{\"success\":false,\"status\":\"BAD_REQUEST\",\"message\":\"Validation Failed\"},\"details\":[\"Content can't be blank!!\"]}"));*/
-    }
-
-    @Test
-    void GetAllUserNotificationsInJSON() throws Exception {
-        /*RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/notifications/user")
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/notifications/all/unread/" + userId)
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .contentType(MediaType.APPLICATION_JSON);
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));*/
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+
     }
 
     @Test
-    void GetAllUnreadUserNotificationsInJSON() throws Exception {
-        /*RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/notifications/unread/user")
+    void GetAllNotificationsForUserAdmin() throws Exception {
+        Long userId = 1L;
+
+        String token = "Bearer " + getToken();
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/notifications/all/" + userId)
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .contentType(MediaType.APPLICATION_JSON);
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));*/
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
     }
 
     @Test
-    void GetNotificationInJSON() throws Exception {
-        /*Long notificationID = 3L;
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/notifications/{notificationID}", notificationID)
+    void GetAllNotificationsForUserNotSuccess1() throws Exception {
+
+        Long userId = 1L;
+
+        String token = "Bearer " + getToken2();
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/notifications/all/" + userId)
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .contentType(MediaType.APPLICATION_JSON);
         mockMvc.perform(requestBuilder)
-                .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));*/
+                .andExpect(status().is4xxClientError())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.details[0]").value("This notification doesn't belong to current user!"));
+
     }
 
     @Test
-    void DeleteNotificationInJSON() throws Exception {
-        /*Long notificationID = 2L;
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/notifications/{notificationID}", notificationID)
+    void GetAllNotificationsForUserNotSuccess2() throws Exception {
+
+        Long userId = 3L;
+
+        String token = "Bearer " + getToken2();
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/notifications/all/" + userId)
+                .header(HttpHeaders.AUTHORIZATION, token)
+                .contentType(MediaType.APPLICATION_JSON);
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().is4xxClientError())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.details[0]").value("This notification doesn't belong to current user!"));
+
+    }
+
+    @Test
+    void GetAllNotificationsForUserSuccess() throws Exception {
+
+        Long userId = 5L;
+
+        String token = "Bearer " + getToken2();
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/notifications/all/" + userId)
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .contentType(MediaType.APPLICATION_JSON);
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));*/
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
     }
+
+    @Test
+    void SetAllUnreadNotificationsToReadUserAdmin() throws Exception {
+        Long userId = 1L;
+
+        String token = "Bearer " + getToken();
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/notifications/setRead/" + userId)
+                .header(HttpHeaders.AUTHORIZATION, token)
+                .contentType(MediaType.APPLICATION_JSON);
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    void SetAllUnreadNotificationsToReadUserSuccess() throws Exception {
+        Long userId = 5L;
+
+        String token = "Bearer " + getToken2();
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/notifications/setRead/" + userId)
+                .header(HttpHeaders.AUTHORIZATION, token)
+                .contentType(MediaType.APPLICATION_JSON);
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    void DeleteNotificationAdmin() throws Exception {
+        Long userId = 1L;
+        Long id = 1L;
+
+        String token = "Bearer " + getToken();
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/notifications/delete/" + userId + "/" + id)
+                .header(HttpHeaders.AUTHORIZATION, token)
+                .contentType(MediaType.APPLICATION_JSON);
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    void DeleteNotificationAdminNotSuccess() throws Exception {
+        Long userId = 1L;
+        Long id = 11L;
+
+        String token = "Bearer " + getToken();
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/notifications/delete/" + userId + "/" + id)
+                .header(HttpHeaders.AUTHORIZATION, token)
+                .contentType(MediaType.APPLICATION_JSON);
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().is4xxClientError())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.details[0]").value("Notification not found!"));
+    }
+
+    @Test
+    void DeleteNotificationUser() throws Exception {
+        Long userId = 5L;
+        Long id = 6L;
+
+        String token = "Bearer " + getToken2();
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/notifications/delete/" + userId + "/" + id)
+                .header(HttpHeaders.AUTHORIZATION, token)
+                .contentType(MediaType.APPLICATION_JSON);
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    void DeleteNotificationUserNotSuccess() throws Exception {
+        Long userId = 5L;
+        Long id = 11L;
+
+        String token = "Bearer " + getToken2();
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/notifications/delete/" + userId + "/" + id)
+                .header(HttpHeaders.AUTHORIZATION, token)
+                .contentType(MediaType.APPLICATION_JSON);
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().is4xxClientError())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.details[0]").value("Notification not found!"));
+    }
+
 }
