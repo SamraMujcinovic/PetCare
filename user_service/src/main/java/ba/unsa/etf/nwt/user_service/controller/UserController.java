@@ -3,6 +3,8 @@ package ba.unsa.etf.nwt.user_service.controller;
 import ba.unsa.etf.nwt.user_service.exception.ResourceNotFoundException;
 import ba.unsa.etf.nwt.user_service.exception.WrongInputException;
 import ba.unsa.etf.nwt.user_service.model.User;
+import ba.unsa.etf.nwt.user_service.rabbitmq.CommentServiceMessage;
+import ba.unsa.etf.nwt.user_service.rabbitmq.MessagingConfig;
 import ba.unsa.etf.nwt.user_service.request.UserProfileRequest;
 import ba.unsa.etf.nwt.user_service.request.UserRequest;
 import ba.unsa.etf.nwt.user_service.response.AvailabilityResponse;
@@ -11,6 +13,7 @@ import ba.unsa.etf.nwt.user_service.response.UserProfileResponse;
 import ba.unsa.etf.nwt.user_service.security.CurrentUser;
 import ba.unsa.etf.nwt.user_service.security.UserPrincipal;
 import ba.unsa.etf.nwt.user_service.service.UserService;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -29,6 +32,9 @@ public class UserController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
 
     @RolesAllowed("ROLE_ADMIN")
     @GetMapping("/users")
@@ -81,7 +87,8 @@ public class UserController {
 
     @RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
     @PutMapping("/user/update")
-    public ResponseMessage updateUserProfile(@Valid @RequestBody UserProfileRequest userProfileRequest, @CurrentUser UserPrincipal currentUser){
+    public ResponseMessage updateUserProfile(@Valid @RequestBody UserProfileRequest userProfileRequest,
+                                             @CurrentUser UserPrincipal currentUser){
 
         //korisnici mogu updateovat samo vlastiti profil
         if(!currentUser.getEmail().equals(userProfileRequest.getEmail())){
@@ -90,6 +97,10 @@ public class UserController {
 
         User user = userService.findByEmail(userProfileRequest.getEmail())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found!"));
+
+        if(userService.existsByUsername(userProfileRequest.getUsername())) {
+            throw new WrongInputException("That username is already taken!");
+        }
 
         user.setName(userProfileRequest.getName());
         user.setSurname(userProfileRequest.getSurname());
@@ -111,7 +122,16 @@ public class UserController {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found!"));
 
         if (passwordEncoder.matches(userRequest.getPassword(), user.getPassword())) {
+
+            //send message to comment_service
+            CommentServiceMessage commentServiceMessage = new CommentServiceMessage(user.getUsername(),
+                    "This is the username of a user that has been deleted!");
+            rabbitTemplate.convertAndSend(MessagingConfig.USER_COMMENT_SERVICE_EXCHANGE,
+                    MessagingConfig.USER_COMMENT_SERVICE_ROUTING_KEY, commentServiceMessage);
+
+            //delete user
             userService.delete(user);
+
             return new ResponseMessage(true, HttpStatus.OK, "You have successfully deleted your account.");
         } else {
             throw new WrongInputException("Wrong password!");

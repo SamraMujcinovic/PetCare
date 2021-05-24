@@ -37,15 +37,13 @@ public class DatabaseSeeder {
         MainRole r1 = createRole(SectionRoleName.ROLE_CATEGORY);
         MainRole r2 = createRole(SectionRoleName.ROLE_PET);
 
-         Comment c = createComment("user", 1L,"Question", "What kind of dog do you want?", r1);
-        Comment c1 = createComment("user", 1L,"How is this?", "Great!", r1);
-        Comment c2 = createComment("user", 1L,"Amazing", "No other words", r2);
-        Comment c3 = createComment("user", 1L,"Wow", "Lorem ipsum", r2);
+        Comment c = createComment("username", 1L,"Question", "What kind of dog do you want?", r1);
+        Comment c1 = createComment("username", 1L,"How is this?", "Great!", r1);
+        Comment c2 = createComment("username", 1L,"Amazing", "No other words", r2);
+        Comment c3 = createComment("username", 1L,"Wow", "Lorem ipsum", r2);
         Reply rp1 = createReply("alakovic1", c, "Sweet and relaxed, friendly towards everyone.");
         Reply rp2 = createReply("epita1", c1, "Fantastic!!!!!!!!!!");
         Reply rp3 = createReply("smujcinovi1", c3, "Friendly...");
-
-
 
     }
 

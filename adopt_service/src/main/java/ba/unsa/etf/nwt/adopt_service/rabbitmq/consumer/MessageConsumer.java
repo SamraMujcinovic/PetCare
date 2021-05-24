@@ -1,5 +1,6 @@
 package ba.unsa.etf.nwt.adopt_service.rabbitmq.consumer;
 
+import ba.unsa.etf.nwt.adopt_service.exception.ResourceNotFoundException;
 import ba.unsa.etf.nwt.adopt_service.rabbitmq.MessagingConfig;
 import ba.unsa.etf.nwt.adopt_service.rabbitmq.NotificationAdoptServiceMessage;
 import ba.unsa.etf.nwt.adopt_service.service.AddPetRequestService;
@@ -28,6 +29,8 @@ public class MessageConsumer {
         try {
             adoptionRequestService.findAndDeleteAdoptionRequest(id);
             addPetRequestService.findAndDeleteAddPetRequest(id);
+
+            //throw new ResourceNotFoundException("New exception was thrown!");
         } catch (Exception e){
 
             //ako SLUCAJNO dodje do greske salje se

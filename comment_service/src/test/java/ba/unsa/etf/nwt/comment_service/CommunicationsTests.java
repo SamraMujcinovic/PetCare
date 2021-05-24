@@ -132,7 +132,7 @@ public class CommunicationsTests {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$[0].username").value("username"))
-                .andExpect(jsonPath("$[1].username").value("alakovic1"));
+                .andExpect(jsonPath("$[1].username").value("username"));
     }
 
     //user-reply communication
