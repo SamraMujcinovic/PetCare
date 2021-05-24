@@ -21,7 +21,6 @@ import javax.persistence.*;
 public class Reply {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonIgnore
     private Long id;
 
     @ManyToOne( fetch = FetchType.EAGER, optional = false)

@@ -3,6 +3,11 @@ import Tabs from '../components/Tabs'
 import UserInfo from '../components/UserInfo'
 import ChangePassword from '../components/ChangePassword'
 import AddPet from '../components/AddPet'
+import UserList from '../components/UserList'
+import Request from '../components/Request'
+import axios from "axios";
+import { getToken, getUser } from "../utilities/Common";
+import {NotificationContainer, NotificationManager} from 'react-notifications';
 
 import '../assets/scss/profile.scss'
 
@@ -10,40 +15,18 @@ class Profile extends React.Component {
 
   constructor(props) {
     super(props);
-    
-    this.state = {
-      name: 'Amila',
-      surname: 'Hrustic',
-      username: 'ahrustic',
-      email: 'amila@gmail.com',
-      password: '1234',
-      oldPassword: '',
-      newPassword: '',
-      confirmPassword: '',
-    };
 
-    this.userInfomartion = this.userInfomartion.bind(this);
-    this.updateUser = this.updateUser.bind(this);
-    this.changePassword = this.changePassword.bind(this);
+    this.state = {
+      token: getToken(),
+      userRole: (JSON.parse(getUser()))?.role,
+    };
   }
 
-userInfomartion(event) {
-    const value = event.target.value;
-    this.setState({
-        ...this.state,
-        [event.target.name]: value
-    });
-}
-
-updateUser(event) {
-  alert('A name was submitted: ' + this.state.name + this.state.username + this.state.surname + this.state.password + this.state.email + this.state.answer + this.state.question);
-  event.preventDefault();
-}
-
-changePassword(event) {
-  alert('A name was submitted: ' + this.state.oldPassword + this.state.newPassword + this.state.confirmPassword );
-  event.preventDefault();
-}
+  componentDidMount() {
+    if(!getToken()) {
+      this.props.history.push("/login");
+    }
+  }
 
   render() {
     return (
@@ -54,7 +37,7 @@ changePassword(event) {
             <Tabs>
               Information
               <div className="user-information">
-                <UserInfo></UserInfo>
+                <UserInfo user={this.state}></UserInfo>
               </div>
               
               Change password
@@ -63,13 +46,21 @@ changePassword(event) {
               </div>
             </Tabs>
           </span>
-          Requests
-          <span>Requests</span>
           Add pet
           <div className="add-pet">
             <AddPet></AddPet>
           </div>
+          Requests
+          <div>
+            <Request></Request>
+          </div>
+          User list
+          <div>
+            <UserList></UserList>
+          </div>
         </Tabs>
+
+        <NotificationContainer/>
       </div>
     );
   }
