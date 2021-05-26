@@ -14,23 +14,45 @@ public class MessagingConfig {
     public static final String PET_ADOPT_SERVICE_QUEUE = "pet_category_adopt_service_queue";
     public static final String PET_ADOPT_SERVICE_EXCHANGE = "pet_category_adopt_service_exchange";
     public static final String PET_ADOPT_SERVICE_ROUTING_KEY = "pet_category_adopt_service_routing_key";
-    
+
+    public static final String ADOPT_PET_SERVICE_QUEUE = "adopt_pet_service_queue";
+    public static final String ADOPT_PET_SERVICE_EXCHANGE = "adopt_pet_service_exchange";
+    public static final String ADOPT_PET_SERVICE_ROUTING_KEY = "adopt_pet_service_routing_key";
+
     @Bean
-    public Queue queue(){
+    public Queue queue1(){
         return new Queue(PET_ADOPT_SERVICE_QUEUE);
     }
 
     @Bean
-    public TopicExchange exchange(){
+    public Queue queue2(){
+        return new Queue(ADOPT_PET_SERVICE_QUEUE);
+    }
+
+    @Bean
+    public TopicExchange exchange1(){
         return new TopicExchange(PET_ADOPT_SERVICE_EXCHANGE);
     }
 
     @Bean
-    public Binding binding(){
+    public TopicExchange exchange2(){
+        return new TopicExchange(ADOPT_PET_SERVICE_EXCHANGE);
+    }
+
+    @Bean
+    public Binding binding1(){
         return BindingBuilder
-                .bind(queue())
-                .to(exchange())
+                .bind(queue1())
+                .to(exchange1())
                 .with(PET_ADOPT_SERVICE_ROUTING_KEY);
+    }
+
+    @Bean
+    public Binding binding2(){
+        return BindingBuilder
+                .bind(queue2())
+                .to(exchange2())
+                .with(ADOPT_PET_SERVICE_ROUTING_KEY);
     }
 
     @Bean
