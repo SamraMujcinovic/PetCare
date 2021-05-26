@@ -2,20 +2,20 @@ zuul:
   routes:
     user_service:
       path: /user_service_api/**
-      serviceId: USER_SERVICE
+      url: http://localhost:8080
     comment_service:
       path: /comment_service_api/**
-      serviceId: COMMENT_SERVICE
+      url: http://localhost:8081
     adopt_service:
       path: /adopt_service_api/**
-      serviceId: ADOPT_SERVICE
+      url: http://localhost:8082
     notification_service:
       path: /notification_service_api/**
-      serviceId: NOTIFICATION_SERVICE
+      url: http://localhost:8083
     pet_category_service:
       path: /pet_category_service_api/**
-      serviceId: PET_CATEGORY_SERVICE
-  sensitive-headers: Cookie, Set-Cookie
+      url: http://localhost:8084
+  sensitive-headers:
 
 server:
   port: 8088
@@ -26,18 +26,3 @@ spring:
   servlet:
     multipart:
       max-file-size: 500MB
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"
-
-# Increase the Hystrix timeout (for all)
-hystrix:
-  command:
-    default:
-      execution:
-        isolation:
-          thread:
-            timeoutInMilliseconds: ...
