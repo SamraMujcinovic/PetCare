@@ -3,8 +3,10 @@ import Tabs from '../components/Tabs'
 import UserInfo from '../components/UserInfo'
 import ChangePassword from '../components/ChangePassword'
 import AddPet from '../components/AddPet'
+import AddRequests from '../components/AddRequests'
+import AdoptRequests from '../components/AdoptRequests'
 import UserList from '../components/UserList'
-import Request from '../components/Request'
+import Request from '../components/AddRequests'
 import axios from "axios";
 import { getToken, getUser } from "../utilities/Common";
 import {NotificationContainer, NotificationManager} from 'react-notifications';
@@ -50,9 +52,13 @@ class Profile extends React.Component {
           <div className="add-pet">
             <AddPet></AddPet>
           </div>
-          Requests
+          Add requests
           <div>
-            <Request></Request>
+            <AddRequests></AddRequests>
+          </div>
+          Adopt requests
+          <div>
+            <AdoptRequests></AdoptRequests>
           </div>
           User list
           <div>

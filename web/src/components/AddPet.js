@@ -19,7 +19,12 @@ class AddPet extends React.Component {
         age: '',
         categories: [],
         options: [],
-        category: {},
+        categoryObject: {},
+        category: '',
+        optionRases: [],
+        rases: [],
+        raseObject: {},
+        rase: '',
         message: '',
         image: 'image',
         adopted: false,
@@ -30,6 +35,7 @@ class AddPet extends React.Component {
   
       this.handleChange = this.handleChange.bind(this);
       this.handleCategoryChange = this.handleCategoryChange.bind(this);
+      this.handleRaseChange = this.handleRaseChange.bind(this);
       this.handleValidation = this.handleValidation.bind(this);
       this.handleSubmit = this.handleSubmit.bind(this);
     }
@@ -60,11 +66,47 @@ class AddPet extends React.Component {
     }
 
     handleCategoryChange(event) {
+
+      let choosenCategory = {}
+
+      for(let i = 0; i < this.state.categories.length; i++) {
+          if (this.state.categories[i].name === event.value)
+            choosenCategory = this.state.categories[i];
+      }
+
         this.setState({
             ...this.state,
-            category: event.value
+            category: event.value,
+            categoryObject: choosenCategory,
+            raseObject: {},
+            rase: '',
         });
+
+        console.log(this.state)
+
+        axios.get(
+            `http://localhost:8088/pet_category_service_api/rases/inCategory?id=${choosenCategory.id}`
+        )
+        .then((response) => {
+          let raseName = [];
+            for(let i = 0; i < response.data.length; i++) {
+              raseName.push(response.data[i].name)
+            }
+          this.setState({
+            ...this.state,
+            rases: response.data,
+            optionRases: raseName,
+          });
+        })
+
     }
+
+    handleRaseChange(event) {
+      this.setState({
+          ...this.state,
+          rases: event.value
+      });
+  }
 
     handleValidation(){
       let errors = {};
@@ -116,7 +158,8 @@ class AddPet extends React.Component {
             location: this.state.location,
             description: this.state.description,
             image: this.state.image,
-            rase_id: this.state.age
+            rase_id: this.state.rase?.id,
+            age: this.state.age
           }, 
           {
             headers: {
@@ -126,7 +169,7 @@ class AddPet extends React.Component {
             console.log(res.data.message);
             return NotificationManager.success(res.data.message, '  ', 3000);
         }).catch((error) => {
-          return NotificationManager.error(error.response.data.details[0], '  ', 3000);
+          return NotificationManager.error('Pet is not added', '  ', 3000);
         });
       }
       else return;
@@ -145,7 +188,7 @@ class AddPet extends React.Component {
                     <input type="text" name="location" value={this.state.location} onChange={this.handleChange} placeholder="Location"/>
                     <span className={"error"}>{this.state.errors["location"]}</span>
                     <br/>
-                    <input type="number" name="age" value={this.state.age} onChange={this.handleChange} placeholder="Age"/>
+                    <input type="number" min="0" max="100" name="age" value={this.state.age} onChange={this.handleChange} placeholder="Age"/>
                     <span className={"error"}>{this.state.errors["age"]}</span>
                     <br/>
                     <input type="file" name="file"  accept="image/*" id="upload-button" style={{display: 'none'}} onChange={this.handleChange} />
@@ -155,7 +198,9 @@ class AddPet extends React.Component {
                           Import image
                         </div>
                     </label>
-                    <Dropdown className={"dropdown"} options={this.state.options} name="question" onChange={this.handleCategoryChange} value={this.state.category.name} placeholder="Select an option" />
+                    <Dropdown className={"dropdown"} options={this.state.options} name="options" onChange={this.handleCategoryChange} value={this.state.category} placeholder="Select pet category" />
+                    <br/>
+                    <Dropdown className={"dropdown"} options={this.state.optionRases} name="rase" onChange={this.handleRaseChange} value={this.state.rase} placeholder="Select pet rase" />
                     <br/>
                     <textarea type="text" name="message" value={this.state.message} onChange={this.handleChange} placeholder="Message"/>
                     <span className={"error"}>{this.state.errors["message"]}</span>

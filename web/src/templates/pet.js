@@ -1,40 +1,42 @@
 import React, { useState, useContext } from 'react'
 import useFetch from '../hooks/useFetch'
 import { useHistory, Link } from 'react-router-dom'
-import { StoreContext } from '../context'
 
 import Breadcrumbs from '../components/Breadcrumbs'
-import ColorSelector from '../components/ColorSelector'
 import Loader from '../components/Loader'
+import axios from "axios";
 import Comment from '../components/Comment'
+import { getToken, getUser, logoutUser } from "../utilities/Common";
+import {NotificationContainer, NotificationManager} from 'react-notifications';
 
 export default function Pet({id}) {
     const {response: pet, error } = useFetch(`http://localhost:8088/pet_category_service_api/pet/${id}`)
 
     const history = useHistory();
-    const { setCart } = useContext(StoreContext)
-
-    const [imageIndex, setImageIndex] = useState(0)
-    const [colorIndex, setColorIndex] = useState(0)
-    const [quantity, setQuantity] = useState(1)
 
     const handleAdoptCart = () => {
-        alert('A name was submitted: ' + id);
-     
+        axios.post(
+            `http://localhost:8088/adopt_service_api/eurekaa/adoption-request/${id}`,
+            {
+              headers: {
+                 Authorization: "Bearer " + getToken(),
+              }, 
+            }
+          )
+        .then((response) => {
+            return NotificationManager.success(response.data.message, '  ', 3000);
+        })
+        .catch((error) => {
+            return NotificationManager.error('Pet is not adopted', '  ', 3000);
+        });
     }
 
     if(!pet) return <Loader/>
     if(error) return <div>Error.</div>
 
     const { 
-        stock, price, colors, 
-        images, reviews, stars, 
-        name, description, company
+        name, description
     } = pet;
-
-    const roundedStarNumber = Math.round(stars);
-    const filledStar = <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.283.95l-3.523 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"></path>
-    const emptyStar = <path fillRule="evenodd" d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.523-3.356c.329-.314.158-.888-.283-.95l-4.898-.696L8.465.792a.513.513 0 00-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767l-3.686 1.894.694-3.957a.565.565 0 00-.163-.505L1.71 6.745l4.052-.576a.525.525 0 00.393-.288l1.847-3.658 1.846 3.658a.525.525 0 00.393.288l4.052.575-2.906 2.77a.564.564 0 00-.163.506l.694 3.957-3.686-1.894a.503.503 0 00-.461 0z" clipRule="evenodd"></path>
 
     return(
         <>
@@ -56,7 +58,6 @@ export default function Pet({id}) {
                                 <hr className="my-4 md:my-6"/>
                                 <p className="grid grid-cols-2">
                                     <span>Animal type: </span>
-                                    {/*stock > 0 ? 'In Stock' : 'Out of Stock'*/}
                                     <span className="font-bold text-right">{pet.rase.category.name}</span>
                                     
                                 </p>
@@ -103,6 +104,8 @@ export default function Pet({id}) {
                     <Comment id={id} category={2}></Comment>
                 </div>
             </section>
+
+            <NotificationContainer/>
         </>
     )
 }
