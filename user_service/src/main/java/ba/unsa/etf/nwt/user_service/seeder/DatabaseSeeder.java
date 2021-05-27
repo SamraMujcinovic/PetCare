@@ -76,6 +76,10 @@ public class DatabaseSeeder {
         //peti user - user
         Answer a5 = createAnswer("Ella", q4);
         createUser("Name", "Surname", "email@etf.unsa.ba", "username", "string123!A", a5, roles);
+
+        //sesti user - admin
+        Answer a6 = createAnswer("Sarajevo", q1);
+        createUser("Irfan", "Prazina", "iprazina1@etf.unsa.ba", "iprazina1", "NWTpassword123!", a6, r);
     }
 
     private void createUser(String name, String surname, String email, String username, String password, Answer answer, Set<Role> roles) {

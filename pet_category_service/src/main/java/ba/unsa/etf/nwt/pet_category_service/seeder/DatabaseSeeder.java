@@ -32,11 +32,11 @@ public class DatabaseSeeder {
     }
 
     private void seed() {
+
         //kategorije
+
         Category c1 = createCategory("Dog", "Dogs are domesticated mammals, not natural wild animals. ");
-
         Category c2 = createCategory("Cat", "Cats, also called domestic cats (Felis catus), are small, carnivorous (meat-eating) mammals, of the family Felidae.");
-
         Category c3 = createCategory("Fish", "Fish (plural: fish) are an aquatic group of vertebrates which live in water and respire (get oxygen) with gills. They do not have limbs.");
         Category c4 = createCategory("Bird", "Birds can be wonderful companions for people who are single or live alone. Their chatter and antics can be quite amusing.");
 
@@ -92,11 +92,11 @@ public class DatabaseSeeder {
             System.out.println("ERROR + " + e.getMessage());
         }
 
-        createPet("Rex", "Sarajevo", firstPet, "", 2, true, r1);
-        createPet("Pupi", "Tuzla", secondPet, "", 1, true, r2);
-        createPet("Cicko", "Zenica", thirdPet, "", 9, true, r3);
-        createPet("Ribica", "Neum", fourthPet, "", 0, true, r4);
-        createPet("Pricalica", "Brcko", fifthPet, "", 1, true, r5);
+        createPet("Rex", "Sarajevo", firstPet, "This American Bulldog may look tough, but in reality he is very spoiled, loves children and is very friendly with everyone. He is used to a big group of people and gets along with other animals very well.", 2, true, r1);
+        createPet("Pupi", "Tuzla", secondPet, "This Bichon Frise is a big diva. He likes his haircuts and makeovers. He is always the center of attention and a great friend to a man.", 1, true, r2);
+        createPet("Cicko", "Zenica", thirdPet, "This British Shothair is a bit older cat, but it will give you all the love it has. She is super lazy, and loves sleeping on the couch, especially if there is a human next to her.", 9, true, r3);
+        createPet("Ribica", "Neum", fourthPet, "A goldfish is always a good addition to your aquarium. Maybe this one will grant you the famous 3 wishes... :D", 0, true, r4);
+        createPet("Pricalica", "Brcko", fifthPet, "This Budgerigar loves hanging out in his cage, and in the high corner of a room. Sometimes, he will even say something, repeat something.", 1, true, r5);
 
     }
 

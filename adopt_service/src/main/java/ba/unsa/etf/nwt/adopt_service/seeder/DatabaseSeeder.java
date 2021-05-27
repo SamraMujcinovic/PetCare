@@ -24,15 +24,12 @@ public class DatabaseSeeder {
     }
 
     private void seedDatabase() {
-        createAdoptionRequest(1L, 5L, "Hi! I'd like to adopt your wonderful pet!", false);
-        createAdoptionRequest(2L, 5L, "Hi! Your pet looks it needs a new home, I'll be happy to help.", false);
-        createAdoptionRequest(1L, 5L, "Hello. My Name is 1750, I need a new pet friend, and it looks like Garo could be it", false);
-        createAdoptionRequest(3L, 5L, "Hi! I'd like to adopt your wonderful pet!", true);
+        createAdoptionRequest(1L, 1L, "Hi! I'd like to adopt your wonderful pet!", false);
+        createAdoptionRequest(2L, 2L, "Hi! Your pet looks it needs a new home, I'll be happy to help.", false);
 
-        createAddPetRequest(5L, 1L, "I found this beautiful cat in front of my door. Could you give it a new home?", false);
-        createAddPetRequest(4L, 2L, "I found this beautiful dog in front of my garage. Could you give it a new home?", true);
-        createAddPetRequest(2L, 3L, "This is Lucky. He needs a new home. Is there any way to give him a loving family?", false);
-        createAddPetRequest(1L, 4L, "Prazan string", true);
+        createAddPetRequest(5L, 3L, "I found this beautiful cat in front of my door. Could you give it a new home?", false);
+        createAddPetRequest(5L, 4L, "I can't take care of my fish any more, I got a cat. Maybe you can help me find it a new home?", false);
+        createAddPetRequest(5L, 5L, "This is Pricalica. I found her on a tree very scared, probably attacked. She needs a new home. Is there any way to give him a loving family?", false);
     }
 
     private void createAddPetRequest(Long userID, Long newPetID, String message, boolean approved) {
