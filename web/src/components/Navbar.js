@@ -4,6 +4,7 @@ import { useAuth0 } from '@auth0/auth0-react'
 import {StoreContext} from '../context/index'
 import axios from "axios";
 import { getToken, getUser, logoutUser } from "../utilities/Common";
+import Notification from "../components/Notification";
 
 import '../assets/scss/other.scss'
 
@@ -64,10 +65,25 @@ const LogoutButton = () => {
 
 function Navbar() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-    const { isAuthenticated } = useAuth0()
     const { cart } = useContext(StoreContext)
     const [width, setWidth] = useState(window.innerWidth);
     const location = useLocation()
+    const [notifications, setNotificaitons] = React.useState([]);
+    const userId = (JSON.parse(getUser()))?.userId;
+
+    useEffect(() => {
+        axios.get(
+          `http://localhost:8088/notification_service_api/notifications/all/unread/${userId}`,
+          {
+            headers: {
+               Authorization: "Bearer " + getToken(),
+            },
+          }
+        )
+      .then((response) => {
+        setNotificaitons(response.data);
+      })
+    }, [])
 
     useEffect(() => {
         const handleResize = () => setWidth(window.innerWidth);
@@ -85,7 +101,6 @@ function Navbar() {
         setMobileMenuOpen(false);
         window.scrollTo(0, 0);
     }, [location])
-
 
     const amount = cart.reduce((total, obj) => {
         total += obj.amount;
@@ -119,12 +134,17 @@ function Navbar() {
                     <div className="hidden lg:flex gap-8">
                         {
                             getToken() &&   
-                            <Link to="/profile" className="flex text-2xl items-center lg:text-xl gap-3 shadow-none mt-1">
-                                Profile
-                            </Link>
+                            <>
+                                <Link to="/profile" className="flex text-2xl items-center lg:text-xl gap-3 shadow-none mt-1">
+                                    Profile
+                                </Link>
+                                </>
                         }
                         {
                             getToken() ? <LogoutButton/> : <LoginButton/>
+                        }
+                        {
+                            getToken() &&  <Notification/>
                         }
                     </div>
                     <button onClick={() => setMobileMenuOpen(true)} className="btn-lg lg:hidden border-0 bg-transparent text-red-500">
@@ -158,13 +178,19 @@ function Navbar() {
                     <div className="mt-10 flex gap-8 justify-center">
                             {
                                 getToken() &&   
-                                <Link to="/profile" className="flex text-2xl items-center lg:text-xl gap-3 shadow-none mt-1">
-                                    Profile
-                                </Link>
+                                <>
+                                    <Link to="/profile" className="flex text-2xl items-center lg:text-xl gap-3 shadow-none mt-1">
+                                        Profile
+                                    </Link>
+                                </>
                             }
                             {
                                
                                 getToken() ? <LogoutButton/> : <LoginButton/>
+                            }
+                            {
+                                getToken() &&   
+                                    <Notification/>
                             }
                     </div>
                 </div>

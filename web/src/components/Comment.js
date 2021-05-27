@@ -331,7 +331,7 @@ class Comment extends React.Component {
             })
           }
         }).catch((error) => {
-          return NotificationManager.error(error.response.data.details[0], '  ', 3000);
+          return NotificationManager.error(error?.response?.data?.details[0], '  ', 3000);
         });
       }
     else return;
