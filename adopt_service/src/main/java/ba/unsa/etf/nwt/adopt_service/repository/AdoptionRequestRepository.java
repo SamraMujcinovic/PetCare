@@ -11,7 +11,5 @@ import java.util.Optional;
 public interface AdoptionRequestRepository extends JpaRepository<AdoptionRequest, Long> {
     List<AdoptionRequest> findAllByApprovedAndPetID(Boolean isApproved, Long id);
 
-    Optional<AdoptionRequest> findByPetID(Long petId);
-
     List<AdoptionRequest> findAllByPetID(Long petId);
 }

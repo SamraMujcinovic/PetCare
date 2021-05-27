@@ -19,7 +19,6 @@ public class PetRequest {
         @NotBlank(message = "Pet location can't be blank!")
         private String location;
 
-        //da li je image string? jeste..
         //@NotBlank(message = "Pet image can't be blank!")
         @Column(columnDefinition = "text")
         private String image;
@@ -30,8 +29,6 @@ public class PetRequest {
         @NotNull(message = "Pet age can't be blank!")
         @Max(value = 100, message = "Pet can't be older than 100 years!")
         private Integer age;
-
-        //private boolean adopted;
 
         private Long rase_id;
 

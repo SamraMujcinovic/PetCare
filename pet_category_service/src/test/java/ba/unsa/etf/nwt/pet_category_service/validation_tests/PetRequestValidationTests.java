@@ -12,6 +12,7 @@ import javax.validation.ValidatorFactory;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PetRequestValidationTests {
 
@@ -68,7 +69,7 @@ public class PetRequestValidationTests {
         p.setImage("");
         p.setAge(2);
         Set<ConstraintViolation<PetRequest>> violations = validator.validate(p);
-        assertFalse(violations.isEmpty());
+        assertTrue(violations.isEmpty());
     }
 
 

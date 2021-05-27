@@ -282,43 +282,4 @@ public class AdoptRequestRoutesTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
     }
-
-    @Test
-    void deleteAdoptionRequestsByUserIDInJSON() throws Exception {
-
-        String token = "Bearer " + getToken();
-
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/adoption-request/user/{userID}", 5)
-                .header(HttpHeaders.AUTHORIZATION, token)
-                .contentType(MediaType.APPLICATION_JSON);
-        mockMvc.perform(requestBuilder)
-                .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().json("{\n" +
-                        "\"success\": true,\n" +
-                        "\"status\": \"OK\",\n" +
-                        "\"message\": \"Adoption request with user id=5 deleted successfully!\"\n" +
-                        "}"
-                ));
-        ;
-    }
-
-    @Test
-    void deleteAdoptionRequestsByNewPetIDInJSON() throws Exception {
-
-        String token = "Bearer " + getToken();
-
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/adoption-request/pet/{newPetID}", 200)
-                .header(HttpHeaders.AUTHORIZATION, token)
-                .contentType(MediaType.APPLICATION_JSON);
-        mockMvc.perform(requestBuilder)
-                .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().json("{\n" +
-                        "\"success\": true,\n" +
-                        "\"status\": \"OK\",\n" +
-                        "\"message\": \"Adoption request with pet id=200 deleted successfully!\"\n" +
-                        "}"
-                ));
-    }
 }

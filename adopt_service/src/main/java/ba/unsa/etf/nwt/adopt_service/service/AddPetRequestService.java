@@ -35,9 +35,6 @@ public class AddPetRequestService {
 
     private List<AddPetRequest> allRequestsForDelete;
 
-    //@Value("${add.isAlreadyNotApprovedAdd: 0}")
-    //private int isAlreadyNotApprovedAdd;
-
     @Autowired
     private RabbitTemplate rabbitTemplate;
 
@@ -90,9 +87,6 @@ public class AddPetRequestService {
 
             try {
                 //sada prvo moramo dodati poslani pet u bazu preko rute POST u pet servisu
-                /*Long petID = restTemplate.postForObject(communicationsService.getUri("pet_category_service")
-                        + "/petID/forAdopt", addPetRequest.getPetForAdopt(), Long.class);
-                newRequest.setNewPetID(petID);*/
 
                 HttpHeaders headers = new HttpHeaders();
                 headers.set("Authorization", token);
@@ -131,7 +125,7 @@ public class AddPetRequestService {
                 if(e.getMessage().equals("URI is not absolute")) {//ova message se vrati ako nije podignut neki servis
                     throw new ResourceNotFoundException("Can't connect to pet_category_service!!");
                 }
-                //kad se tamo hendla onaj exception vratit ce nesto bla bla
+                //kad se tamo hendla onaj exception vratit ce nesto
                 //i onda bih trebala provjeriti jel wrong input ili resource not found
                 if(e.getMessage().contains("rase")){//ako zadana rasa ne postoji u bazi
                     throw new ResourceNotFoundException("No rase with id " + addPetRequest.getPetForAdd().getRase_id());
@@ -185,66 +179,6 @@ public class AddPetRequestService {
                 .collect(Collectors.toList());
     }
 
-    /*public ResponseMessage deleteAddPetRequestByID(Long id) {
-        try {
-            AddPetRequest addPetRequest = addPetRequestRepository
-                    .findAll()
-                    .stream()
-                    .filter(n -> n.getId().equals(id))
-                    .collect(Collectors.toList()).get(0);
-            addPetRequestRepository.delete(addPetRequest);
-            if (addPetRequestRepository.findById(id) != null)
-                return new ResponseMessage(true, HttpStatus.OK, "Request to add a pet with id=" + id + " deleted successfully!");
-            return new ResponseMessage(false, HttpStatus.INTERNAL_SERVER_ERROR, "Internal server or database error!");
-        } catch (Exception e) {
-            return new ResponseMessage(false, HttpStatus.NOT_FOUND, "There is no request to add a pet with id=" + id + "!");
-        }
-    }
-
-    public ResponseMessage deleteAddPetRequestsByUserID(Long userID) {
-        try {
-            List<AddPetRequest> addPetRequestListUser = addPetRequestRepository
-                    .findAll()
-                    .stream()
-                    .filter(n -> n.getUserID().equals(userID))
-                    .collect(Collectors.toList());
-            for (AddPetRequest addPetRequest : addPetRequestListUser) {
-                addPetRequestRepository.delete(addPetRequest);
-            }
-            if (addPetRequestRepository
-                    .findAll()
-                    .stream()
-                    .filter(n -> n.getUserID().equals(userID))
-                    .collect(Collectors.toList()).size() == 0)
-                return new ResponseMessage(true, HttpStatus.OK, "Requests to add a pet with user id=" + userID + " deleted successfully!");
-            return new ResponseMessage(false, HttpStatus.INTERNAL_SERVER_ERROR, "Internal server or database error!");
-        } catch (Exception e) {
-            return new ResponseMessage(false, HttpStatus.NOT_FOUND, "There are no requests to add a pet with user id=" + userID + "!");
-        }
-    }*/
-
-    public ResponseMessage deleteAddPetRequestsByNewPetID(Long newPetID) {
-        try {
-            List<AddPetRequest> addPetRequestListPet = addPetRequestRepository
-                    .findAll()
-                    .stream()
-                    .filter(n -> n.getNewPetID().equals(newPetID))
-                    .collect(Collectors.toList());
-            for (AddPetRequest addPetRequest : addPetRequestListPet) {
-                addPetRequestRepository.delete(addPetRequest);
-            }
-            if (addPetRequestRepository
-                    .findAll()
-                    .stream()
-                    .filter(n -> n.getNewPetID().equals(newPetID))
-                    .collect(Collectors.toList()).size() == 0)
-                return new ResponseMessage(true, HttpStatus.OK, "Request to add a pet with pet id=" + newPetID + " deleted successfully!");
-            return new ResponseMessage(false, HttpStatus.INTERNAL_SERVER_ERROR, "Internal server or database error!");
-        } catch (Exception e) {
-            return new ResponseMessage(false, HttpStatus.NOT_FOUND, "There are no requests to add a pet with pet id=" + newPetID + "!");
-        }
-    }
-
     public ResponseMessage deleteAddPetRequest(String token, Long id){
 
         AddPetRequest addPetRequest = addPetRequestRepository.findById(id)
@@ -270,40 +204,15 @@ public class AddPetRequestService {
                 throw new ResourceNotFoundException("Can't connect to pet_category_service and delete a pet!");
             }
 
-            //if(isAlreadyNotApprovedAdd != 1) {
-                /*try {
+            //send message to notification_service
+            NotificationAdoptServiceMessage notificationAdoptServiceMessage = new NotificationAdoptServiceMessage(addPetRequest.getUserID(),
+                    addPetRequest.getId(), false, true);
+            rabbitTemplate.convertAndSend(MessagingConfig.ADOPT_NOTIFICATION_SERVICE_EXCHANGE,
+                    MessagingConfig.ADOPT_NOTIFICATION_SERVICE_ROUTING_KEY, notificationAdoptServiceMessage);
 
-                    HttpHeaders headers = new HttpHeaders();
-                    headers.set("Authorization", token);
-
-                    HttpEntity<String> entityReq = new HttpEntity<>("", headers);
-
-                    ResponseEntity<ResponseMessage> responseMessage = restTemplate.exchange(communicationsService.getUri("notification_service")
-                                    + "/notifications/add/not-approved/add-pet-request/" + addPetRequest.getUserID() + "/" + addPetRequest.getId(),
-                            HttpMethod.GET ,entityReq, ResponseMessage.class);
-
-                    System.out.println(responseMessage.getBody().getMessage());
-                } catch (Exception ue){
-                    System.out.println("Can't connect to notification_service!");
-                }*/
-
-                //send message to notification_service
-                NotificationAdoptServiceMessage notificationAdoptServiceMessage = new NotificationAdoptServiceMessage(addPetRequest.getUserID(),
-                        addPetRequest.getId(), false, true);
-                rabbitTemplate.convertAndSend(MessagingConfig.ADOPT_NOTIFICATION_SERVICE_EXCHANGE,
-                        MessagingConfig.ADOPT_NOTIFICATION_SERVICE_ROUTING_KEY, notificationAdoptServiceMessage);
-
-            //}
-            //ne bi trebalo da ikad postoji ovih zahtjeva
-            //ali za svaki slucaj se brisu
             communicationsService.deleteForAdopt(token, addPetRequest.getNewPetID());
 
-        }// else {
-
-            //adoptionRequestService.findAndDeleteAdoptionRequest(token, addPetRequest.getNewPetID());
-
-            //communicationsService.deleteForAdopt(token, addPetRequest.getNewPetID());
-        //}
+        }
 
         addPetRequestRepository.deleteById(id);
 
@@ -314,31 +223,11 @@ public class AddPetRequestService {
         AddPetRequest addPetRequest = addPetRequestRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Request not found!"));
 
-        //RestTemplate restTemplate = new RestTemplate();
-
-        /*try {
-
-            HttpHeaders headers = new HttpHeaders();
-            headers.set("Authorization", token);
-
-            HttpEntity<String> entityReq = new HttpEntity<>("", headers);
-
-            ResponseEntity<ResponseMessage> responseMessage = restTemplate.exchange(communicationsService.getUri("notification_service")
-                            + "/notifications/add/not-approved/add-pet-request/" + addPetRequest.getUserID() + "/" + addPetRequest.getId(),
-                    HttpMethod.GET ,entityReq, ResponseMessage.class);
-
-            System.out.println(responseMessage.getBody().getMessage());
-        } catch (Exception ue){
-            System.out.println("Can't connect to notification_service!");
-        }*/
-
         //send message to notification_service
         NotificationAdoptServiceMessage notificationAdoptServiceMessage = new NotificationAdoptServiceMessage(addPetRequest.getUserID(),
                 addPetRequest.getId(), false, true);
         rabbitTemplate.convertAndSend(MessagingConfig.ADOPT_NOTIFICATION_SERVICE_EXCHANGE,
                 MessagingConfig.ADOPT_NOTIFICATION_SERVICE_ROUTING_KEY, notificationAdoptServiceMessage);
-
-        //isAlreadyNotApprovedAdd = 1;
 
         addPetRequest.setApproved(false);
         addPetRequestRepository.save(addPetRequest);
@@ -370,24 +259,6 @@ public class AddPetRequestService {
             throw new ResourceNotFoundException("Can't connect to pet_category_service and approve a pet!");
         }
 
-        //salje se notifikacija korisniku
-
-        /*try {
-
-            HttpHeaders headers = new HttpHeaders();
-            headers.set("Authorization", token);
-
-            HttpEntity<String> entityReq = new HttpEntity<>("", headers);
-
-            ResponseEntity<ResponseMessage> responseMessage = restTemplate.exchange(communicationsService.getUri("notification_service")
-                            + "/notifications/add/approved/add-pet-request/" + addPetRequest.getUserID() + "/" + addPetRequest.getId(),
-                    HttpMethod.GET ,entityReq, ResponseMessage.class);
-
-            System.out.println(responseMessage.getBody().getMessage());
-        } catch (Exception ue){
-            System.out.println("Can't connect to notification_service!");
-        }*/
-
         //send message to notification_service
         NotificationAdoptServiceMessage notificationAdoptServiceMessage = new NotificationAdoptServiceMessage(addPetRequest.getUserID(),
                 addPetRequest.getId(), true, true);
@@ -406,53 +277,24 @@ public class AddPetRequestService {
     }
 
     public void findAndDeleteAddPetRequest(Long id){
-        //try {
+        List<AddPetRequest> addPetRequests =
+                addPetRequestRepository.findAllByNewPetID(id);
 
-            List<AddPetRequest> addPetRequests =
-                    addPetRequestRepository.findAllByNewPetID(id);
+        for(AddPetRequest addPetRequest : addPetRequests) {
 
-            //AddPetRequest addPetRequest = addPetRequestRepository.findByNewPetID(id)
-              //      .orElseThrow(() -> new ResourceNotFoundException("Request not found!"));
+            if (!addPetRequest.isApproved()) {
 
-            for(AddPetRequest addPetRequest : addPetRequests) {
+                //send message to notification_service
+                NotificationAdoptServiceMessage notificationAdoptServiceMessage = new NotificationAdoptServiceMessage(addPetRequest.getUserID(),
+                        addPetRequest.getId(), false, true);
+                rabbitTemplate.convertAndSend(MessagingConfig.ADOPT_NOTIFICATION_SERVICE_EXCHANGE,
+                        MessagingConfig.ADOPT_NOTIFICATION_SERVICE_ROUTING_KEY, notificationAdoptServiceMessage);
 
-                if (!addPetRequest.isApproved()) {
-
-                    /*RestTemplate restTemplate = new RestTemplate();
-
-                    try {
-
-                        HttpHeaders headers = new HttpHeaders();
-                        headers.set("Authorization", token);
-
-                        HttpEntity<String> entityReq = new HttpEntity<>("", headers);
-
-                        ResponseEntity<ResponseMessage> responseMessage = restTemplate.exchange(communicationsService.getUri("notification_service")
-                                        + "/notifications/add/not-approved/add-pet-request/" + addPetRequest.getUserID() + "/" + addPetRequest.getId(),
-                                HttpMethod.GET, entityReq, ResponseMessage.class);
-
-                        System.out.println(responseMessage.getBody().getMessage());
-                    } catch (Exception ue) {
-                        System.out.println("Can't connect to notification_service!");
-                    }*/
-
-                    //send message to notification_service
-                    NotificationAdoptServiceMessage notificationAdoptServiceMessage = new NotificationAdoptServiceMessage(addPetRequest.getUserID(),
-                            addPetRequest.getId(), false, true);
-                    rabbitTemplate.convertAndSend(MessagingConfig.ADOPT_NOTIFICATION_SERVICE_EXCHANGE,
-                            MessagingConfig.ADOPT_NOTIFICATION_SERVICE_ROUTING_KEY, notificationAdoptServiceMessage);
-
-                }
-
-                //dodavanje u listu u slucaju da dodje do greske pa da se mogu vratiti...
-                allRequestsForDelete.add(addPetRequest);
-                addPetRequestRepository.deleteById(addPetRequest.getId());
             }
-
-        /*} catch (ResourceNotFoundException e){
-            //ne treba nista da se desi
-            System.out.println(e.getMessage());
-        }*/
+            //dodavanje u listu u slucaju da dodje do greske pa da se mogu vratiti...
+            allRequestsForDelete.add(addPetRequest);
+            addPetRequestRepository.deleteById(addPetRequest.getId());
+        }
     }
 
     public void addBackAllDeletedRequests(){

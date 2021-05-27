@@ -85,7 +85,10 @@ public class RaseTests {
 
         Long id = 1L;
 
+        String token = "Bearer " + getToken();
+
         RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/rase/{id}", id)
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .contentType(MediaType.APPLICATION_JSON);
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk())
@@ -102,8 +105,7 @@ public class RaseTests {
                 .contentType(MediaType.APPLICATION_JSON);
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().json("{\"name\":\"Goldfish\",\"description\":\"Another cold-water fish, goldfish belong to the carp family. Because they enjoy cool water temperatures, keep goldfish in a separate tank from warm water fish.\",\"category\":{\"name\":\"novaCat\",\"description\":\"string\"}}"));
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
     }
 
     @Test
@@ -185,7 +187,10 @@ public class RaseTests {
 
         Long id = 50L;
 
+        String token = "Bearer " + getToken();
+
         RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/rase/{id}", id)
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .contentType(MediaType.APPLICATION_JSON);
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isNotFound())

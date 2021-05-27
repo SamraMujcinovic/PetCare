@@ -4,8 +4,6 @@ import ba.unsa.etf.nwt.adopt_service.model.AddPetRequest;
 import ba.unsa.etf.nwt.adopt_service.model.AdoptionRequest;
 import ba.unsa.etf.nwt.adopt_service.repository.AddPetRequestRepository;
 import ba.unsa.etf.nwt.adopt_service.repository.AdoptionRequestRepository;
-import ba.unsa.etf.nwt.adopt_service.service.AddPetRequestService;
-import ba.unsa.etf.nwt.adopt_service.service.AdoptionRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
@@ -15,18 +13,10 @@ import org.springframework.stereotype.Component;
 public class DatabaseSeeder {
 
     @Autowired
-    private AddPetRequestService addPetRequestService;
-
-    @Autowired
-    private AdoptionRequestService adoptionRequestService;
-
-    @Autowired
     private AddPetRequestRepository addPetRequestRepository;
 
     @Autowired
     private AdoptionRequestRepository adoptionRequestRepository;
-
-
 
     @EventListener
     public void seed(ContextRefreshedEvent event) {

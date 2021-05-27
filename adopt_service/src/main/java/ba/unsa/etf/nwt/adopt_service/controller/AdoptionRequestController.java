@@ -65,6 +65,7 @@ public class AdoptionRequestController {
         return adoptionRequestService.getAdoptionRequestByUserID(userID);
     }
 
+    //filteri
     @RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
     @GetMapping("/adoption-request/pet/{petID}")
     public List<AdoptionRequest> getAdoptionRequestByPetID(@PathVariable Long petID) {
@@ -88,38 +89,6 @@ public class AdoptionRequestController {
     @DeleteMapping("/adoption-request/{id}")
     public ResponseMessage deleteAdoptionRequestByID(@RequestHeader("Authorization") String token, @PathVariable Long id) {
         return adoptionRequestService.deleteAdoptionRequestByID(token, id);
-    }
-
-    //brisanje svih requesta nekog usera
-    //nece se koristiti, nije povezano sa pet_category_service
-    /*@RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
-    @DeleteMapping("/adoption-request/user/{userID}")
-    public ResponseMessage deleteAdoptionRequestsByUserID(@PathVariable Long userID, @CurrentUser UserPrincipal currentUser) {
-
-        //pronalazak role trenutnog korisnika
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        boolean hasAdminRole = authentication.getAuthorities().stream()
-                .anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN"));
-
-        //svi admini i samo useri ciji je request imaju pravo brisanja istog
-        if(hasAdminRole){
-            return adoptionRequestService.deleteAdoptionRequestsByUserID(userID);
-        }
-
-        //korisnici mogu obrisati samo vlastite requeste
-        if (!currentUser.getId().equals(userID)) {
-            throw new WrongInputException("Current user is not admin and this request doesn't belong to current user!");
-        }
-
-        return adoptionRequestService.deleteAdoptionRequestsByUserID(userID);
-    }*/
-
-    //kada je neki pet adoptan, svi ostali zahtjevi sa tim idem se brisu
-    //treba se poslat notif userima da je zahtjev neprihvacen, prije brisanja
-    @RolesAllowed("ROLE_ADMIN")
-    @DeleteMapping("/adoption-request/pet/{petID}")
-    public ResponseMessage deleteAdoptionRequestsByPetID(@PathVariable Long petID) {
-        return adoptionRequestService.deleteAdoptionRequestsByPetID(petID);
     }
 
     @RolesAllowed("ROLE_ADMIN")

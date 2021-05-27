@@ -90,12 +90,14 @@ public class CategoryTests {
 
         Long id = 1L;
 
+        String token = "Bearer " + getToken();
+
         RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/category/{id}", id)
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .contentType(MediaType.APPLICATION_JSON);
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().json("{\"name\":\"Dog\",\"description\":\"Dogs are domesticated mammals, not natural wild animals. \"}"));
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
     }
 
     @Test
@@ -152,7 +154,10 @@ public class CategoryTests {
 
         Long id = 50L;
 
+        String token = "Bearer " + getToken();
+
         RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/category/{id}", id)
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .contentType(MediaType.APPLICATION_JSON);
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isNotFound())

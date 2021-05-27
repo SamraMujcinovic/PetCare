@@ -88,14 +88,15 @@ public class CommunicationTests {
     void AddAdoptionRequest() throws Exception {
         String newAdoptRequest = "{\n" +
                 "    \"userID\": 1,\n" +
-                "    \"petID\": 1,\n" +
                 "    \"message\": \"Pet care\",\n" +
                 "    \"approved\": false\n" +
                 "}\n";
 
+        Long petId = 1L;
+
         String token = "Bearer " + getToken();
 
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/eurekaa/adoption-request", newAdoptRequest)
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/eurekaa/adoption-request/{petId}", petId, newAdoptRequest)
                 .header(HttpHeaders.AUTHORIZATION, token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(newAdoptRequest);
@@ -117,144 +118,21 @@ public class CommunicationTests {
     void AddAdoptionRequestPetIDNotFound() throws Exception {
         String newAdoptRequest = "{\n" +
                 "    \"userID\": 1,\n" +
-                "    \"petID\": 50,\n" +
                 "    \"message\": \"Pet care\",\n" +
                 "    \"approved\": false\n" +
                 "}\n";
 
+        Long petId = 50L;
+
         String token = "Bearer " + getToken();
 
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/eurekaa/adoption-request", newAdoptRequest)
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/eurekaa/adoption-request/{petId}", petId, newAdoptRequest)
                 .header(HttpHeaders.AUTHORIZATION, token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(newAdoptRequest);
         mockMvc.perform(requestBuilder)
-                .andExpect(status().isNotFound())
-                .andExpect(content().json("{\"responseMessage\":{\"success\":false,\"message\":\"Exception for NOT_FOUND was thrown\",\"status\":\"NOT_FOUND\"},\"details\":[\"No pet with ID 50\"]}"));
-
-    }
-
-    @Test
-    void AddAddPetRequest() throws Exception {
-        String newAddPetRequest = "{\n" +
-                "  \"message\": \"string\",\n" +
-                "  \"petForAdopt\": {\n" +
-                "    \"adopted\": true,\n" +
-                "    \"age\": 0,\n" +
-                "    \"description\": \"string\",\n" +
-                "    \"image\": \"string\",\n" +
-                "    \"location\": \"string\",\n" +
-                "    \"name\": \"string\",\n" +
-                "    \"rase_id\": 1\n" +
-                "  }\n" +
-                "}\n";
-
-        String token = "Bearer " + getToken();
-
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/eurekaa/add-pet-request", newAddPetRequest)
-                .header(HttpHeaders.AUTHORIZATION, token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(newAddPetRequest);
-        mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
-
-        //pregled svih addPet zahtjeva
-        RequestBuilder requestBuilder2 = MockMvcRequestBuilders.get("/add-pet-request")
-                .header(HttpHeaders.AUTHORIZATION, token)
-                .contentType(MediaType.APPLICATION_JSON);
-        mockMvc.perform(requestBuilder2)
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$[4].message").value("string"));
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
-
-    @Test
-    void AddAddPetRequestEmptyMessage() throws Exception {
-        String newAddPetRequest = "{\n" +
-                "  \"message\": \"\",\n" +
-                "  \"petForAdopt\": {\n" +
-                "    \"adopted\": true,\n" +
-                "    \"age\": 0,\n" +
-                "    \"description\": \"string\",\n" +
-                "    \"image\": \"string\",\n" +
-                "    \"location\": \"string\",\n" +
-                "    \"name\": \"string\",\n" +
-                "    \"rase_id\": 1\n" +
-                "  }\n" +
-                "}\n";
-
-        String token = "Bearer " + getToken();
-
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/eurekaa/add-pet-request", newAddPetRequest)
-                .header(HttpHeaders.AUTHORIZATION, token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(newAddPetRequest);
-        mockMvc.perform(requestBuilder)
-                .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
-
-        //pregled svih addPet zahtjeva
-        RequestBuilder requestBuilder2 = MockMvcRequestBuilders.get("/add-pet-request")
-                .header(HttpHeaders.AUTHORIZATION, token)
-                .contentType(MediaType.APPLICATION_JSON);
-        mockMvc.perform(requestBuilder2)
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$[3].message").value(""));
-    }
-
-    @Test
-    void AddAddPetRequestRaseNotFound() throws Exception {
-        String newAddPetRequest = "{\n" +
-                "  \"message\": \"\",\n" +
-                "  \"petForAdopt\": {\n" +
-                "    \"adopted\": true,\n" +
-                "    \"age\": 0,\n" +
-                "    \"description\": \"string\",\n" +
-                "    \"image\": \"string\",\n" +
-                "    \"location\": \"string\",\n" +
-                "    \"name\": \"string\",\n" +
-                "    \"rase_id\": 50\n" +
-                "  }\n" +
-                "}\n";
-
-        String token = "Bearer " + getToken();
-
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/eurekaa/add-pet-request", newAddPetRequest)
-                .header(HttpHeaders.AUTHORIZATION, token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(newAddPetRequest);
-        mockMvc.perform(requestBuilder)
-                .andExpect(status().isNotFound())
-                .andExpect(content().json("{\"responseMessage\":{\"success\":false,\"message\":\"Exception for NOT_FOUND was thrown\",\"status\":\"NOT_FOUND\"},\"details\":[\"No rase with id 50\"]}"));
-
-    }
-
-    @Test
-    void AddAddPetRequestWrongInput() throws Exception {
-        String newAddPetRequest = "{\n" +
-                "  \"message\": \"\",\n" +
-                "  \"petForAdopt\": {\n" +
-                "    \"adopted\": true,\n" +
-                "    \"age\": 200,\n" +
-                "    \"description\": \"string\",\n" +
-                "    \"image\": \"\",\n" +
-                "    \"location\": \"\",\n" +
-                "    \"name\": \"\",\n" +
-                "    \"rase_id\": 1\n" +
-                "  }\n" +
-                "}\n";
-
-
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/eurekaa/add-pet-request", newAddPetRequest)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(newAddPetRequest);
-        mockMvc.perform(requestBuilder)
-                .andExpect(status().isBadRequest())
-                .andExpect(content().json("{\"responseMessage\":{\"success\":false,\"status\":\"BAD_REQUEST\",\"message\":\"Validation Failed\"},\"details\":[\"Pet name must be between 2 and 50 characters!\",\"Pet location can't be blank!\",\"Pet can't be older than 100 years!\",\"Pet image can't be blank!\",\"Pet name can't be blank!\"]}"));
-
-    }
-
 
 }
