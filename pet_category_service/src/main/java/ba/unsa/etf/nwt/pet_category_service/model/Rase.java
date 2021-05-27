@@ -28,7 +28,7 @@ public class Rase {
     @Size(min = 2, max = 50, message = "Rase name must be between 2 and 50 characters!")
     private String name;
 
-    @NotBlank(message = "Rase description can't be blank!")
+    //@NotBlank(message = "Rase description can't be blank!")
     @Column(columnDefinition = "text")
     private String description;
 

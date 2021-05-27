@@ -29,7 +29,7 @@ public class Category {
     private String name;
 
 
-    @NotBlank(message = "Category description can't be blank!")
+    //@NotBlank(message = "Category description can't be blank!")
     @Column(columnDefinition = "text")
     private String description;
 
