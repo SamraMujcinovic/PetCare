@@ -1,6 +1,7 @@
-FROM node:8.16 as build-deps
+FROM node:erbium-alpine3.11
 WORKDIR /web
 COPY package.json yarn.lock ./
 RUN yarn
-COPY . ./
-RUN yarn build
+COPY . .
+EXPOSE 3000
+RUN yarn start
