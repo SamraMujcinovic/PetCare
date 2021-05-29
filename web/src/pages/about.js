@@ -45,7 +45,7 @@ const About = () => (
                 <div class="team-card">
                     <div class="card h-100">
                         <div class="card-body">
-                            <img class="img-fouild rounded mb-3 avatar"
+                            <img class="img-fouild rounded mb-3 avatar img-A"
                                 src={team1}
                                 alt="AmilaH"/>
                             <div class="info">   
@@ -79,7 +79,7 @@ const About = () => (
                 <div class="team-card">
                     <div class="card h-100">
                         <div class="card-body">
-                            <img class="img-fouild rounded mb-3 avatar"
+                            <img class="img-fouild rounded mb-3 avatar img-E"
                                 src={team4}
                                 alt="Emir"/>
                             <div class="info">

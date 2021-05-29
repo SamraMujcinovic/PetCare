@@ -60,7 +60,7 @@ class Profile extends React.Component {
           <div>
             <AdoptRequests></AdoptRequests>
           </div>
-          User list
+          Users
           <div>
             <UserList></UserList>
           </div>

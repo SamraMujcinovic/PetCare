@@ -58,7 +58,6 @@ class ChangePassword extends React.Component {
                 question: res.data.question
               });
           }).catch(error => {
-              console.log(error);
           });
         })
     }

@@ -118,6 +118,11 @@ class Home extends React.Component {
           formIsValid = false;
           errors["message"] = "This field cannot be empty!";
        }
+ 
+        else if(this.state.message.length < 5) {
+            formIsValid = false;
+            errors["message"] = "Minimum length of the feedback is 5!";
+        }
     
         this.setState({errors: errors});
         return formIsValid;
@@ -131,7 +136,6 @@ class Home extends React.Component {
             email: this.state.email,
             message: this.state.message
         }).then(res => {
-            console.log(res.data.message);
             return NotificationManager.success('Successful submit', '  ', 3000);
         }).catch((error) => {
           return NotificationManager.error('Submit error', '  ', 3000);
@@ -211,7 +215,7 @@ class Home extends React.Component {
                                 src={avatar}
                             />
                         </ServiceBox>
-                        <ServiceBox title="Choose a pet and click 'Adopt'." content="After signing up, select your new pet and click button 'Adopt'.">
+                        <ServiceBox title="Choose a pet and click 'Adopt'." content="After signing up, select your new pet and click button 'Adopt' and wait admin to approve your request.">
                             <img
                                 alt="adopt"
                                 src={adopt}
@@ -247,6 +251,7 @@ class Home extends React.Component {
                     </div>
                 </div>
             </section>
+            <NotificationContainer/>
         </>
         )
     }

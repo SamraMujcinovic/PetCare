@@ -22,6 +22,8 @@ class UserList extends React.Component {
         
         this.state = {
           users: [],
+          user: [],
+          userRole: (JSON.parse(getUser()))?.role,
         };
     
       }
@@ -40,9 +42,23 @@ class UserList extends React.Component {
           ...this.state,
           users: response.data
       });
-        console.log(response)
-      })
-    }
+    })
+
+      axios.get(
+        "http://localhost:8088/user_service_api/user/me",
+        {
+          headers: {
+            Authorization: "Bearer " + getToken(),
+          },
+        }
+      )
+    .then((response) => {
+      this.setState({
+        ...this.state,
+        user: response.data
+      });
+    })
+  }
     
     render() {
       return (
@@ -58,7 +74,7 @@ class UserList extends React.Component {
                      </TableRow>
                 </TableHead>
                 <TableBody>
-                {this.state.users.map((row) => (
+                {this.state.userRole === 'admin' ? this.state.users.map((row) => (
                     <TableRow key={row.name}>
                     <TableCell component="th" scope="row">
                         {row.name}
@@ -67,7 +83,17 @@ class UserList extends React.Component {
                     <TableCell align="left">{row.username}</TableCell>
                     <TableCell align="left">{row.email}</TableCell>
                     </TableRow>
-                ))}
+                ))
+                :
+                  <TableRow >
+                    <TableCell component="th" scope="row">
+                        {this.state.user.name}
+                    </TableCell>
+                    <TableCell align="left">{this.state.user.surname}</TableCell>
+                    <TableCell align="left">{this.state.user.username}</TableCell>
+                    <TableCell align="left">{this.state.user.email}</TableCell>
+                  </TableRow>
+              }
                 </TableBody>
             </Table>
             </TableContainer>

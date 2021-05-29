@@ -1,8 +1,6 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
-import Dropdown from 'react-dropdown';
 import axios from "axios";
-import { getToken, getUser, logoutUser } from "../utilities/Common";
+import { getToken, getUser } from "../utilities/Common";
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 
 import 'react-notifications/lib/notifications.css';
@@ -17,7 +15,7 @@ class UserInfo extends React.Component {
           surname: '',
           username: '',
           email: '',
-          password: '',
+          password: (JSON.parse(getUser()))?.password,
           user: JSON.parse(getUser()),
           errors: {}
         };
@@ -43,16 +41,13 @@ class UserInfo extends React.Component {
           name: response.data.name,
           surname: response.data.surname,
           username: response.data.username,
-          email: response.data.email,
-          password: response.data.password
+          email: response.data.email
       });
-        console.log(response)
       }).then(() => {
         axios.get(
           "http://localhost:8088/pet_category_service_api/categories"
         )
         .then((categories) => {
-          console.log(categories.data)
         })
       })
     }
@@ -114,7 +109,7 @@ class UserInfo extends React.Component {
      else if(this.state.username.length > 40 ){
        formIsValid = false;
        errors["username"] = "Usernames max length is 40!";
-     }
+     } 
 
       this.setState({errors: errors});
       return formIsValid;
@@ -159,15 +154,16 @@ class UserInfo extends React.Component {
 
     deleteProfile(event) {
       event.preventDefault();
-      axios.delete('http://localhost:8088/user_service_api/user/delete', 
-        {
-          email: this.state.email,
-          password: this.state.user.password
-        }, 
+      axios.delete(
+        `http://localhost:8088/user_service_api/user/delete`,
         {
           headers: {
-            Authorization: "Bearer " + getToken(),
-          },  
+             Authorization: "Bearer " + getToken(),
+          },
+        }, 
+        {
+          email: this.state.email,
+          password: this.state.password
         }).then(res => {
           this.props.history.push("/");
           return NotificationManager.success(res.data.message, '  ', 3000);

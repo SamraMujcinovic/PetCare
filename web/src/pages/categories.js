@@ -2,8 +2,10 @@ import React, { useContext } from 'react'
 import { Link } from 'react-router-dom'
 import Breadcrumbs from '../components/Breadcrumbs'
 import CategoryPanel from '../components/CategoryPanel'
+import { Modal } from '@material-ui/core';
+import CloseIcon from '@material-ui/icons/Close';
 import axios from "axios";
-import { getToken, getUser, logoutUser } from "../utilities/Common";
+import { getToken, getUser } from "../utilities/Common";
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 
 import '../assets/scss/other.scss';
@@ -13,14 +15,16 @@ class Categories extends React.Component{
     constructor(props) {
         super(props);
         
-        this.state = {
+        this.state = { 
           token: getToken(),
           userRole: (JSON.parse(getUser()))?.role,
           addCategory: false,
           name: '',
           description: '',
           categories: [],
+          choosenCategory: {},
           gridView: true,
+          open: false,
           errors: {}
         };
 
@@ -30,6 +34,8 @@ class Categories extends React.Component{
         this.handleChange = this.handleChange.bind(this);
         this.handleValidation = this.handleValidation.bind(this);
         this.addCategoryFunction = this.addCategoryFunction.bind(this);
+        this.handleOpen = this.handleOpen.bind(this);
+        this.handleClose = this.handleClose.bind(this);
       }
 
     componentDidMount() {
@@ -42,7 +48,6 @@ class Categories extends React.Component{
           categories: response.data,
         });
        this.sortCategories(0);
-        console.log(response)
       })
     }
 
@@ -180,12 +185,28 @@ class Categories extends React.Component{
             this.setState({
               ...this.state,
               categories: response.data,
+              open: false
             });
            this.sortCategories(0);
           })
           return NotificationManager.success('Category deleted!', '  ', 3000);
         }).catch((error) => {
             return NotificationManager.error(error.response.data.details[0], '  ', 3000);
+        });
+    }
+
+    handleOpen(category) {
+        this.setState({
+            ...this.state,
+            open: true,
+            choosenCategory: category
+        });
+    }
+
+    handleClose() { 
+        this.setState({
+            ...this.state,
+            open: false
         });
     }
 
@@ -268,7 +289,7 @@ class Categories extends React.Component{
                                             {this.state.token && this.state.userRole === "admin" &&
                                                 <button 
                                                     className="btn bg-red-500 text-white delete-btn"
-                                                    onClick={() => this.deleteCategory(category)}
+                                                    onClick={() => this.handleOpen(category)}
                                                 >
                                                     Delete
                                                 </button>
@@ -281,6 +302,41 @@ class Categories extends React.Component{
                         </section>
                     </div>
                 </section>
+
+            <Modal
+                open={this.state.open}
+                onClose={this.handleClose}
+                aria-labelledby="simple-modal-title"
+                aria-describedby="simple-modal-description"
+            >
+                <div>  
+                    <div className={'paper'}>
+                        <button onClick={this.handleClose} style={{right: 20, position: 'absolute',}}>
+                            <CloseIcon />
+                        </button>
+                        <div style={{paddingTop: 20,}}>
+                            <h4 id="modal-title">Are you sure that you want delete this category?</h4>
+                            
+                            <div>
+                                <button 
+                                    className="btn bg-red-500 text-white ml-4 mt-5 delete-btn"
+                                    onClick={this.handleClose}
+                                >
+                                    Close 
+                                </button>
+                                <button 
+                                    className="btn bg-red-500 text-white mt-5 delete-btn"
+                                    onClick={() => this.deleteCategory(this.state.choosenCategory)}
+                                >
+                                    Delete 
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </Modal>
+         
+
                 <NotificationContainer/>  
             </>
         )

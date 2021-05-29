@@ -1,10 +1,8 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
 import Dropdown from 'react-dropdown';
 import axios from "axios";
 import { getToken, getUser } from "../utilities/Common";
 import {NotificationContainer, NotificationManager} from 'react-notifications';
-
 
 import '../assets/scss/profile.scss'
 
@@ -26,10 +24,11 @@ class AddPet extends React.Component {
         raseObject: {},
         rase: '',
         message: '',
-        image: 'image',
+        image: null,
         adopted: false,
         selectedFile: null,
         isFilePicked: false,
+        userRole: (JSON.parse(getUser()))?.role,
         errors: {}
       };
   
@@ -38,6 +37,7 @@ class AddPet extends React.Component {
       this.handleRaseChange = this.handleRaseChange.bind(this);
       this.handleValidation = this.handleValidation.bind(this);
       this.handleSubmit = this.handleSubmit.bind(this);
+      this.uploadImage = this.uploadImage.bind(this);
     }
 
     componentDidMount() {
@@ -65,6 +65,17 @@ class AddPet extends React.Component {
         });
     }
 
+    uploadImage = event => {
+      if (event.target.files && event.target.files[0]) {
+        let img = event.target.files[0];
+        this.setState({
+          ...this.state,
+          image: URL.createObjectURL(img),
+          selectedFile: event.target.files[0],
+        });
+      }
+    };
+
     handleCategoryChange(event) {
 
       let choosenCategory = {}
@@ -81,8 +92,6 @@ class AddPet extends React.Component {
             raseObject: {},
             rase: '',
         });
-
-        console.log(this.state)
 
         axios.get(
             `http://localhost:8088/pet_category_service_api/rases/inCategory?id=${choosenCategory.id}`
@@ -102,9 +111,12 @@ class AddPet extends React.Component {
     }
 
     handleRaseChange(event) {
+      const rasa = this.state.rases.find((element) => {
+        return element.name === event.value;
+      })
       this.setState({
           ...this.state,
-          rases: event.value
+          raseObject: rasa
       });
   }
 
@@ -151,22 +163,30 @@ class AddPet extends React.Component {
   
     handleSubmit(event) {
       event.preventDefault();
-      if (this.handleValidation()) {
-        axios.post('http://localhost:8088/pet_category_service_api/pet',
-          {
-            name: this.state.name,
-            location: this.state.location,
-            description: this.state.description,
-            image: this.state.image,
-            rase_id: this.state.rase?.id,
-            age: this.state.age
-          }, 
+      let formData = new FormData();  
+      formData.append('image', this.state.selectedFile);
+      formData.append('message', this.state.message);
+      if (this.handleValidation() && this.state.userRole === 'admin') {
+        axios.post(`http://localhost:8088/pet_category_service_api/pet?name=${this.state.name}&location=${this.state.location}&description=${this.state.description}&age=${this.state.age}&rase_id=${this.state.raseObject?.id}`,
+          formData, 
           {
             headers: {
               Authorization: "Bearer " + getToken(),
             },   
         }).then(res => {
-            console.log(res.data.message);
+            return NotificationManager.success(res.data.message, '  ', 3000);
+        }).catch((error) => {
+          return NotificationManager.error('Pet is not added', '  ', 3000);
+        });
+      }
+      else if (this.handleValidation() && this.state.userRole === 'user') {
+        axios.post(`http://localhost:8088/adopt_service_api/eurekaa/add-pet-request?location=${this.state.location}&description=${this.state.description}&age=${this.state.age}&rase_id=${this.state.raseObject?.id}&name=${this.state.name}`,
+          formData, 
+          {
+            headers: { 
+              Authorization: "Bearer " + getToken(),
+            },   
+        }).then(res => {
             return NotificationManager.success(res.data.message, '  ', 3000);
         }).catch((error) => {
           return NotificationManager.error('Pet is not added', '  ', 3000);
@@ -191,13 +211,10 @@ class AddPet extends React.Component {
                     <input type="number" min="0" max="100" name="age" value={this.state.age} onChange={this.handleChange} placeholder="Age"/>
                     <span className={"error"}>{this.state.errors["age"]}</span>
                     <br/>
-                    <input type="file" name="file"  accept="image/*" id="upload-button" style={{display: 'none'}} onChange={this.handleChange} />
-                    <span className={"error"}>{this.state.errors["image"]}</span>
-                    <label htmlFor="upload-button" style={{zIndex: 1000}}>
-                        <div aria-label="upload picture" className="btn px-6 py-2 bg-red-500 text-white text-center margin-auto mt-8 imageInput">
-                          Import image
-                        </div>
-                    </label>
+                    <div>
+                      <img src={this.state.image}/>
+                      <input type="file" name="image" onChange={this.uploadImage} />
+                    </div>
                     <Dropdown className={"dropdown"} options={this.state.options} name="options" onChange={this.handleCategoryChange} value={this.state.category} placeholder="Select pet category" />
                     <br/>
                     <Dropdown className={"dropdown"} options={this.state.optionRases} name="rase" onChange={this.handleRaseChange} value={this.state.rase} placeholder="Select pet rase" />

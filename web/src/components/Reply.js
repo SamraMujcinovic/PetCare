@@ -49,8 +49,6 @@ class Reply extends React.Component {
         replyCommentId: clickedId
       });
     }
-
-    console.log(this.state.replyCommentId)
   }
 
   handleReplyChange(event) {

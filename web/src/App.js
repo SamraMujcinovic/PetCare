@@ -10,19 +10,17 @@ import {
 import AppProvider from './components/AppProvider'
 
 
-import Home from './templates/home'
-import Products from './templates/products'
-import Product from './templates/product'
-import About from './templates/about'
-import Login from './templates/login'
-import Register from './templates/register'
-import Profile from './templates/profile'
-import PasswordRecovery from './templates/passwordRecovery'
-import Categories from './templates/categories'
-import Rase from './templates/rase'
-import RasePets from './templates/rasePets'
-import Pet from './templates/pet'
-import AllPets from './templates/allPets'
+import Home from './pages/home'
+import About from './pages/about'
+import Login from './pages/login'
+import Register from './pages/register'
+import Profile from './pages/profile'
+import PasswordRecovery from './pages/passwordRecovery'
+import Categories from './pages/categories'
+import Rase from './pages/rase'
+import RasePets from './pages/rasePets'
+import Pet from './pages/pet'
+import AllPets from './pages/allPets'
 
 // eslint-disable-next-line no-extend-native
 Number.prototype.toCurrency = function(){
@@ -36,13 +34,6 @@ function App() {
       <AppProvider>
         <Switch>
           <Route exact path="/" component={Home}/>
-          <Route exact path="/products">
-            <Products/>
-          </Route>
-          <Route 
-            path="/products/:id"
-            render={(props) => <Product {...props} {...props.match.params}/>}
-          />
           <Route 
             path="/rases/:id"
             render={(props) => <Rase {...props} {...props.match.params}/>}
