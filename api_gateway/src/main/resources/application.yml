@@ -2,19 +2,19 @@ zuul:
   routes:
     user_service:
       path: /user_service_api/**
-      url: http://localhost:8080
+      url: ${USER_SERVICE_URL}
     comment_service:
       path: /comment_service_api/**
-      url: http://localhost:8081
+      url: ${COMMENT_SERVICE_URL}
     adopt_service:
       path: /adopt_service_api/**
-      url: http://localhost:8082
+      url: ${ADOPT_SERVICE_URL}
     notification_service:
       path: /notification_service_api/**
-      url: http://localhost:8083
+      url: ${NOTIFICATION_SERVICE_URL}
     pet_category_service:
       path: /pet_category_service_api/**
-      url: http://localhost:8084
+      url: ${PET_CATEGORY_SERVICE_URL}
   sensitive-headers:
 
 server:

@@ -20,11 +20,6 @@ public class MessageConsumer {
     @Autowired
     private ReplyService replyService;
 
-    @Bean
-    public MessageConverter converter(){
-        return new Jackson2JsonMessageConverter();
-    }
-
     @RabbitListener(queues = "user_comment_service_queue")
     public void consumeMessageFromQueue(CommentServiceMessage commentServiceMessage){
         System.out.println("Message from RabbitMQ: " + commentServiceMessage.getMessage());

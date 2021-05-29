@@ -12,7 +12,7 @@ spring:
   application:
     name: pet_category_service
   config:
-      import: optional:configserver:http://localhost:8888
+      import: ${CONFIG_SERVER_URI}
   cloud:
     config:
       username: user
@@ -20,6 +20,8 @@ spring:
   servlet:
     multipart:
       max-file-size: 500MB
+  rabbitmq:
+    host: ${RABBITMQ_HOST}
 
 encrypt:
   key: ruhdghu36878DTFGYuy7eu9heihGDYUHhduehfuieriro009238usG
@@ -31,3 +33,8 @@ management:
         include: "*"
 server:
   port: 8084
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_SERVER}

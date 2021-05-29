@@ -12,11 +12,13 @@ spring:
   application:
     name: comment_service
   config:
-    import: optional:configserver:http://localhost:8888
+    import: ${CONFIG_SERVER_URI}
   cloud:
     config:
       username: user
       password: password
+  rabbitmq:
+    host: ${RABBITMQ_HOST}
 
 encrypt:
   key: ruhdghu36878DTFGYuy7eu9heihGDYUHhduehfuieriro009238usG
@@ -29,3 +31,8 @@ management:
 
 server:
   port: 8081
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_SERVER}
