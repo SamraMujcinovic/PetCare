@@ -1,4 +1,4 @@
-version: '3'
+version: '2.1'
 
 services:
 
@@ -15,6 +15,11 @@ services:
     environment:
       - JAVA_TOOL_OPTIONS=-XX:+TieredCompilation -XX:TieredStopAtLevel=1 -Xss256k
       - CONFIG_REPO_URI=https://github.com/alakovic1/config
+    healthcheck:
+      test: ["CMD", "curl", "-I", "http://configserver:8888"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
     deploy:
       restart_policy:
         condition: on-failure
@@ -106,11 +111,13 @@ services:
       - CONFIG_SERVER_URI=optional:configserver:http://configserver:8888
       - RABBITMQ_HOST=rabbitmq
     depends_on:
-      - configserver
       - eureka
       - db
       - systemeventsservice
       - rabbitmq
+    depends_on:
+      configserver:
+        condition: service_healthy
     deploy:
       restart_policy:
         condition: on-failure
