@@ -6,17 +6,25 @@ import Breadcrumbs from '../components/Breadcrumbs'
 import Loader from '../components/Loader'
 import axios from "axios";
 import Comment from '../components/Comment'
+import { Badge, Modal } from '@material-ui/core';
+import CloseIcon from '@material-ui/icons/Close';
 import { getToken, getUser, logoutUser } from "../utilities/Common";
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 
 export default function Pet({id}) {
     const {response: pet, error } = useFetch(`http://localhost:8088/pet_category_service_api/pet/${id}`)
 
+    const [message, setMessage] = React.useState('');
+    const [adoptModal, setAdoptModal] = React.useState(false);
     const history = useHistory();
 
     const handleAdoptCart = () => {
+        setAdoptModal(false);
         axios.post(
             `http://localhost:8088/adopt_service_api/eurekaa/adoption-request/${id}`,
+            {"jwt":getToken(),
+                message: message
+            },
             {
               headers: {
                  Authorization: "Bearer " + getToken(),
@@ -24,11 +32,19 @@ export default function Pet({id}) {
             }
           )
         .then((response) => {
-            return NotificationManager.success(response.data.message, '  ', 3000);
+            return NotificationManager.success('Request to adopt a pet added successfully!', '  ', 3000);
         })
         .catch((error) => {
             return NotificationManager.error('Pet is not adopted', '  ', 3000);
         });
+    }
+
+    const handleOpen = (rase) => {
+        setAdoptModal(true);
+    }
+
+    const handleClose = () => {
+        setAdoptModal(false);
     }
 
     if(!pet) return <Loader/>
@@ -82,7 +98,7 @@ export default function Pet({id}) {
                                 <div class="adopt-div flex-row-reverse">
                                     <button 
                                         className="btn bg-red-500 text-white md:w-1/2 lg:w-max f-right"
-                                        onClick={handleAdoptCart}
+                                        onClick={handleOpen}
                                     >
                                         Adopt
                                     </button>
@@ -93,7 +109,7 @@ export default function Pet({id}) {
                             <img
                                 alt={pet.image}
                                 className="main-product-image-sm md:main-product-image-md lg:main-product-image bg-gray-300 rounded object-cover w-full"
-                                //src={images[imageIndex].url}
+                                src={pet.image}
                             />
                         </article>
                     </div>
@@ -104,6 +120,58 @@ export default function Pet({id}) {
                     <Comment id={id} category={2}></Comment>
                 </div>
             </section>
+
+            <Modal
+                open={adoptModal}
+                onClose={handleClose}
+                aria-labelledby="simple-modal-title"
+                aria-describedby="simple-modal-description"
+            >
+                <div>  
+                    <div className={'paper'}>
+                        <button onClick={handleClose} style={{right: 20, position: 'absolute',}}>
+                            <CloseIcon />
+                        </button>
+                        <div style={{paddingTop: 20,}}>
+                            {getToken() ? 
+                            <>
+                                <h4 id="modal-title">Are you sure that you want adopt this pet?</h4>
+                                
+                                <textarea type="text" value={message} onChange={(e) => {setMessage(e.target.value)}} placeholder="Message"/>
+
+                                <div>
+                                    <button 
+                                        className="btn bg-red-500 text-white ml-4 mt-5 delete-btn"
+                                        onClick={handleClose}
+                                    >
+                                        Close 
+                                    </button>
+                                    <button 
+                                        className="btn bg-red-500 text-white mt-5 delete-btn"
+                                        onClick={handleAdoptCart}
+                                    >
+                                        Adopt 
+                                    </button>
+                                </div>
+                            </>
+                            :
+                            <>
+                                <h4 id="modal-title">Please, login first.</h4>
+                            
+                            <div>
+                                <Link to={"/login"}>
+                                    <button className="btn bg-red-500 text-white mt-5 delete-btn">    
+                                    Login
+                                    </button>
+                                </Link>
+                            </div>
+                            </>
+                        }
+                            
+                        </div>
+                    </div>
+                </div>
+            </Modal>
 
             <NotificationContainer/>
         </>

@@ -38,6 +38,9 @@ const CategoryPanel = ({id, name, description, grid = true, elements}) => {
                 <footer className="flex justify-between items-center mt-4 capitalize">
                     <h6>{name}</h6>
                 </footer>
+                <footer className="flex justify-between items-center mt-4 mb-2">
+                     <p>{description}</p>
+                </footer>
             </article>
         )
     }

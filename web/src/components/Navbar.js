@@ -1,7 +1,5 @@
 import React, {useContext, useState, useEffect} from 'react'
 import { useLocation, NavLink, Link, useHistory} from 'react-router-dom'
-import { useAuth0 } from '@auth0/auth0-react'
-import {StoreContext} from '../context/index'
 import axios from "axios";
 import { getToken, getUser, logoutUser } from "../utilities/Common";
 import Notification from "../components/Notification";
@@ -51,7 +49,6 @@ const LogoutButton = () => {
                 logoutUser()
                 history.push("/");
           }).catch(error => {
-              console.log(error);
           });
     }
   
@@ -65,7 +62,6 @@ const LogoutButton = () => {
 
 function Navbar() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-    const { cart } = useContext(StoreContext)
     const [width, setWidth] = useState(window.innerWidth);
     const location = useLocation()
     const [notifications, setNotificaitons] = React.useState([]);
@@ -101,11 +97,6 @@ function Navbar() {
         setMobileMenuOpen(false);
         window.scrollTo(0, 0);
     }, [location])
-
-    const amount = cart.reduce((total, obj) => {
-        total += obj.amount;
-        return total;
-    }, 0);
 
     return (
         <header>

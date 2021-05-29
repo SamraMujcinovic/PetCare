@@ -219,7 +219,6 @@ class Register extends React.Component {
                 text: this.state.answer
             }
         }).then(res => {
-            console.log(res.data.message);
             this.props.history.push("/login");
             return NotificationManager.success('Successful registration', '  ', 3000);
         }).catch((error) => {
@@ -250,7 +249,7 @@ class Register extends React.Component {
                     <input type="password" name="password" value={this.state.password} onChange={this.handleChange} placeholder="Password" />
                     <span className={"error"}>{this.state.errors["password"]}</span>
                     <br/>
-                    <Dropdown className={"dropdown"} options={this.state.options} name="question" onChange={this.handleDropdownChange} value={this.state.question.title} placeholder="Select an option" />
+                    <Dropdown className={"dropdown"} options={this.state.options} name="question" onChange={this.handleDropdownChange} value={this.state.question.title} placeholder="Choose security question" />
                     <span className={"error"}>{this.state.errors["question"]}</span>
                     <br/>
                     <textarea type="text" name="answer" value={this.state.answer} onChange={this.handleChange} placeholder="Answer"/>

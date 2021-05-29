@@ -3,7 +3,6 @@ import { Badge, Modal } from '@material-ui/core';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import CloseIcon from '@material-ui/icons/Close';
 import { useLocation, NavLink, Link, useHistory} from 'react-router-dom'
-import {StoreContext} from '../context/index'
 import axios from "axios";
 import { getToken, getUser, logoutUser } from "../utilities/Common";
 import {NotificationContainer, NotificationManager} from 'react-notifications';
@@ -32,10 +31,11 @@ class Notification extends React.Component {
       this.handleClose = this.handleClose.bind(this);
       this.approveRequest = this.approveRequest.bind(this);
       this.notApproveRequest = this.notApproveRequest.bind(this);
+      this.deleteNotification = this.deleteNotification.bind(this);
     }
 
     componentDidMount() {
-        this.state.interval = setInterval(this.getData, 5000);
+        this.state.interval = setInterval(this.getData, 2000);
         this.getData();
     }
 
@@ -180,6 +180,7 @@ class Notification extends React.Component {
                 }
               )
             .then((response) => {
+                this.handleClose();
                 return NotificationManager.success(response.data.message, '  ', 3000);
             })
             .catch((error) => {
@@ -197,6 +198,7 @@ class Notification extends React.Component {
                 }
               )
             .then((response) => {
+                this.handleClose();
                 return NotificationManager.success(response.data.message, '  ', 3000);
             })
             .catch((error) => {
@@ -217,6 +219,7 @@ class Notification extends React.Component {
                 }
               )
             .then((response) => {
+                this.handleClose();
                 return NotificationManager.success(response.data.message, '  ', 3000);
             })
             .catch((error) => {
@@ -234,6 +237,7 @@ class Notification extends React.Component {
                 }
               )
             .then((response) => {
+                this.handleClose();
                 return NotificationManager.success(response.data.message, '  ', 3000);
             })
             .catch((error) => {
@@ -247,6 +251,39 @@ class Notification extends React.Component {
             ...this.state,
             open: false
         });
+    }
+
+    deleteNotification(notification) {
+        axios.delete(
+            `http://localhost:8088/notification_service_api/notifications/delete/${(JSON.parse(getUser()))?.userId}/${notification.id}`,
+            {
+              headers: {
+                 Authorization: "Bearer " + getToken(),
+              },
+            }
+          )
+        .then((response) => {
+            axios.get(
+                `http://localhost:8088/notification_service_api/notifications/all/${(JSON.parse(getUser()))?.userId}`,
+                {
+                  headers: {
+                     Authorization: "Bearer " + getToken(),
+                  },
+                }
+              )
+            .then((response) => {
+                this.setState({
+                    ...this.state,
+                    notifications: response.data
+                });
+            })
+            .then((response) => {
+                //return NotificationManager.success(response.data.message, '  ', 3000);
+            })
+            .catch((error) => {
+                //return NotificationManager.error('Notification is not deleted', '  ', 3000);
+            });
+        })
     }
   
     render() {
@@ -265,7 +302,11 @@ class Notification extends React.Component {
 
                     {this.state.notifications.map((notification, index) => (
                         <div key={index} className={'notification-item'}>
-                            <p> {notification.content} </p>
+
+                        <button onClick={(e) => this.deleteNotification(notification)} style={{right: 0, position: 'absolute',}}>
+                            <CloseIcon />
+                        </button>
+                            <p style={{width: '90%', }}> {notification.content} </p>
  
                             {
                                 notification.requestId !== -1 &&

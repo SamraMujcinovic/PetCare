@@ -1,15 +1,13 @@
 import React, { useState, useContext, useEffect } from 'react'
-import useFetch from '../hooks/useFetch'
 import { useHistory, Link } from 'react-router-dom'
-import { StoreContext } from '../context'
-
 import Breadcrumbs from '../components/Breadcrumbs'
-import ColorSelector from '../components/ColorSelector'
 import CategoryPanel from '../components/CategoryPanel'
 import Loader from '../components/Loader'
 import Comment from '../components/Comment'
+import { Modal } from '@material-ui/core';
+import CloseIcon from '@material-ui/icons/Close';
 import axios from "axios";
-import { getToken, getUser, logoutUser } from "../utilities/Common";
+import { getToken, getUser } from "../utilities/Common";
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 
 export default function RasePets({id}) {
@@ -30,6 +28,8 @@ export default function RasePets({id}) {
         'Other'
     ]
     const [age, setAge] = React.useState(25);
+    const [deleteModal, setDeleteModal] = React.useState(false);
+    const [choosenPet, setChoosenPet] = React.useState({});
 
     useEffect(() => {
         axios.get(
@@ -82,6 +82,7 @@ export default function RasePets({id}) {
     if(!rasePets) return <Loader/>
 
     const deletePet = (pet) => {
+        setDeleteModal(false);
         axios.delete(
             `http://localhost:8088/pet_category_service_api/pet/delete?id=${pet.id}`, 
             {
@@ -95,6 +96,15 @@ export default function RasePets({id}) {
         }).catch((error) => {
             return NotificationManager.error(error.response.data.details[0], '  ', 3000);
         });
+    }
+
+    const handleOpen = (pet) => {
+        setDeleteModal(true);
+        setChoosenPet(pet);
+    }
+
+    const handleClose = () => {
+        setDeleteModal(false);
     }
 
     return(
@@ -181,7 +191,7 @@ export default function RasePets({id}) {
                                             {token && userRole === "admin" &&
                                             <button 
                                                 className="btn bg-red-500 text-white delete-btn"
-                                                onClick={() => deletePet(pet)}
+                                                onClick={() => handleOpen(pet)}
                                             >
                                                 Delete
                                             </button>
@@ -198,6 +208,40 @@ export default function RasePets({id}) {
                     <Comment id={id} category={1}></Comment>
                 </div>
             </section>
+
+            <Modal
+                open={deleteModal}
+                onClose={handleClose}
+                aria-labelledby="simple-modal-title"
+                aria-describedby="simple-modal-description"
+            >
+                <div>  
+                    <div className={'paper'}>
+                        <button onClick={handleClose} style={{right: 20, position: 'absolute',}}>
+                            <CloseIcon />
+                        </button>
+                        <div style={{paddingTop: 20,}}>
+                            <h4 id="modal-title">Are you sure that you want delete this pet?</h4>
+                            
+                            <div>
+                                <button 
+                                    className="btn bg-red-500 text-white ml-4 mt-5 delete-btn"
+                                    onClick={handleClose}
+                                >
+                                    Close 
+                                </button>
+                                <button 
+                                    className="btn bg-red-500 text-white mt-5 delete-btn"
+                                    onClick={() => deletePet(choosenPet)}
+                                >
+                                    Delete 
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </Modal>
+
             <NotificationContainer/>  
         </>
     )
