@@ -15,16 +15,25 @@ class UserInfo extends React.Component {
           surname: '',
           username: '',
           email: '',
-          password: (JSON.parse(getUser()))?.password,
+          password: '',
           user: JSON.parse(getUser()),
           errors: {}
         };
     
+        this.handleChange = this.handleChange.bind(this);
         this.userInfomartion = this.userInfomartion.bind(this);
         this.handleValidation = this.handleValidation.bind(this);
         this.updateUser = this.updateUser.bind(this);
         this.deleteProfile = this.deleteProfile.bind(this)
       }
+
+    handleChange(event) {
+      const value = event.target.value;
+        this.setState({
+            ...this.state,
+            [event.target.name]: value
+        });
+    }
 
     componentDidMount() {
         axios.get(
@@ -160,15 +169,18 @@ class UserInfo extends React.Component {
           headers: {
              Authorization: "Bearer " + getToken(),
           },
-        }, 
-        {
-          email: this.state.email,
-          password: this.state.password
+          data: {
+            email: this.state.email,
+            password: this.state.password
+          }
         }).then(res => {
           this.props.history.push("/");
           return NotificationManager.success(res.data.message, '  ', 3000);
         }).catch((error) => {
-          return NotificationManager.error('Account is not deleted!', '  ', 3000);
+          return NotificationManager.error(error.response.data.details[0], '  ', 3000);
+        }).catch((error) => {
+          this.props.history.push("/");
+          return NotificationManager.success('Account deleted!', '  ', 3000);
         }); 
     }
     
@@ -193,8 +205,10 @@ class UserInfo extends React.Component {
 
             <br/>
             <br/>
-            <h3 className="text-center deleteText">If you want delete your profile</h3>
-            <button onClick={this.deleteProfile} className="btn px-6 py-3 bg-red-500 text-white text-center margin-auto mt-8 deleteBtn">CLICK HERE!</button>
+            <h3 className="text-center deleteText">If you want to delete your profile first insert your password and then delete</h3>
+            <input type="text" name="password" value={this.state.password} onChange={this.handleChange} placeholder="Password" />
+            <span className={"error"}>{this.state.errors["password"]}</span>
+            <button onClick={this.deleteProfile} className="btn px-6 py-3 bg-red-500 text-white text-center margin-auto mt-8 deleteBtn">DELETE</button>
 
             <NotificationContainer/>  
         </div>
