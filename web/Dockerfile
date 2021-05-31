@@ -1,7 +1,8 @@
-FROM node:erbium-alpine3.11
-WORKDIR /web
-COPY package.json yarn.lock ./
-RUN yarn
+FROM node:14-slim
+WORKDIR /usr/src
+COPY ./package.json ./
+COPY ./yarn.lock ./
+RUN yarn install
 COPY . .
 EXPOSE 3000
-RUN yarn start
+CMD [ "yarn", "start" ]
