@@ -1,6 +1,6 @@
 import React from 'react'
 import axios from "axios";
-import { getToken, getUser } from "../utilities/Common";
+import { getToken, getUser, logoutUser } from "../utilities/Common";
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 
 import 'react-notifications/lib/notifications.css';
@@ -174,12 +174,13 @@ class UserInfo extends React.Component {
             password: this.state.password
           }
         }).then(res => {
-          this.props.history.push("/");
+          this.props.history.push("/login");
           return NotificationManager.success(res.data.message, '  ', 3000);
         }).catch((error) => {
           return NotificationManager.error(error.response.data.details[0], '  ', 3000);
         }).catch((error) => {
-          this.props.history.push("/");
+          logoutUser();
+          window.location.reload();
           return NotificationManager.success('Account deleted!', '  ', 3000);
         }); 
     }

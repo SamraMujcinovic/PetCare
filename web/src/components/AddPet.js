@@ -28,6 +28,7 @@ class AddPet extends React.Component {
         adopted: false,
         selectedFile: null,
         isFilePicked: false,
+        otherRase: '',
         userRole: (JSON.parse(getUser()))?.role,
         errors: {}
       };
@@ -54,6 +55,16 @@ class AddPet extends React.Component {
           categories: response.data,
           options: categoryName,
         });
+     
+        axios.get(
+          `http://localhost:8088/pet_category_service_api/rases/inCategory?id=${this.state.categories[this.state.categories.length-1].id}`
+        )
+        .then((response) => {
+          this.setState({
+            ...this.state,
+            otherRase: response.data[response.data.length-1],
+          });
+        })
       })
     }
   
@@ -101,6 +112,9 @@ class AddPet extends React.Component {
             for(let i = 0; i < response.data.length; i++) {
               raseName.push(response.data[i].name)
             }
+            raseName.push('Other')
+            let responseRase = response.data
+            responseRase.push(this.state.otherRase)
           this.setState({
             ...this.state,
             rases: response.data,

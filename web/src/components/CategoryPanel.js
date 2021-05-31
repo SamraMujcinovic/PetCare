@@ -8,7 +8,7 @@ import category3 from "../assets/img/categories/3.jpg";
 import category4 from "../assets/img/categories/4.jpg";
 import category5 from "../assets/img/categories/5.jpg";
 
-const CategoryPanel = ({id, name, description, grid = true, elements}) => {
+const CategoryPanel = ({id, name, description, image, grid = true, elements}) => {
 
     const categories= [
         category1,
@@ -16,7 +16,7 @@ const CategoryPanel = ({id, name, description, grid = true, elements}) => {
         category3,
         category4,
         category5,
-        ];
+        ]; 
 
     if(grid) {
         return(
@@ -25,9 +25,9 @@ const CategoryPanel = ({id, name, description, grid = true, elements}) => {
                     <img
                         alt={name}
                         className="h-full rounded bg-black object-cover w-full"
-                        src={
-                            categories[Math.floor(Math.random() * (4 - 0 + 1) ) + 0]
-                        }
+                        src={elements === "pet" ? 
+                            `http://localhost:8084/pet-photos/${image}`
+                            :  categories[Math.floor(Math.random() * (4 - 0 + 1) ) + 0]}
                     />
                     <div className="absolute top-0 left-0 w-full h-full rounded transition-opacity duration-500 ease-in-out opacity-0 hover:opacity-100 flex justify-center items-center bg-opacity-40 bg-gray-800">
                         <Link to={`/${elements}/${id}`} className="cursor-pointer relative w-10 h-10 text-white rounded-full bg-red-500 p-2.5">
@@ -52,9 +52,9 @@ const CategoryPanel = ({id, name, description, grid = true, elements}) => {
                     alt={name}
                     className="h-full rounded bg-black object-cover w-full"
                     //TODO dodati kad je elements === pet da preusmjeri na sliku od ljubimca
-                    src={//elements === "pet" ? 
-                            categories[Math.floor(Math.random() * (4 - 0 + 1) ) + 0]
-                        /*: ""*/}
+                    src={elements === "pet" ? 
+                            `http://localhost:8084/pet-photos/${image}`
+                            :  categories[Math.floor(Math.random() * (4 - 0 + 1) ) + 0]}
                 />
             </div>
             <footer className="w-full lg:w-8/12 flex flex-col gap-3 justify-center capitalize">
@@ -74,6 +74,7 @@ CategoryPanel.propTypes = {
     id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     description: PropTypes.string.isRequired,
+    image: PropTypes.string.isRequired,
     grid: PropTypes.bool,
     elements: PropTypes.string.isRequired,
 }

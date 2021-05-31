@@ -81,7 +81,7 @@ class AddRequests extends React.Component {
                       <TableCell>Message</TableCell>
                       <TableCell align="left">Status</TableCell>
                       {this.state.userRole === 'admin' && <TableCell align="left">Delete request</TableCell>}
-                      <TableCell align="left">View pet</TableCell>
+                      {this.state.userRole === 'admin' && <TableCell align="left">View pet</TableCell>}
                      </TableRow>
                   </TableHead>
                   <TableBody>
@@ -92,11 +92,13 @@ class AddRequests extends React.Component {
                       </TableCell>
                       <TableCell align="left">{row.approved ? "Approved" : "Not approved"}</TableCell>
                       {this.state.userRole === 'admin' && <TableCell><button onClick={(e) => {this.deleteRequest(row)}} className="btn bg-red-500 text-white w-max text-xs">Delete</button></TableCell> }
-                      <TableCell>
-                        <Link to={`/pet/${row.newPetID}`} className="btn bg-red-500 text-white w-max text-xs">
-                          Details
-                        </Link>
-                      </TableCell>
+                      {this.state.userRole === 'admin' &&
+                        <TableCell>
+                          <Link to={`/pet/${row.newPetID}`} className="btn bg-red-500 text-white w-max text-xs">
+                            Details
+                          </Link>
+                        </TableCell>
+                      }
                       </TableRow>
                   ))}
                   </TableBody>
