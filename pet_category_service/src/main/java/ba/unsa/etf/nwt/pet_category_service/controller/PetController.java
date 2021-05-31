@@ -27,6 +27,12 @@ public class PetController {
         return petService.getPets();
     }
 
+    @RolesAllowed("ROLE_ADMIN")
+    @GetMapping("/all/pet/{id}")
+    public Pet getPets(@NotNull @PathVariable Long id){
+        return petService.getPetForAdmin(id);
+    }
+
     //svi approveani petovi
     @GetMapping("/pets")
     public List<Pet> getAllApprovedPets(){

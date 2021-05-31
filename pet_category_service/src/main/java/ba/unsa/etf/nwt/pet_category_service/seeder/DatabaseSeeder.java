@@ -58,143 +58,21 @@ public class DatabaseSeeder {
 
         //ljubimci
 
-        String firstPet = "";
-        String secondPet = "";
-        String thirdPet = "";
-        String fourthPet = "";
-        String fifthPet = "";
-        String sixthPet = "";
-        String seventhPet = "";
-        String eigthPet = "";
-        String ningthPet = "";
-        String tenthPet = "";
-        String eleventhPet = "";
-        String twelvethPet = "";
-        String thirteenthPet = "";
-        String fourteenthPet = "";
-        String fifteenthPet = "";
-
-        //pronadji putanju slika za bazu
-        try {
-            File resource1 = new ClassPathResource("/pet-photos-for-seeder/american_bulldog.jpg").getFile();
-            firstPet = resource1.getAbsolutePath();
-        } catch (Exception e){
-            System.out.println("ERROR + " + e.getMessage());
-        }
-
-        try {
-            File resource2 = new ClassPathResource("/pet-photos-for-seeder/bichon_frise.jpg").getFile();
-            secondPet = resource2.getAbsolutePath();
-        } catch (Exception e){
-            System.out.println("ERROR + " + e.getMessage());
-        }
-
-        try {
-            File resource3 = new ClassPathResource("/pet-photos-for-seeder/british_shorthair.jpg").getFile();
-            thirdPet = resource3.getAbsolutePath();
-        } catch (Exception e){
-            System.out.println("ERROR + " + e.getMessage());
-        }
-
-        try {
-            File resource4 = new ClassPathResource("/pet-photos-for-seeder/goldfish.jpg").getFile();
-            fourthPet = resource4.getAbsolutePath();
-        } catch (Exception e){
-            System.out.println("ERROR + " + e.getMessage());
-        }
-
-        try {
-            File resource5 = new ClassPathResource("/pet-photos-for-seeder/budgerigar.jpg").getFile();
-            fifthPet = resource5.getAbsolutePath();
-        } catch (Exception e){
-            System.out.println("ERROR + " + e.getMessage());
-        }
-
-        try {
-            File resource6 = new ClassPathResource("/pet-photos-for-seeder/adult-corn-snake.jpg").getFile();
-            sixthPet = resource6.getAbsolutePath();
-        } catch (Exception e){
-            System.out.println("ERROR + " + e.getMessage());
-        }
-
-        try {
-            File resource7 = new ClassPathResource("/pet-photos-for-seeder/bella.jpg").getFile();
-            seventhPet = resource7.getAbsolutePath();
-        } catch (Exception e){
-            System.out.println("ERROR + " + e.getMessage());
-        }
-
-        try {
-            File resource8 = new ClassPathResource("/pet-photos-for-seeder/stella.jpg").getFile();
-            eigthPet = resource8.getAbsolutePath();
-        } catch (Exception e){
-            System.out.println("ERROR + " + e.getMessage());
-        }
-
-        try {
-            File resource9 = new ClassPathResource("/pet-photos-for-seeder/brundo.jpg").getFile();
-            ningthPet = resource9.getAbsolutePath();
-        } catch (Exception e){
-            System.out.println("ERROR + " + e.getMessage());
-        }
-
-        try {
-            File resource10 = new ClassPathResource("/pet-photos-for-seeder/princess.jpg").getFile();
-            tenthPet = resource10.getAbsolutePath();
-        } catch (Exception e){
-            System.out.println("ERROR + " + e.getMessage());
-        }
-
-        try {
-            File resource11 = new ClassPathResource("/pet-photos-for-seeder/coco.jpg").getFile();
-            eleventhPet = resource11.getAbsolutePath();
-        } catch (Exception e){
-            System.out.println("ERROR + " + e.getMessage());
-        }
-
-        try {
-            File resource12 = new ClassPathResource("/pet-photos-for-seeder/diva.jpg").getFile();
-            twelvethPet = resource12.getAbsolutePath();
-        } catch (Exception e){
-            System.out.println("ERROR + " + e.getMessage());
-        }
-
-        try {
-            File resource13 = new ClassPathResource("/pet-photos-for-seeder/akira.jpg").getFile();
-            thirteenthPet = resource13.getAbsolutePath();
-        } catch (Exception e){
-            System.out.println("ERROR + " + e.getMessage());
-        }
-
-        try {
-            File resource14 = new ClassPathResource("/pet-photos-for-seeder/garfield.jpg").getFile();
-            fourteenthPet = resource14.getAbsolutePath();
-        } catch (Exception e){
-            System.out.println("ERROR + " + e.getMessage());
-        }
-
-        try {
-            File resource15 = new ClassPathResource("/pet-photos-for-seeder/crvenko.jpg").getFile();
-            fifteenthPet = resource15.getAbsolutePath();
-        } catch (Exception e){
-            System.out.println("ERROR + " + e.getMessage());
-        }
-
-        createPet("Rex", "Sarajevo", firstPet, "This American Bulldog may look tough, but in reality he is very spoiled, loves children and is very friendly with everyone. He is used to a big group of people and gets along with other animals very well.", 2, true, r1);
-        createPet("Pupi", "Tuzla", secondPet, "This Bichon Frise is a big diva. He likes his haircuts and makeovers. He is always the center of attention and a great friend to a man.", 1, true, r2);
-        createPet("Cicko", "Zenica", thirdPet, "This British Shothair is a bit older cat, but it will give you all the love it has. She is super lazy, and loves sleeping on the couch, especially if there is a human next to her.", 9, true, r3);
-        createPet("Ribica", "Neum", fourthPet, "A goldfish is always a good addition to your aquarium. Maybe this one will grant you the famous 3 wishes... :D", 0, true, r4);
-        createPet("Pricalica", "Brcko", fifthPet, "This Budgerigar loves hanging out in his cage, and in the high corner of a room. Sometimes, he will even say something, repeat something.", 1, true, r5);
-        createPet("Hades", "Čapljina", sixthPet, "Snakes are maybe scary. This one is also named afther the God of the underworld, but it's the most friendly snake you will meet.", 1, true, r15);
-        createPet("Bella", "Sarajevo", seventhPet, "Very friendly and trained dog. Used to people and kids.", 5, true, r6);
-        createPet("Stella", "Visoko", eigthPet, "Stella is an old police dog, very good trained and listens to everything.", 10, true, r6);
-        createPet("Brundo", "Jajce", ningthPet, "This Belgian Shepherd is a puppy that needs some love and attention. He is used to other animals, and loves playing with his toys.", 0, true, r6);
-        createPet("Princess", "Mostar", tenthPet, "This spoiled diva will be you perfect accessory, but she is not just for a handbag. She loves to play with other dog, especially big dogs.", 1, true, r8);
-        createPet("Coco", "Banja Luka", eleventhPet, "Has a big personality and will protect you in any danger.", 4, true, r8);
-        createPet("Diva", "Zenica", twelvethPet,"This fluffy angel will make your life more beautiful.", 0, true, r9);
-        createPet("Akira", "Mostar", thirteenthPet,"This is the cat for you. She knows how to use her litter box and doesnt leave a mess behind her. Als, she is very clumsy so your life wont be boring.", 1, true, r9);
-        createPet("Garfield", "Neum", fourteenthPet, "If you want your own Nemo, this is it... Adopt me..", 0, true, r12);
-        createPet("Crvenko", "Sarajevo", fifteenthPet, "This pet loves to hand out in his cage and loves singing to any song on you put on.", 0, true, r14);
+        createPet("Rex", "Sarajevo", "american_bulldog.jpg", "This American Bulldog may look tough, but in reality he is very spoiled, loves children and is very friendly with everyone. He is used to a big group of people and gets along with other animals very well.", 2, true, r1);
+        createPet("Pupi", "Tuzla", "bichon_frise.jpg", "This Bichon Frise is a big diva. He likes his haircuts and makeovers. He is always the center of attention and a great friend to a man.", 1, true, r2);
+        createPet("Cicko", "Zenica", "british_shorthair.jpg", "This British Shothair is a bit older cat, but it will give you all the love it has. She is super lazy, and loves sleeping on the couch, especially if there is a human next to her.", 9, true, r3);
+        createPet("Ribica", "Neum", "goldfish.jpg", "A goldfish is always a good addition to your aquarium. Maybe this one will grant you the famous 3 wishes... :D", 0, true, r4);
+        createPet("Pricalica", "Brcko", "budgerigar.jpg", "This Budgerigar loves hanging out in his cage, and in the high corner of a room. Sometimes, he will even say something, repeat something.", 1, true, r5);
+        createPet("Hades", "Čapljina", "adult-corn-snake.jpg", "Snakes are maybe scary. This one is also named afther the God of the underworld, but it's the most friendly snake you will meet.", 1, true, r15);
+        createPet("Bella", "Sarajevo", "bella.jpg", "Very friendly and trained dog. Used to people and kids.", 5, true, r6);
+        createPet("Stella", "Visoko", "stella.jpg", "Stella is an old police dog, very good trained and listens to everything.", 10, true, r6);
+        createPet("Brundo", "Jajce", "brundo.jpg", "This Belgian Shepherd is a puppy that needs some love and attention. He is used to other animals, and loves playing with his toys.", 0, true, r6);
+        createPet("Princess", "Mostar", "princess.jpg", "This spoiled diva will be you perfect accessory, but she is not just for a handbag. She loves to play with other dog, especially big dogs.", 1, true, r8);
+        createPet("Coco", "Banja Luka", "coco.jpg", "Has a big personality and will protect you in any danger.", 4, true, r8);
+        createPet("Diva", "Zenica", "diva.jpg","This fluffy angel will make your life more beautiful.", 0, true, r9);
+        createPet("Akira", "Mostar", "akira.jpg","This is the cat for you. She knows how to use her litter box and doesnt leave a mess behind her. Als, she is very clumsy so your life wont be boring.", 1, true, r9);
+        createPet("Garfield", "Neum", "garfield.jpg", "If you want your own Nemo, this is it... Adopt me..", 0, true, r12);
+        createPet("Crvenko", "Sarajevo", "crvenko.jpg", "This pet loves to hand out in his cage and loves singing to any song on you put on.", 0, true, r14);
 
     }
 

@@ -44,7 +44,7 @@ public class PetService {
         try {
             String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
 
-            String uploadDir = "./pet-photos/";
+            String uploadDir = "./src/main/resources/pet-photos/";
 
             Path uploadPath = Paths.get(uploadDir);
 
@@ -59,7 +59,8 @@ public class PetService {
             try (InputStream inputStream = multipartFile.getInputStream()) {
                 Path filePath = uploadPath.resolve(fileName);
                 Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
-                return filePath.toFile().getAbsolutePath();
+                //return filePath.toFile().getAbsolutePath();
+                return fileName;
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
@@ -299,5 +300,11 @@ public class PetService {
         for(Pet p : pet){
             petRepository.save(p);
         }
+    }
+
+    public Pet getPetForAdmin(Long id){
+        return petRepository
+                .findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("No pet with ID " + id));
     }
 }
