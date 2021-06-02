@@ -23,6 +23,8 @@ class Notification extends React.Component {
           choosenNotification: {},
           choosenRequest: {},
           newPet: {},
+          userRole: (JSON.parse(getUser()))?.role,
+          requestUser: {}
       };
 
       this.toggleNotification = this.toggleNotification.bind(this);
@@ -128,7 +130,7 @@ class Notification extends React.Component {
                     choosenRequest: response.data
                 });
                 axios.get(
-                    `http://localhost:8088/pet_category_service_api/pet/${this.state.choosenRequest.newPetID}`
+                    `http://localhost:8088/pet_category_service_api/all/pet/${this.state.choosenRequest.newPetID}`
                   )
                     .then((response) => {
                         this.setState({
@@ -136,6 +138,21 @@ class Notification extends React.Component {
                             newPet: response.data,
                             open: true
                         });
+                    }).then(() => {
+                        axios.get(
+                            `http://localhost:8088/user_service_api/user/username/${this.state.choosenNotification.userID}`,
+                            {
+                              headers: {
+                                  Authorization: "Bearer " + getToken(),
+                              },
+                            }
+                          )
+                        .then((response) => {
+                            this.setState({
+                                ...this.state,
+                                requestUser: response.data
+                            });
+                        })
                     })
             })
         }
@@ -155,7 +172,7 @@ class Notification extends React.Component {
                     choosenRequest: response.data
                 });
                 axios.get(
-                    `http://localhost:8088/pet_category_service_api/pet/${this.state.choosenRequest.petID}`
+                    `http://localhost:8088/pet_category_service_api/all/pet/${this.state.choosenRequest.petID}`
                   )
                     .then((response) => {
                         this.setState({
@@ -308,8 +325,9 @@ class Notification extends React.Component {
                         </button>
                             <p style={{width: '90%', }}> {notification.content} </p>
  
-                            {
-                                notification.requestId !== -1 &&
+                            { 
+                                notification.requestId !== -1 && (notification.content !== "New request to add a pet!" ||
+                                notification.content !== "New request to adopt a pet!") && this.state.userRole === 'admin' &&
                                 <p className={'see-request'} onClick={(e) => this.handleOpen(notification)}>  See request </p>
                             }
                         </div>
@@ -330,7 +348,12 @@ class Notification extends React.Component {
                         </button>
                         <div style={{paddingTop: 20,}}>
                             <h2 id="modal-title">Request view</h2>
-                            <p className="request-detail">{this.state.choosenRequest?.message}</p>
+                            <p className="request-detail">Message: {this.state.choosenRequest?.message}</p>
+                            <h6>User information:</h6>
+                            <p className="request-detail">Name: {this.state.requestUser?.name} {this.state.requestUser?.surname}</p>
+                            <p className="request-detail">Username: {this.state.requestUser?.username}</p>
+                            <p className="request-detail">Email: {this.state.requestUser?.email} </p>
+                            <h6>Pet information:</h6>
                             <p className="request-detail">Name: {this.state.newPet?.name}</p>
                             <p className="request-detail">Description: {this.state.newPet?.description}</p>
                             <p className="request-detail">Category: {this.state.newPet?.rase?.category?.name}</p>
