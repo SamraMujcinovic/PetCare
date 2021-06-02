@@ -109,7 +109,7 @@ export default function Pet({id}) {
                             <img
                                 alt={pet.image}
                                 className="main-product-image-sm md:main-product-image-md lg:main-product-image bg-gray-300 rounded object-cover w-full"
-                                src={`http://localhost:8084/pet-photos/${pet.image}`}
+                                src={`${pet.image}`}
                             />
                         </article>
                     </div>

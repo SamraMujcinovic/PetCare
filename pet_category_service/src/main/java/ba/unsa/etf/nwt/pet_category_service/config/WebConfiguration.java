@@ -16,7 +16,6 @@ public class WebConfiguration extends WebMvcConfigurationSupport {
 
         //za slike
         registry.addResourceHandler("/pet-photos/**")
-                //.addResourceLocations("classpath:/pet-photos/");
                 .addResourceLocations("file:uploads/");
     }
 }

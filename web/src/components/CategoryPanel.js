@@ -26,7 +26,7 @@ const CategoryPanel = ({id, name, description, image, grid = true, elements}) =>
                         alt={name}
                         className="h-full rounded bg-black object-cover w-full"
                         src={elements === "pet" ? 
-                            `http://localhost:8084/pet-photos/${image}`
+                            `${image}`
                             :  categories[Math.floor(Math.random() * (4 - 0 + 1) ) + 0]}
                     />
                     <div className="absolute top-0 left-0 w-full h-full rounded transition-opacity duration-500 ease-in-out opacity-0 hover:opacity-100 flex justify-center items-center bg-opacity-40 bg-gray-800">
@@ -53,7 +53,7 @@ const CategoryPanel = ({id, name, description, image, grid = true, elements}) =>
                     className="h-full rounded bg-black object-cover w-full"
                     //TODO dodati kad je elements === pet da preusmjeri na sliku od ljubimca
                     src={elements === "pet" ? 
-                            `http://localhost:8084/pet-photos/${image}`
+                            `${image}`
                             :  categories[Math.floor(Math.random() * (4 - 0 + 1) ) + 0]}
                 />
             </div>

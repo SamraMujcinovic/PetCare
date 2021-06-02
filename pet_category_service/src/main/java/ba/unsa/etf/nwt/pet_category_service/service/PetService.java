@@ -60,7 +60,7 @@ public class PetService {
                 Path filePath = uploadPath.resolve(fileName);
                 Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
                 //return filePath.toFile().getAbsolutePath();
-                return fileName;
+                return "http://localhost:8084/pet-photos/" + fileName;
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
