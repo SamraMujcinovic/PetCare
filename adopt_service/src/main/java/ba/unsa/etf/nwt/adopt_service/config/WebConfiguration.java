@@ -1,4 +1,4 @@
-package ba.unsa.etf.nwt.pet_category_service.config;
+package ba.unsa.etf.nwt.adopt_service.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;

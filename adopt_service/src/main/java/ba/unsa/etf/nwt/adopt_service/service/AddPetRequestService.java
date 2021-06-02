@@ -46,7 +46,7 @@ public class AddPetRequestService {
         try {
             String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
 
-            String uploadDir = "./pet-photos/";
+            String uploadDir = "./uploads/";
 
             Path uploadPath = Paths.get(uploadDir);
 
@@ -61,7 +61,8 @@ public class AddPetRequestService {
             try (InputStream inputStream = multipartFile.getInputStream()) {
                 Path filePath = uploadPath.resolve(fileName);
                 Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
-                return filePath.toFile().getAbsolutePath();
+                //return filePath.toFile().getAbsolutePath();
+                return "http://localhost:8082/pet-photos/" + fileName;
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
@@ -75,15 +76,13 @@ public class AddPetRequestService {
     }
 
     public ResponseMessage addAddPetRequest(String token, PetForAddRequest addPetRequest,
-                                            @CurrentUser UserPrincipal currentUser,
-                                            String absolutePath) {
+                                            @CurrentUser UserPrincipal currentUser) {
 
             RestTemplate restTemplate = new RestTemplate();
 
             AddPetRequest newRequest = new AddPetRequest();
 
             newRequest.setUserID(currentUser.getId());
-            addPetRequest.getPetForAdd().setImage(absolutePath);
 
             try {
                 //sada prvo moramo dodati poslani pet u bazu preko rute POST u pet servisu

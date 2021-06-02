@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,14 +35,14 @@ public class AddPetRequestController {
     //izmijenjeni oblik post metode
     @RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
     @PostMapping(value = "/eurekaa/add-pet-request", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseMessage addAddPetRequest(@RequestHeader("Authorization") String token,
+    public ResponseMessage addAddPetRequest(@CurrentUser UserPrincipal currentUser,
+                                            @RequestHeader("Authorization") String token,
                                             @RequestParam(value = "name") String name,
                                             @RequestParam(value = "location") String location,
                                             @RequestParam(value = "description", required = false) String description,
                                             @RequestParam(value = "age") Integer age,
                                             @RequestParam(value = "rase_id") Long rase_id,
                                             @RequestParam(value = "message", required = false) String message,
-                                            @CurrentUser UserPrincipal currentUser,
                                             @RequestParam(value = "image", required = false) MultipartFile multipartFile) {
 
         String absolutePath = addPetRequestService.findPhotoAbsolutePath(multipartFile);
@@ -52,12 +53,13 @@ public class AddPetRequestController {
         petRequest.setDescription(description);
         petRequest.setAge(age);
         petRequest.setRase_id(rase_id);
+        petRequest.setImage(absolutePath);
 
         PetForAddRequest addPetRequest = new PetForAddRequest();
         addPetRequest.setMessage(message);
         addPetRequest.setPetForAdd(petRequest);
 
-        return addPetRequestService.addAddPetRequest(token, addPetRequest, currentUser, absolutePath);
+        return addPetRequestService.addAddPetRequest(token, addPetRequest, currentUser);
     }
 
     @RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
