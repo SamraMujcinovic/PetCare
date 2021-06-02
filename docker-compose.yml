@@ -137,6 +137,8 @@ services:
       - petcare
     build:
       context: ./pet_category_service
+    volumes:
+      - ./pet_category_service/uploads:/uploads
     environment:
       - JAVA_TOOL_OPTIONS=-XX:+TieredCompilation -XX:TieredStopAtLevel=1 -Xss256k
       - EUREKA_SERVER=http://eureka:8761/eureka
@@ -170,6 +172,8 @@ services:
       - petcare
     build:
       context: ./adopt_service
+    volumes:
+      - ./adopt_service/uploads:/uploads
     environment:
       - JAVA_TOOL_OPTIONS=-XX:+TieredCompilation -XX:TieredStopAtLevel=1 -Xss256k
       - EUREKA_SERVER=http://eureka:8761/eureka

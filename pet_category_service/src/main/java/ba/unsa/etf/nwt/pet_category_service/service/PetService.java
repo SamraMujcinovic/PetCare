@@ -44,7 +44,7 @@ public class PetService {
         try {
             String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
 
-            String uploadDir = "./src/main/resources/pet-photos/";
+            String uploadDir = "./uploads/";
 
             Path uploadPath = Paths.get(uploadDir);
 
