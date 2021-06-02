@@ -3,6 +3,7 @@ package ba.unsa.etf.nwt.user_service.controller;
 import ba.unsa.etf.nwt.user_service.exception.ResourceNotFoundException;
 import ba.unsa.etf.nwt.user_service.exception.WrongInputException;
 import ba.unsa.etf.nwt.user_service.model.User;
+import ba.unsa.etf.nwt.user_service.model.roles.Role;
 import ba.unsa.etf.nwt.user_service.rabbitmq.CommentServiceMessage;
 import ba.unsa.etf.nwt.user_service.rabbitmq.MessagingConfig;
 import ba.unsa.etf.nwt.user_service.request.UserProfileRequest;
@@ -135,6 +136,31 @@ public class UserController {
             return new ResponseMessage(true, HttpStatus.OK, "You have successfully deleted your account.");
         } else {
             throw new WrongInputException("Wrong password!");
+        }
+    }
+
+    @RolesAllowed("ROLE_ADMIN")
+    @GetMapping("/user/username/{id}")
+    public UserProfileResponse getUsers(@PathVariable Long id) {
+        try {
+            User user = userService.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("User not found!"));
+
+            String currentRole = "";
+            for (Role role1 : user.getRoles()) {
+                currentRole = role1.getName().name();
+            }
+
+            String role = "";
+            if (currentRole.equals("ROLE_USER")) {
+                role = "user";
+            } else {
+                role = "admin";
+            }
+
+            return new UserProfileResponse(user.getName(), user.getSurname(), user.getUsername(), user.getEmail(), role);
+        } catch (ResourceNotFoundException e){
+            return new UserProfileResponse("", "", "UNKNOWN", "", "");
         }
     }
 }
