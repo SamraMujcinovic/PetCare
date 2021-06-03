@@ -93,7 +93,8 @@ class AddRequests extends React.Component {
       .then((response) => {
           this.setState({
               ...this.state,
-              choosenPet: response.data
+              choosenPet: response.data,
+              open: true
           });
       })  
     }
@@ -110,7 +111,8 @@ class AddRequests extends React.Component {
     .then((response) => {
         this.setState({
             ...this.state,
-            chosenUser: response.data
+            chosenUser: response.data,
+            openUser: true
         });
     })
     }
@@ -177,6 +179,7 @@ class AddRequests extends React.Component {
                 onClose={this.handleClose}
                 aria-labelledby="simple-modal-title"
                 aria-describedby="simple-modal-description"
+                style={{overflow: 'scroll'}}
              >
                 <div>  
                     <div className={'paper'}>
@@ -201,20 +204,21 @@ class AddRequests extends React.Component {
                 onClose={this.handleCloseModalUser}
                 aria-labelledby="simple-modal-title"
                 aria-describedby="simple-modal-description"
+                style={{overflow: 'scroll'}}
              >
                 <div>  
                     <div className={'paper'}>
                         <button onClick={this.handleCloseModalUser} style={{right: 20, position: 'absolute',}}>
                             <CloseIcon />
                         </button>
+                        <h2 id="modal-title">User view</h2>
                         {
                           this.state.chosenUser?.username === "UNKNOWN" ?
                           <div style={{paddingTop: 20,}}>
-                            <h2 id="modal-title">Unknown user</h2>
+                            <p className="request-detail">This user doesn't exist any more!</p>
                           </div>
                           :
                             <div style={{paddingTop: 20,}}>
-                              <h2 id="modal-title">User view</h2>
                               <p className="request-detail">Name: {this.state.chosenUser?.name}</p>
                               <p className="request-detail">Surname: {this.state.chosenUser?.surname}</p>
                               <p className="request-detail">Username: {this.state.chosenUser?.username}</p>
