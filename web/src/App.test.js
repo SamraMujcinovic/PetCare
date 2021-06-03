@@ -2,10 +2,6 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { BrowserRouter as Router } from 'react-router-dom';
 import App from './App';
-import Home from './pages/home'
-import About from './pages/about'
-import Login from './pages/login'
-import Register from './pages/register'
 
 test('Initial test', () => {
   render(<App />);
@@ -27,36 +23,4 @@ test('Upload file', () => {
   expect(input.files[0]).toStrictEqual(file)
   expect(input.files.item(0)).toStrictEqual(file)
   expect(input.files).toHaveLength(1)
-});
-
-test('Login page', () => {
-  render(<Router>
-            <Login />
-        </Router>
-        );
-  screen.debug();
-});
-
-test('Register page', () => {
-  render(<Router>
-          <Register />
-        </Router>
-         );
-  screen.debug();
-});
-
-test('Home page', () => {
-  render(<Router>
-          <Home />
-        </Router>
-         );
-  screen.debug();
-});
-
-test('About page', () => {
-  render(<Router>
-          <About />
-        </Router>
-         );
-  screen.debug();
 });
