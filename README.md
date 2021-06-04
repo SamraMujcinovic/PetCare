@@ -56,6 +56,33 @@ Kreiranje containera traje malo duže, obzirom da se ispituje healthcheck za nek
 
 ***NAPOMENA:*** Da bi brže radilo, mi smo na našim mašinama konfigurisali da docker koristi maksimalno 4 CPUs i maksimalno 5GB Memory. Međutim, trebalo bi da radi ispravno i sa manjim vrijednostima, samo duže da traje, ali u tom slučaju Eureka zna bacati grešku zbog zauzeća CPUa gdje smo mi povećali vrijednost u eureka_serveru, te više ne izbacuje, ali ako se to desi, ili ako dođe do još nekih problema, molimo da nekog od članova tima kontaktirate. Ova greška ovisi od jačine CPUa Vašeg računara. Nadajmo se da do toga neće doći.
 
+## Login informacije za testiranje
+
+Pošto stranica sadrži admin usera, kreiran je admin user za Vaše testiranje i može mu se pristupti pomoću sljedećih informacija:
+
+- Name: **Irfan**
+- Surname: **Prazina**
+- Username: **iprazina1**
+- Email: **iprazina1@etf.unsa.ba**
+- Password: **NWTpassword123!**
+- Odgovor na sigurnosno pitanje: **Sarajevo**
+
+Login možete obaviti pomoću usernamea ili emaila, uz password.
+
+Ako želite da se ulogujete kao user, možete izvršiti novu registraciju, ili koristiti sljedeće podatke:
+
+- Name: **Name**
+- Surname: **Surname**
+- Username: **username**
+- Email: **email@etf.unsa.ba**
+- Password: **string123!A**
+- Odgovor na sigurnosno pitanje: **Ella**
+
+Pored toga, napravljen je i gmail račun, s kojim testirate popunjavanje Contact us forme, njegove informacije su:
+
+- Email: **nwt.pet.care.adm2021@gmail.com**
+- Password: **2021nwtprojekat**
+
 ## Videi
 
 Mi smo kreirali 3 posebna videa (za frontend, za backend i za testove). Sva 3 videa se nalaze na sljedećem linku i traju ukupno ...... minuta:
