@@ -111,7 +111,7 @@ public class CommunicationTests {
         mockMvc.perform(requestBuilder2)
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$[4].message").value("Pet care"));
+                .andExpect(jsonPath("$[3].message").value("Pet care"));
     }
 
     @Test
