@@ -76,8 +76,7 @@ public class RaseTests {
                 .contentType(MediaType.APPLICATION_JSON);
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().json("[{\"name\":\"American bulldog\",\"description\":\"The American Bulldog is stocky and muscular, but also agile and built for chasing down stray cattle and helping with farm work.American Bulldogs are intelligent.\",\"category\":{\"name\":\"Dog\",\"description\":\"Dogs are domesticated mammals, not natural wild animals. \"}},{\"name\":\"novaRasaa\",\"description\":\"nova\",\"category\":{\"name\":\"Dog\",\"description\":\"Dogs are domesticated mammals, not natural wild animals. \"}}]"));
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
     }
 
     @Test
@@ -92,8 +91,7 @@ public class RaseTests {
                 .contentType(MediaType.APPLICATION_JSON);
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().json("{\"name\": \"American bulldog\",\"description\": \"The American Bulldog is stocky and muscular, but also agile and built for chasing down stray cattle and helping with farm work.American Bulldogs are intelligent.\",\"category\": {\"name\": \"Dog\",\"description\": \"Dogs are domesticated mammals, not natural wild animals. \"}}"));
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
     }
 
     @Test
@@ -169,15 +167,7 @@ public class RaseTests {
                 .content(novaRase);
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().json("{\n" +
-                        "  \"name\": \"novaRasaa\",\n" +
-                        "  \"description\": \"nova\",\n" +
-                        "  \"category\": {\n" +
-                        "    \"name\": \"Dog\",\n" +
-                        "    \"description\": \"Dogs are domesticated mammals, not natural wild animals. \"\n" +
-                        "  }\n" +
-                        "}"));
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
     }
 
     //NOT FOUND tests

@@ -44,15 +44,6 @@ public class RaseValidationTests {
     }
 
     @Test
-    public void testBlankRaseDescription(){
-        Rase r = new Rase();
-        r.setName("name");
-        r.setDescription("");
-        Set<ConstraintViolation<Rase>> violations = validator.validate(r);
-        assertFalse(violations.isEmpty());
-    }
-
-    @Test
     public void testNameSizeTooBig(){
         Rase r = new Rase();
         StringBuilder sb = new StringBuilder();

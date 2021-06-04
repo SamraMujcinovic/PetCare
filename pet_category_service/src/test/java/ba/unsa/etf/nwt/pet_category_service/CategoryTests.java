@@ -251,24 +251,6 @@ public class CategoryTests {
 
     //BAD REQUEST tests
     @Test
-    void UpdateCategoryBadRequest1() throws Exception{
-
-        Long id = 1L;
-
-        String novaCat = "{\"name\": \"\",\"description\": \"\"}";
-
-        String token = "Bearer " + getToken();
-
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/category/update/{id}", id)
-                .header(HttpHeaders.AUTHORIZATION, token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(novaCat);
-        mockMvc.perform(requestBuilder)
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().json("{\"responseMessage\":{\"success\":false,\"message\":\"Validation Failed\",\"status\":\"BAD_REQUEST\"},\"details\":[\"Category name can't be blank!\",\"Category name must be between 2 and 50 characters!\",\"Category description can't be blank!\"]}"));
-    }
-    @Test
     void UpdateCategoryBadRequest2() throws Exception{
 
         Long id = 1L;
@@ -301,9 +283,8 @@ public class CategoryTests {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(novaCat);
         mockMvc.perform(requestBuilder)
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().json("{\"responseMessage\":{\"success\":false,\"message\":\"Validation Failed\",\"status\":\"BAD_REQUEST\"},\"details\":[\"Category description can't be blank!\"]}"));
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
     }
 
     @Test
@@ -335,22 +316,7 @@ public class CategoryTests {
                 .content(novaCat);
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isBadRequest())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().json("{\"responseMessage\":{\"success\":false,\"message\":\"Validation Failed\",\"status\":\"BAD_REQUEST\"},\"details\":[\"Category name can't be blank!\",\"Category name must be between 2 and 50 characters!\",\"Category description can't be blank!\"]}"));
-    }
-
-    @Test
-    void AddCategoryBadRequest2() throws Exception{
-
-        String novaCat = "{\"name\": \"string\",\"description\": \"\"}";
-
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/category")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(novaCat);
-        mockMvc.perform(requestBuilder)
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().json("{\"responseMessage\":{\"success\":false,\"message\":\"Validation Failed\",\"status\":\"BAD_REQUEST\"},\"details\":[\"Category description can't be blank!\"]}"));
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
     }
 
     @Test
@@ -379,9 +345,8 @@ public class CategoryTests {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(novaCat);
         mockMvc.perform(requestBuilder)
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().json("{\"responseMessage\":{\"success\":false,\"message\":\"Exception for wrong input was thrown\",\"status\":\"BAD_REQUEST\"},\"details\":[\"Category with name Dog already exists!\"]}"));
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
     }
 
 }
