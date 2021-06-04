@@ -9,6 +9,7 @@ import ba.unsa.etf.nwt.pet_category_service.repository.RaseRepository;
 import ba.unsa.etf.nwt.pet_category_service.request.RaseRequest;
 import ba.unsa.etf.nwt.pet_category_service.response.ResponseMessage;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +22,9 @@ public class RaseService {
 
     private final RaseRepository raseRepository;
     private final CategoryService categoryService;
+
+    @Autowired
+    private CommunicationsService communicationsService;
 
     public List<Rase> getRases() {
         return raseRepository.findAll();
@@ -59,12 +63,13 @@ public class RaseService {
                 .orElseThrow(() -> new ResourceNotFoundException("No rase with ID " + id));
     }
 
-    //todo moraju se obrisati i petovi
     public ResponseMessage deleteRase(Long id) {
         Rase r = getRaseById(id);
 
         //moraju se i svi petovi ove rase automatski obrisat
         //petService.deletePet(r.getId());
+
+        communicationsService.deletePetCascade(id);
 
         raseRepository.deleteById(id);
 
@@ -131,5 +136,15 @@ public class RaseService {
         }
 
         return rases;
+    }
+
+    public void deleteRaseCascade(Long categoryId){
+        List<Rase> allRases = getRases();
+
+        for(Rase r : allRases){
+            if(r.getCategory().getId().equals(categoryId)){
+                ResponseMessage responseMessage = deleteRase(r.getId());
+            }
+        }
     }
 }

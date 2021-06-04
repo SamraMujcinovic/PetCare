@@ -158,7 +158,9 @@ class Notification extends React.Component {
                             });
                         })
                     })
-            })
+            }).catch((error) => {
+                return NotificationManager.error('Request has been deleted!', '  ', 3000);
+            });
         }
         else {
             axios.get(
@@ -168,8 +170,7 @@ class Notification extends React.Component {
                      Authorization: "Bearer " + getToken(),
                   },
                 }
-              )
-            .then((response) => {
+              ).then((response) => {
                 this.setState({
                     ...this.state,
                     choosenNotification: notification,
@@ -190,7 +191,9 @@ class Notification extends React.Component {
                             open: true
                         });
                     })
-            })
+            }).catch((error) => {
+                return NotificationManager.error('Request has been deleted!', '  ', 3000);
+            });
         }
     }
 
@@ -358,27 +361,13 @@ class Notification extends React.Component {
                         </button>
                         <div style={{paddingTop: 20,}}>
                             <h2 id="modal-title">Request view</h2>
-                            <p className="request-detail">Message: {this.state.choosenRequest?.message}</p>
-                            <h6><b>User information:</b></h6>
-                            {
-                                this.state.requestUser?.username === "UNKNOWN" &&
-                                <p className="request-detail">This user doesn't exist any more!</p>
-                            }
-                            {
-                                this.state.requestUser?.username !== "UNKNOWN" &&
-                                <div>
-                                <p className="request-detail">Name: {this.state.requestUser?.name} {this.state.requestUser?.surname}</p>
-                                <p className="request-detail">Username: {this.state.requestUser?.username}</p>
-                                <p className="request-detail">Email: {this.state.requestUser?.email} </p>
-                                </div>
-                            }
-                            <h6><b>Pet information:</b></h6>
-                            <p className="request-detail">Name: {this.state.newPet?.name}</p>
-                            <p className="request-detail">Description: {this.state.newPet?.description}</p>
-                            <p className="request-detail">Category: {this.state.newPet?.rase?.category?.name}</p>
-                            <p className="request-detail">Rase: {this.state.newPet?.rase?.name}</p>
-                            <p className="request-detail">Location: {this.state.newPet?.location}</p>
-                            <p className="request-detail">Age: {this.state.newPet?.age}</p>
+                            <p className="request-detail"><b>Message:</b> {this.state.choosenRequest?.message}</p>
+                            <p className="request-detail"><b>{this.state.newPet?.name}</b></p>
+                            <img
+                                alt={this.state.newPet?.image}
+                                className="main-product-image-sm md:main-product-image-md lg:main-product-image bg-gray-300 rounded object-cover w-full"
+                                src={`${this.state.newPet?.image}`}
+                            />
                             
                             <div>
                                 <button 

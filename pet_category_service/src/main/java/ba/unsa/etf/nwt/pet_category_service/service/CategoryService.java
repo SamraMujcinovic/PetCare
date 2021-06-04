@@ -3,9 +3,11 @@ package ba.unsa.etf.nwt.pet_category_service.service;
 import ba.unsa.etf.nwt.pet_category_service.exception.ResourceNotFoundException;
 import ba.unsa.etf.nwt.pet_category_service.exception.WrongInputException;
 import ba.unsa.etf.nwt.pet_category_service.model.Category;
+import ba.unsa.etf.nwt.pet_category_service.model.Rase;
 import ba.unsa.etf.nwt.pet_category_service.repository.CategoryRepository;
 import ba.unsa.etf.nwt.pet_category_service.response.ResponseMessage;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +20,9 @@ public class CategoryService {
 
     private final CategoryRepository categoryRepository;
 
+    @Autowired
+    private CommunicationsService communicationsService;
+
     public List<Category> getCategories() {
         return categoryRepository.findAll();
     }
@@ -27,7 +32,14 @@ public class CategoryService {
             Category c = findCategoryByName(category.getName());
             throw new WrongInputException("Category with name " + c.getName() + " already exists!");
         } catch (ResourceNotFoundException e) {
-            categoryRepository.save(category);
+            Category category1 = categoryRepository.save(category);
+
+            Rase rase = new Rase();
+            rase.setName("Other");
+            rase.setDescription("");
+            rase.setCategory(category1);
+            communicationsService.saveRase(rase);
+
             return new ResponseMessage(true, HttpStatus.OK,"Category added successfully!");
         }
     }
@@ -52,6 +64,9 @@ public class CategoryService {
 
     public ResponseMessage deleteCategory(Long id) {
         Category c = getCategoryById(id);
+
+        communicationsService.deleteRaseCascade(id);
+
         categoryRepository.deleteById(id);
         return new ResponseMessage(true, HttpStatus.OK,"Category successfully deleted!");
     }

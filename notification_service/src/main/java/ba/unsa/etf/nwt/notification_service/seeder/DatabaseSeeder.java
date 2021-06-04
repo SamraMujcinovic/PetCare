@@ -26,12 +26,14 @@ public class DatabaseSeeder {
         Notification n2 = createNotification("Someone filled contact us form, check email!", -1L, true, true, true, -1L, date);
         Notification n3 = createNotification("New request to add a pet!", 3L, false, true, true, 1L, date);
         Notification n4 = createNotification("New request to adopt a pet!", 5L, true, true, false, 1L, date);
-        Notification n5 = createNotification("Your request for adding a pet has been approved!", 3L, false, false, true, 1L, date);
-        Notification n6 = createNotification("Your request for adopting a pet has not been approved!", 5L, true, false, false, 1L, date);
+        Notification n5 = createNotification("Your request for adding a pet has not been approved!", 3L, false, false, true, 1L, date);
+        Notification n6 = createNotification("Your request for adopting a pet has not been approved!", 5L, true, false, false, 2L, date);
 
-        //Notification n1 = createNotification("Novi zahtjev za dodavanje ljubimca", 1L, true, date);
-        //Notification n2 = createNotification("Dodali ste novog ljubimca", 2L, false, date);
-        //Notification n3 = createNotification("Vas ljubimac je usvojen", 3L, false, date);
+        //ostali requestovi
+        Notification n7 = createNotification("New request to add a pet!", 5L, false, true, true, 2L, date);
+        Notification n8 = createNotification("New request to add a pet!", 5L, false, true, true, 3L, date);
+        Notification n9 = createNotification("New request to adopt a pet!", 5L, true, true, false, 1L, date);
+        Notification n10 = createNotification("New request to adopt a pet!", 2L, true, true, false, 2L, date);
     }
 
     private Notification createNotification (String content, Long userID, Boolean read, Boolean isForAdmin, Boolean isAddRequest, Long requestId, Date date) {

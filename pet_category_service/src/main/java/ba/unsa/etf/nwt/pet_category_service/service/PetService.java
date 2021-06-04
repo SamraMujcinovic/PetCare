@@ -263,23 +263,6 @@ public class PetService {
 
     public ResponseMessage deletePetById(Long id){
 
-        //RestTemplate restTemplate = new RestTemplate();
-
-        /*try {
-            HttpHeaders headers = new HttpHeaders();
-            headers.set("Authorization", token);
-
-            HttpEntity<String> entityReq = new HttpEntity<>("", headers);
-
-            ResponseEntity<ResponseMessage> responseMessage = restTemplate.exchange(communicationsService.getUri("adopt_service")
-                            + "/requests/delete/ifExists/" + id,
-                    HttpMethod.DELETE ,entityReq, ResponseMessage.class);
-
-            System.out.println(responseMessage.getBody().getMessage());
-        } catch (Exception ue){
-            System.out.println("Can't connect to adopt_service and delete all connected requests!");
-        }*/
-
         //send message to adopt_service
         rabbitTemplate.convertAndSend(MessagingConfig.PET_ADOPT_SERVICE_EXCHANGE,
                 MessagingConfig.PET_ADOPT_SERVICE_ROUTING_KEY, id);
@@ -306,5 +289,15 @@ public class PetService {
         return petRepository
                 .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No pet with ID " + id));
+    }
+
+    public void deletePetCascade(Long raseId){
+        List<Pet> allPets = getPets();
+
+        for(Pet p : allPets){
+            if(p.getRase().getId().equals(raseId)){
+                ResponseMessage responseMessage = deletePetById(p.getId());
+            }
+        }
     }
 }

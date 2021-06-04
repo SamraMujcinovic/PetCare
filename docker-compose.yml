@@ -16,7 +16,7 @@ services:
       test: [ "CMD", "nc", "-z", "rabbitmq", "5672" ]
       interval: 5s
       timeout: 5s
-      retries: 30
+      retries: 50
     networks:
       - petcare
 
@@ -67,7 +67,7 @@ services:
       test: ["CMD", "curl", "-I", "http://configserver:8888"]
       interval: 5s
       timeout: 5s
-      retries: 20
+      retries: 30
     deploy:
       restart_policy:
         condition: on-failure

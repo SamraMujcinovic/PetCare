@@ -188,12 +188,17 @@ class AddRequests extends React.Component {
                         </button>
                         <div style={{paddingTop: 20,}}>
                             <h2 id="modal-title">Pet view</h2>
-                            <p className="request-detail">Name: {this.state.choosenPet?.name}</p>
-                            <p className="request-detail">Description: {this.state.choosenPet?.description}</p>
-                            <p className="request-detail">Category: {this.state.choosenPet?.rase?.category?.name}</p>
-                            <p className="request-detail">Rase: {this.state.choosenPet?.rase?.name}</p>
-                            <p className="request-detail">Location: {this.state.choosenPet?.location}</p>
-                            <p className="request-detail">Age: {this.state.choosenPet?.age}</p>
+                            <p className="request-detail"><b>Name: </b> {this.state.choosenPet?.name}</p>
+                            <p className="request-detail"><b>Description: </b> {this.state.choosenPet?.description}</p>
+                            <p className="request-detail"><b>Category: </b> {this.state.choosenPet?.rase?.category?.name}</p>
+                            <p className="request-detail"><b>Rase: </b> {this.state.choosenPet?.rase?.name}</p>
+                            <p className="request-detail"><b>Location: </b> {this.state.choosenPet?.location}</p>
+                            <p className="request-detail"><b>Age: </b> {this.state.choosenPet?.age}</p>
+                            <img
+                                alt={this.state.choosenPet?.image}
+                                className="main-product-image-sm md:main-product-image-md lg:main-product-image bg-gray-300 rounded object-cover w-full"
+                                src={`${this.state.choosenPet?.image}`}
+                            />
                         </div>
                     </div>
                 </div>
@@ -219,10 +224,10 @@ class AddRequests extends React.Component {
                           </div>
                           :
                             <div style={{paddingTop: 20,}}>
-                              <p className="request-detail">Name: {this.state.chosenUser?.name}</p>
-                              <p className="request-detail">Surname: {this.state.chosenUser?.surname}</p>
-                              <p className="request-detail">Username: {this.state.chosenUser?.username}</p>
-                              <p className="request-detail">Email: {this.state.chosenUser?.email}</p>
+                              <p className="request-detail"><b>Name: </b> {this.state.chosenUser?.name}</p>
+                              <p className="request-detail"><b>Surname: </b> {this.state.chosenUser?.surname}</p>
+                              <p className="request-detail"><b>Username: </b> {this.state.chosenUser?.username}</p>
+                              <p className="request-detail"><b>Email: </b> {this.state.chosenUser?.email}</p>
                           </div>
                         }
                     </div>

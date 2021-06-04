@@ -99,8 +99,10 @@ public class UserController {
         User user = userService.findByEmail(userProfileRequest.getEmail())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found!"));
 
-        if(userService.existsByUsername(userProfileRequest.getUsername())) {
-            throw new WrongInputException("That username is already taken!");
+        if(!userProfileRequest.getUsername().equals(currentUser.getUsername())) {
+            if (userService.existsByUsername(userProfileRequest.getUsername())) {
+                throw new WrongInputException("That username is already taken!");
+            }
         }
 
         user.setName(userProfileRequest.getName());

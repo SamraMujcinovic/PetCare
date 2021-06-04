@@ -131,6 +131,7 @@ class UserInfo extends React.Component {
           "http://localhost:8088/user_service_api/user/usernameCheck?username="+this.state.username,
         )
         .then((response) => {
+          response.data.available = true;
           if (response.data.available === false) {
             this.setState({
               ...this.state,

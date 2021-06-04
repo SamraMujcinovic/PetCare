@@ -24,12 +24,12 @@ public class DatabaseSeeder {
     }
 
     private void seedDatabase() {
-        createAdoptionRequest(1L, 1L, "Hi! I'd like to adopt your wonderful pet!", false);
+        createAdoptionRequest(5L, 1L, "Hi! I'd like to adopt your wonderful pet!", false);
         createAdoptionRequest(2L, 2L, "Hi! Your pet looks it needs a new home, I'll be happy to help.", false);
 
-        createAddPetRequest(5L, 3L, "I found this beautiful cat in front of my door. Could you give it a new home?", false);
-        createAddPetRequest(5L, 4L, "I can't take care of my fish any more, I got a cat. Maybe you can help me find it a new home?", false);
-        createAddPetRequest(5L, 5L, "This is Pricalica. I found her on a tree very scared, probably attacked. She needs a new home. Is there any way to give him a loving family?", false);
+        createAddPetRequest(3L, 3L, "I found this beautiful cat in front of my door. Could you give it a new home?", true);
+        createAddPetRequest(5L, 4L, "I can't take care of my fish any more, I got a cat. Maybe you can help me find it a new home?", true);
+        createAddPetRequest(5L, 5L, "This is Pricalica. I found her on a tree very scared, probably attacked. She needs a new home. Is there any way to give him a loving family?", true);
     }
 
     private void createAddPetRequest(Long userID, Long newPetID, String message, boolean approved) {
