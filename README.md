@@ -54,7 +54,7 @@ Kreiranje containera traje malo duže, obzirom da se ispituje healthcheck za nek
 
 [http://localhost:3000](http://localhost:3000)
 
-***NAPOMENA:*** Da bi brže radilo, mi smo na našim mašinama konfigurisali da docker koristi maksimalno 4 CPUs i maksimalno 5GB Memory. Međutim, trebalo bi da radi ispravno i sa manjim vrijednostima, samo duže da traje, ali u tom slučaju Eureka zna bacati grešku zbog zauzeća CPUa gdje smo mi povećali vrijednost u eureka_serveru, te više ne izbacuje, ali ako se to desi molimo da nekog od članova kontaktirate jer to ovisi od jačine CPUa Vašeg računara. Nadajmo se da do toga neće doći.
+***NAPOMENA:*** Da bi brže radilo, mi smo na našim mašinama konfigurisali da docker koristi maksimalno 4 CPUs i maksimalno 5GB Memory. Međutim, trebalo bi da radi ispravno i sa manjim vrijednostima, samo duže da traje, ali u tom slučaju Eureka zna bacati grešku zbog zauzeća CPUa gdje smo mi povećali vrijednost u eureka_serveru, te više ne izbacuje, ali ako se to desi, ili ako dođe do još nekih problema, molimo da nekog od članova tima kontaktirate. Ova greška ovisi od jačine CPUa Vašeg računara. Nadajmo se da do toga neće doći.
 
 ## Videi
 
