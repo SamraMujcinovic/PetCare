@@ -102,7 +102,7 @@ Posebni linkovi:
 2. Backend: https://drive.google.com/file/d/1t3oEOzEy-t3qBQwg14BTyd_Hw435-_UG/view?usp=sharing
 3. Testovi: https://drive.google.com/file/d/1IjT05Ywf2QPgOtfdBXJP3vZRLkbQnoPb/view?usp=sharing
 
-Pošto su videi malo duži, nismo uspjeli da ih skratimo, a da sve uzmemo u obzir što smo izvršili, predlažemo da videe gledate na Playback speed 1.75 ili 2. Samim tim će videi kraće trajati.
+Pošto su videi malo duži, nismo uspjeli da ih skratimo, a da sve uzmemo u obzir što smo uradili, predlažemo da videe gledate na Playback speed 1.75 ili 2. Samim tim će videi i kraće trajati.
 
 ## Učestvovanje u projektu
 
