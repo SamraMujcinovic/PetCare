@@ -83,7 +83,7 @@ Pored toga, napravljen je i gmail račun, s kojim testirate popunjavanje Contact
 - Email: **nwt.pet.care.adm2021@gmail.com**
 - Password: **2021nwtprojekat**
 
-U slučaju da želite pristupiti RabbitMQ na [http://localhost:15672](http://localhost:15672) koristite defaulne podatke:
+U slučaju da želite pristupiti RabbitMQ na [http://localhost:15672](http://localhost:15672) koristite defaultne podatke:
 
 - Username: **guest**
 - Password: **guest**
