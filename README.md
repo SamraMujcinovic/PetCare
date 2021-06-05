@@ -50,7 +50,7 @@ docker-compose up
 ```
 Prilikom našeg testiranja pokretana je prva naredba, te se prati stanje u Docker Desktop-u.
 
-Kreiranje containera traje malo duže, obzirom da se ispituje healthcheck za neke projekte, te se to stanje može pratiti u konzoli. Nakon što se uspješno kreiraju svi containeri potrebno je sačekati da se svi servisi pokrenu, te da se pokrene frontend container (on bi trebao zadnji da se pokrene), i nakon toga se može pristupiti stranici pomoću: 
+Kreiranje containera traje malo duže, obzirom da se ispituje healthcheck za neke projekte, te se to stanje može pratiti u konzoli. Nakon što se uspješno kreiraju svi containeri potrebno je sačekati da se svi servisi pokrenu, te da se pokrene frontend container (on bi trebao zadnji da se pokrene), i nakon toga se može pristupiti stranici pomoću (potrebno je samo prije pristupanja obrisati sve spašene Cookies koji su vezani za localhost): 
 
 [http://localhost:3000](http://localhost:3000)
 
@@ -82,6 +82,11 @@ Pored toga, napravljen je i gmail račun, s kojim testirate popunjavanje Contact
 
 - Email: **nwt.pet.care.adm2021@gmail.com**
 - Password: **2021nwtprojekat**
+
+U slučaju da želite pristupiti RabbitMQ na [http://localhost:15672](http://localhost:15672) koristite defaulne podatke:
+
+- Username: **guest**
+- Password: **guest**
 
 ## Videi
 
