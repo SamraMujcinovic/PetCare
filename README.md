@@ -85,15 +85,19 @@ Pored toga, napravljen je i gmail račun, s kojim testirate popunjavanje Contact
 
 ## Videi
 
-Mi smo kreirali 3 posebna videa (za frontend, za backend i za testove). Sva 3 videa se nalaze na sljedećem linku i traju ukupno ...... minuta:
+Mi smo kreirali 3 posebna videa (za frontend, za backend i za testove). Sva 3 videa se nalaze na sljedećem linku:
 
-/// link za drive
+https://drive.google.com/drive/folders/1UR9v5H9BeKcDkDKx-l_HoXj6ajY95llc?usp=sharing
+
+Pored 3 osnovna videa, kreiran je i video koji objašnjava docker compose i njegovo pokretanje, tj. sve ono što je navedeno u paragrafu iznad.
 
 Posebni linkovi:
 
-1. Frontend: ------- link
+1. Frontend: https://drive.google.com/file/d/1_PlPVKHeWQWtlFajqyiS404rg2zd13Dp/view?usp=sharing
 2. Backend: ------- link
-3. Testovi: -------- link
+3. Testovi: https://drive.google.com/file/d/1IjT05Ywf2QPgOtfdBXJP3vZRLkbQnoPb/view?usp=sharing
+
+Pošto su videi malo duži, nismo uspjeli da ih skratimo, a da sve uzmemo u obzir što smo izvršili, predlažemo da videe gledate na Playback speed 1.75 ili 2. Samim tim će videi kraće trajati.
 
 ## Učestvovanje u projektu
 
