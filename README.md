@@ -88,7 +88,7 @@ U slučaju da želite pristupiti RabbitMQ na [http://localhost:15672](http://loc
 - Username: **guest**
 - Password: **guest**
 
-Link repozitorija za config_server i varijable za servise:
+Link config repozitorija (varijable za servise i config_server):
 
 https://github.com/alakovic1/config
 
