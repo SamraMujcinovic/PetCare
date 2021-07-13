@@ -81,7 +81,7 @@ Ako želite da se ulogujete kao user, možete izvršiti novu registraciju, ili k
 Pored toga, napravljen je i gmail račun, s kojim testirate popunjavanje Contact us forme, njegove informacije su:
 
 - Email: **nwt.pet.care.adm2021@gmail.com**
-- Password: **2021nwtprojekat**
+- Password: (**ask the owner!**)
 
 U slučaju da želite pristupiti RabbitMQ na [http://localhost:15672](http://localhost:15672) koristite defaultne podatke:
 
